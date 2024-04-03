@@ -118,7 +118,17 @@ class AutoTestPlugin {
         }
 
         const page = await browser.newPage()
-        await page.setViewport({ width: 1080, height: 1024 });
+
+        // Get the screen dimensions
+        const { width, height } = await page.evaluate(() => {
+            return {
+                width: window.screen.availWidth,
+                height: window.screen.availHeight,
+            };
+        });
+
+        // Set the viewport size to match the screen dimensions
+        await page.setViewport({ width, height });
 
         await page.goto(testingURL)
 
@@ -170,12 +180,23 @@ class AutoTestPlugin {
             return this.browser
         }
 
-        const browser = await puppeteer.launch({ headless: false });
+        const browser = await puppeteer.launch({
+            headless: false,
+            args: ['--start-maximized']
+        });
         const page = await browser.newPage();
         await page.goto('https://www.warcraftlogs.com/login');
-        // await page.click("#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button:nth-child(2)")
 
-        await page.setViewport({ width: 1080, height: 1024 });
+        // Get the screen dimensions
+        const { width, height } = await page.evaluate(() => {
+            return {
+                width: window.screen.availWidth,
+                height: window.screen.availHeight,
+            };
+        });
+
+        // Set the viewport size to match the screen dimensions
+        await page.setViewport({ width, height });
 
         switch (this.options.loginMethod) {
             case "WCL":
@@ -242,6 +263,7 @@ class AutoTestPlugin {
         await page.waitForSelector('#accountName', { visible: true });
         await page.type("#accountName", login)
         await page.type("#password", passwort)
+        await page.click('#submit');
         await page.waitForFunction(() => {
             // eslint-disable-next-line no-undef
             return !document.URL.includes("battle.net")
