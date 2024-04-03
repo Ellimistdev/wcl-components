@@ -1,9 +1,8 @@
 const puppeteer = require("puppeteer");
-const {inspect} = require("util");
+const { inspect } = require("util");
 const path = require("path");
 const fs = require("fs");
-require('dotenv').config({path: ".env"});
-
+require('dotenv').config({ path: ".env" });
 
 class AutoTestPlugin {
     pageCache = {}
@@ -15,7 +14,7 @@ class AutoTestPlugin {
     /**
      * @type {Record<string, number>}
      */
-    componentCache= {}
+    componentCache = {}
 
     /**
      * @param options {import("../definitions/template").AutoTestPluginOption}
@@ -25,66 +24,86 @@ class AutoTestPlugin {
         this.setupTestingBrowser().then(browser => this.browser = browser)
 
         const tempPath = path.resolve(__dirname, "tmp/fileHashes.json")
-        if (fs.existsSync(tempPath)){
+        if (fs.existsSync(tempPath)) {
             const cache = fs.readFileSync(tempPath)
             this.componentCache = JSON.parse(cache)
         }
-
     }
 
-    cyrb53(str, seed = 0){
+    cyrb53(str, seed = 0) {
         let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
-        for(let i = 0, ch; i < str.length; i++) {
+        for (let i = 0, ch; i < str.length; i++) {
             ch = str.charCodeAt(i);
             h1 = Math.imul(h1 ^ ch, 2654435761);
             h2 = Math.imul(h2 ^ ch, 1597334677);
         }
-        h1  = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
+        h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
         h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-        h2  = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
+        h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
         h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
 
         return 4294967296 * (2097151 & h2) + (h1 >>> 0);
     }
 
     apply(compiler) {
-        compiler.hooks.assetEmitted.tapAsync("AutoTestPlugin", (file, {content}, callback) => {
-
-            const componentName = file.replace(".component.js", "")
-            console.log(componentName)
-            if (!this.options.components[componentName]) {
-                callback()
-                return
-            }
-
-            const code = new TextDecoder().decode(content)
-            const hash = this.cyrb53(code)
-            console.log(hash)
-            if (this.componentCache[componentName] && this.componentCache[componentName] === hash){
-                callback()
+        compiler.hooks.assetEmitted.tapAsync('AutoTestPlugin', (file, info, callback) => {
+            if (!file.endsWith('.component.js')) {
+                callback();
                 return;
             }
 
-            this.componentCache[componentName] = hash
-            const folder = path.resolve(__dirname, "tmp")
+            const componentPath = file.replace('.component.js', '');
+            const componentParts = componentPath.split(path.sep);
+            const componentName = componentParts[componentParts.length - 1];
+            const componentCategory = componentParts.slice(0, -1).join(path.sep);
 
-            if (!fs.existsSync(folder)){
-                fs.mkdirSync(folder);
+            let testingURL;
+
+            // Check if the component is in a subfolder
+            if (this.options.components[componentCategory] && this.options.components[componentCategory][componentName]) {
+                testingURL = this.options.components[componentCategory][componentName];
+            } else if (this.options.components[componentName]) {
+                // Check if the component is at the root level
+                testingURL = this.options.components[componentName];
             }
 
-            const ws = fs.createWriteStream(path.join(folder, "/fileHashes.json"))
-            ws.write(JSON.stringify(this.componentCache))
-            console.log("Cache saved")
+            if (!testingURL) {
+                callback();
+                return;
+            }
 
-            this.getTestingPage(this.browser, componentName).then((page) => {
-                this.runCode(page, code).then(() => {
-                        callback()
-                    }
-                ).catch(() => {
-                    callback()
+            const content = info.content.toString();
+            const hash = this.cyrb53(content);
+
+            if (this.componentCache[componentName] === hash) {
+                callback();
+                return;
+            }
+
+            this.componentCache[componentName] = hash;
+
+            // Save the updated component cache
+            const folder = path.resolve(__dirname, 'tmp');
+            if (!fs.existsSync(folder)) {
+                fs.mkdirSync(folder);
+            }
+            const ws = fs.createWriteStream(path.join(folder, '/fileHashes.json'));
+            ws.write(JSON.stringify(this.componentCache));
+            console.log('Cache saved');
+
+            // Run test for the changed component
+            this.getTestingPage(this.browser, componentName, testingURL)
+                .then((page) => {
+                    return this.runCode(page, content, testingURL);
                 })
-            })
-        })
+                .then(() => {
+                    callback();
+                })
+                .catch((err) => {
+                    console.error(`Error running test for component: ${componentName}`, err);
+                    callback();
+                });
+        });
     }
 
     /**
@@ -93,29 +112,27 @@ class AutoTestPlugin {
      * @param componentName {string}
      * @return {Promise<import("puppeteer").Page>}
      */
-    async getTestingPage(browser, componentName) {
+    async getTestingPage(browser, componentName, testingURL) {
         if (this.pageCache[componentName]) {
             return this.pageCache[componentName]
         }
 
         const page = await browser.newPage()
+        await page.setViewport({ width: 1080, height: 1024 });
 
-
-        await page.setViewport({width: 1080, height: 1024});
-        const testingURL = this.options.components[componentName];
         await page.goto(testingURL)
 
-        const changeTitle = page.evaluate(({componentName}) => {
+        const changeTitle = page.evaluate(({ componentName }) => {
             // eslint-disable-next-line no-undef
             document.title = componentName
-        }, {componentName})
+        }, { componentName })
 
         // enter dashboard edit
         await page.click("button.react-tile__action:nth-child(3)")
         const componentsCount = (await page.$$('.report-component-dashboard__cell-overlay')).length
         // create new component
         const newComponentButton = ".report-component-dashboard__component-buttons > button:nth-child(1)";
-        await page.waitForSelector(newComponentButton, {timeout: 60000})
+        await page.waitForSelector(newComponentButton, { timeout: 60000 })
         await page.$eval(newComponentButton, element => element.click())
 
         await page.waitForFunction(componentsCount => {
@@ -153,12 +170,12 @@ class AutoTestPlugin {
             return this.browser
         }
 
-        const browser = await puppeteer.launch({headless: false});
+        const browser = await puppeteer.launch({ headless: false });
         const page = await browser.newPage();
         await page.goto('https://www.warcraftlogs.com/login');
         // await page.click("#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button:nth-child(2)")
 
-        await page.setViewport({width: 1080, height: 1024});
+        await page.setViewport({ width: 1080, height: 1024 });
 
         switch (this.options.loginMethod) {
             case "WCL":
@@ -221,13 +238,14 @@ class AutoTestPlugin {
 
         const login = process.env.BNET_LOGIN_EMAIL ? process.env.BNET_LOGIN_EMAIL : ""
         const passwort = process.env.BNET_PASSWORD ? process.env.BNET_PASSWORD : ""
+        
+        await page.waitForSelector('#accountName', { visible: true });
         await page.type("#accountName", login)
         await page.type("#password", passwort)
         await page.waitForFunction(() => {
             // eslint-disable-next-line no-undef
             return !document.URL.includes("battle.net")
-        }, {timeout: 60000});
-
+        }, { timeout: 60000 });
     }
 
     /**
@@ -236,14 +254,14 @@ class AutoTestPlugin {
      * @param text {string}
      * @return {Promise<void>}
      */
-    async runCode(page, text) {
+    async runCode(page, text, testingURL) {
         try {
             await page.bringToFront()
         } catch (e) {
             this.browser = undefined
             this.pageCache = {}
             this.browser = await this.setupTestingBrowser()
-            this.pageCache = await this.getTestingPage(this.browser, await page.title())
+            this.pageCache = await this.getTestingPage(this.browser, await page.title(), testingURL)
         }
 
         const monacoEditor = ".monaco-editor.no-user-select"

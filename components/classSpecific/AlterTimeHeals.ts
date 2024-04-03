@@ -1,10 +1,10 @@
-import {eventsByCategoryAndDisposition} from "../util/wrappers/getEventsByTypeAndDisposition";
-import BuffManager from "../util/managers/BuffManager";
-import HealthManager from "../util/managers/HealthManager";
-import {RpgLogs} from "../definitions/RpgLogs";
-import throwError from "../util/returnHelper/throwError";
-import timestampToTime from "../util/timestampToTime";
-import CustomLogger from "../util/debugging/CustomLogger";
+import {eventsByCategoryAndDisposition} from "../../util/wrappers/getEventsByTypeAndDisposition";
+import BuffManager from "../../util/managers/BuffManager";
+import HealthManager from "../../util/managers/HealthManager";
+import {RpgLogs} from "../../definitions/RpgLogs";
+import throwError from "../../util/returnHelper/throwError";
+import timestampToTime from "../../util/timestampToTime";
+import CustomLogger from "../../util/debugging/CustomLogger";
 
 type Row = {
     timestamp: number | string,

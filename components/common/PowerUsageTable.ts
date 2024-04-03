@@ -1,9 +1,9 @@
-import CustomLogger from "../util/debugging/CustomLogger";
-import {RpgLogs} from "../definitions/RpgLogs";
-import {eventsByCategoryAndDisposition} from "../util/wrappers/getEventsByTypeAndDisposition";
-import GetResourceName from "../util/GetResourceName";
+import CustomLogger from "../../util/debugging/CustomLogger";
+import {RpgLogs} from "../../definitions/RpgLogs";
+import {eventsByCategoryAndDisposition} from "../../util/wrappers/getEventsByTypeAndDisposition";
+import GetResourceName from "../../util/GetResourceName";
 import CastEvent = RpgLogs.CastEvent;
-import getAbilityMarkdown from "../util/getAbilityMarkdown";
+import getAbilityMarkdown from "../../util/getAbilityMarkdown";
 
 const COMPONENT_NAME = "Resource Usage"
 const DEBUG = false

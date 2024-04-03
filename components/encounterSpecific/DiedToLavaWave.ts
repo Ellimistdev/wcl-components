@@ -1,8 +1,8 @@
-import {eventsByCategoryAndDisposition} from "../util/wrappers/getEventsByTypeAndDisposition";
-import {RpgLogs} from "../definitions/RpgLogs";
-import getClassColor from "../util/getClassColor";
+import {eventsByCategoryAndDisposition} from "../../util/wrappers/getEventsByTypeAndDisposition";
+import {RpgLogs} from "../../definitions/RpgLogs";
+import getClassColor from "../../util/getClassColor";
 import DeathEvent = RpgLogs.DeathEvent;
-import {Class} from "../definitions/Template";
+import {Class} from "../../definitions/Template";
 
 const RASHOK_ENCOUNTER_ID = 2680
 const LAVA_WAVE_ID = 403543
