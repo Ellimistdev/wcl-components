@@ -1,0 +1,35 @@
+{
+  "name": "wcl-report-component-ts-template",
+  "version": "2.1.0",
+  "description": "This is a template project, that allows you to write Warcraft Logs Report Components using TypeScript. ",
+  "main": "index.js",
+  "scripts": {
+    "run": "npx webpack",
+    "no-watch": "npx webpack --no-watch"
+  },
+  "type": "commonjs",
+  "keywords": [
+    "template, typescript, wow, warcraftlogs"
+  ],
+  "author": "Joschi-Grey",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@eslint/js": "^8.39.0",
+    "@types/node": "^18.16.3",
+    "@types/webpack": "^5.28.1",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
+    "clipboardy": "^3.0.0",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.39.0",
+    "lz-string": "^1.5.0",
+    "puppeteer": "^20.1.1",
+    "terser-webpack-plugin": "^5.3.7",
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.0.4",
+    "webpack": "^5.80.0",
+    "webpack-cli": "^5.0.2",
+    "webpack-sources": "^3.2.3",
+    "raw-loader": "^4.0.2"
+  }
+}
