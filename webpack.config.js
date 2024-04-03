@@ -8,7 +8,6 @@ const templateConfig = require("./template.config")
 const WCLCompatibilityPlugin = require("./plugins/WCLCompatibilityPlugin");
 const AutoTestPlugin = require("./plugins/AutoTestPlugin");
 
-
 function buildEntryObject(){
     const basePath = path.join(__dirname, "components")
     const files  = fs.readdirSync(basePath, {withFileTypes: false})
@@ -40,13 +39,11 @@ function createPluginArray(env) {
         plugins.push(new webpack.BannerPlugin(templateConfig.plugins.banner))
     }
 
-
     return plugins
 }
 
 module.exports = env => {
     const pluginArray = createPluginArray(env)
-
 
     return {
         entry: buildEntryObject(),

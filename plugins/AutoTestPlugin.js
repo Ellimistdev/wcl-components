@@ -45,11 +45,13 @@ class AutoTestPlugin {
         h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
 
         return 4294967296 * (2097151 & h2) + (h1 >>> 0);
-    };
+    }
 
     apply(compiler) {
         compiler.hooks.assetEmitted.tapAsync("AutoTestPlugin", (file, {content}, callback) => {
+
             const componentName = file.replace(".component.js", "")
+            console.log(componentName)
             if (!this.options.components[componentName]) {
                 callback()
                 return
@@ -57,7 +59,9 @@ class AutoTestPlugin {
 
             const code = new TextDecoder().decode(content)
             const hash = this.cyrb53(code)
+            console.log(hash)
             if (this.componentCache[componentName] && this.componentCache[componentName] === hash){
+                callback()
                 return;
             }
 
@@ -70,6 +74,7 @@ class AutoTestPlugin {
 
             const ws = fs.createWriteStream(path.join(folder, "/fileHashes.json"))
             ws.write(JSON.stringify(this.componentCache))
+            console.log("Cache saved")
 
             this.getTestingPage(this.browser, componentName).then((page) => {
                 this.runCode(page, code).then(() => {
@@ -151,7 +156,7 @@ class AutoTestPlugin {
         const browser = await puppeteer.launch({headless: false});
         const page = await browser.newPage();
         await page.goto('https://www.warcraftlogs.com/login');
-        await page.click("#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button:nth-child(2)")
+        // await page.click("#qc-cmp2-ui > div.qc-cmp2-footer.qc-cmp2-footer-overlay.qc-cmp2-footer-scrolled > div > button:nth-child(2)")
 
         await page.setViewport({width: 1080, height: 1024});
 
