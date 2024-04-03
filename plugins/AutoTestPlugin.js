@@ -238,7 +238,7 @@ class AutoTestPlugin {
 
         const login = process.env.BNET_LOGIN_EMAIL ? process.env.BNET_LOGIN_EMAIL : ""
         const passwort = process.env.BNET_PASSWORD ? process.env.BNET_PASSWORD : ""
-        
+
         await page.waitForSelector('#accountName', { visible: true });
         await page.type("#accountName", login)
         await page.type("#password", passwort)

@@ -1,9 +1,9 @@
 const webpack = require("webpack");
-const {Compilation} = webpack
+const { Compilation } = webpack
 const ConcatSource = require("webpack-sources/lib/ConcatSource.js")
 
 class WCLCompatibilityPlugin {
-    apply(compiler){
+    apply(compiler) {
         compiler.hooks.thisCompilation.tap("WCLCompatibilityPlugin", (compilation) => {
             compilation.hooks.processAssets.tap({
                 name: "WCLCompatibilityPlugin",

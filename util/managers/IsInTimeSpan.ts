@@ -1,4 +1,4 @@
-import {Aura} from "./BuffManager";
+import { Aura } from "./BuffManager";
 
 export class IsInTimeSpan {
     readonly timeSpans: number[][];

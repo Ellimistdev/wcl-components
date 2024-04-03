@@ -1,8 +1,8 @@
-const path = require( "path");
+const path = require("path");
 const fs = require("fs");
 const LZString = require("lz-string")
 const webpack = require("webpack");
-const {Compilation} = webpack
+const { Compilation } = webpack
 const ConcatSource = require("webpack-sources/lib/ConcatSource.js")
 
 
@@ -23,7 +23,7 @@ class ClearSourcePlugin {
     }
 
     #getSourceString(dependency) {
-        if (!this.#rawSources[dependency]){
+        if (!this.#rawSources[dependency]) {
             return dependency + " could not be found"
         }
         return this.#rawSources[dependency]
@@ -34,7 +34,7 @@ class ClearSourcePlugin {
      * @param {import("webpack/types").Compiler} compiler the compiler instance
      * @returns {void}
      */
-    apply(compiler){
+    apply(compiler) {
         compiler.hooks.normalModuleFactory.tap("ClearSourcePlugin", (factory) => {
             compiler.hooks.watchRun.tap("ClearSourcePlugin", () => {
                 this.#rawSources = {}
@@ -45,13 +45,13 @@ class ClearSourcePlugin {
             factory.hooks.beforeResolve.tap("ClearSourcePlugin", (resolve) => {
                 const filePath = path.relative(path.join(__dirname, ".."), path.join(resolve.context, resolve.request))
                 let fullPath
-                if (fs.existsSync(filePath + ".ts")){
+                if (fs.existsSync(filePath + ".ts")) {
                     fullPath = filePath + ".ts"
                 }
-                else if (fs.existsSync(filePath + ".js")){
+                else if (fs.existsSync(filePath + ".js")) {
                     fullPath = filePath
                 }
-                else{
+                else {
                     return
                 }
                 const issuerFile = resolve.contextInfo.issuer.split("\\").pop().replace(/.[t|j]s/, "")
@@ -59,7 +59,7 @@ class ClearSourcePlugin {
 
                 this.#dependencies[issuerFile] ??= new Set()
                 this.#dependencies[issuerFile].add(fullPath)
-                if (this.#rawSources[fullPath]){
+                if (this.#rawSources[fullPath]) {
                     return;
                 }
 
@@ -83,29 +83,29 @@ class ClearSourcePlugin {
                             comments[fileName] = this.#getSourceString(fileName)
 
 
-                            if(this.#dependencies[fileName]){
+                            if (this.#dependencies[fileName]) {
                                 const dependencies = Array.from(this.#dependencies[fileName])
-                                while (dependencies.length > 0){
+                                while (dependencies.length > 0) {
                                     const dependency = dependencies.pop()
 
-                                    if (comments[dependency]){
+                                    if (comments[dependency]) {
                                         continue
                                     }
 
                                     comments[dependency] = this.#getSourceString(dependency)
                                     const dependencyFileName = dependency.split("\\").pop().replace(".ts", "")
-                                    if (this.#dependencies[dependencyFileName]){
-                                        for (const recDep of this.#dependencies[dependencyFileName]){
+                                    if (this.#dependencies[dependencyFileName]) {
+                                        for (const recDep of this.#dependencies[dependencyFileName]) {
                                             dependencies.push(recDep)
                                         }
                                     }
                                 }
                             }
 
-                            let commentString = "\n /*Source Code LZString compressed, Base64 encoded \n" + LZString.compressToBase64(JSON.stringify(comments, undefined, 4))  + "\n*/"
+                            let commentString = "\n /*Source Code LZString compressed, Base64 encoded \n" + LZString.compressToBase64(JSON.stringify(comments, undefined, 4)) + "\n*/"
 
-                            if (comments){
-                                return  new ConcatSource(old, commentString)
+                            if (comments) {
+                                return new ConcatSource(old, commentString)
                             }
                             return old
 

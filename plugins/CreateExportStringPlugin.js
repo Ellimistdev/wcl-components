@@ -11,7 +11,7 @@ const getUUID = () =>
 
 class CreateExportStringPlugin {
     apply(compiler) {
-        compiler.hooks.assetEmitted.tap('CreateExportStringPlugin', (file, {outputPath, content}) => {
+        compiler.hooks.assetEmitted.tap('CreateExportStringPlugin', (file, { outputPath, content }) => {
             const componentName = file.replace(".component.js", "")
             const component = templateConfig.components[componentName] ?
                 templateConfig.components[componentName] :
@@ -19,7 +19,7 @@ class CreateExportStringPlugin {
                     w: 1,
                     h: 2,
                 }
-            component.component = {script: new TextDecoder().decode(content)}
+            component.component = { script: new TextDecoder().decode(content) }
             component.i ??= getUUID()
             const export_string = LZString.compressToBase64(JSON.stringify(component))
 

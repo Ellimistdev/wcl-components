@@ -41,7 +41,7 @@ declare global {
      * @param params - The parameters to pass to getComponent.
      * @returns The component that will be used.
      */
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let getComponent: (params?: any) => RpgLogs.Component | object | string | Array<unknown> | number;
 
     /**
@@ -1781,15 +1781,15 @@ export namespace Highcharts {
      *
      * Unfortunately, I can't get this docstring to show in Monaco, so it is duplicated on the text field.
      */
-        // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface Html extends String {} // see https://www.highcharts.com/docs/chart-concepts/security
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface Html extends String { } // see https://www.highcharts.com/docs/chart-concepts/security
     type Css = NYI;
     type GradientColorObject = { stops: Array<[number, Color]> } & (
         | {
-        linearGradient: { x1: number; x2: number; y1: number; y2: number };
-    }
+            linearGradient: { x1: number; x2: number; y1: number; y2: number };
+        }
         | { radialGradient: { cx: number; cy: number; r: number } }
-        );
+    );
 
     type Color = string | GradientColorObject;
     enum DashStyle {
@@ -1871,74 +1871,74 @@ export namespace Highcharts {
             | 'pointDescriptionFormatter'
             | 'turboThreshold'
             | keyof BoostProps
-            >;
+        >;
 
         type CommonProps = AnimationProps &
             BoostProps & {
-            accessibility?: NYI;
-            allowPointSelect?: boolean;
-            className?: string;
-            clip?: boolean;
-            color?: Color;
-            colorAxis?: number | string | boolean;
-            colorIndex?: number;
-            colorKey?: string;
-            crisp?: boolean;
-            cropThreshold?: number;
-            cursor?: string;
-            custom?: Record<string, unknown>;
-            dashStyle?: DashStyle;
-            data: Data1D | Data2D | DataNamed;
-            dataAsColumns?: boolean;
-            dataLabels?: DataLabelOptions;
-            dataSorting?: DataSortingOptions;
-            description?: string;
-            dragDrop?: NYI;
-            enableMouseTracking?: boolean;
-            events?: NYI;
-            getExtremesFromAll?: boolean;
-            id?: string;
-            includeInDataExport?: boolean;
-            index?: number;
-            keys?: string[];
-            label?: ScatterLabelOptions;
-            legendIndex?: number;
-            linecap?: LinecapStyle | string;
-            lineWidth?: number;
-            linkedTo?: string;
-            marker?: ScatterMarkerOptions;
-            name?: string;
-            negativeColor?: Color;
-            onPoint?: NYI;
-            opacity?: number;
-            point?: NYI;
-            pointDescriptionFormatter?: NYI;
-            pointInterval?: number;
-            pointIntervalUnit?: string;
-            pointPlacement?: 'on' | 'between' | number;
-            pointStart?: number;
-            relativeXValue?: boolean;
-            selected?: boolean;
-            shadow?: NYI;
-            showCheckbox?: boolean;
-            showInLegend?: boolean;
-            skipKeyboardNavigation?: boolean;
-            softThreshold?: boolean;
-            stack?: number | string;
-            stacking?: 'normal' | 'percent';
-            states?: NYI;
-            step?: 'left' | 'center' | 'right';
-            stickyTracking?: boolean;
-            threshold?: number | null;
-            tooltip?: NYI;
-            turboThreshold?: number;
-            visible?: boolean;
-            xAxis?: number | string;
-            yAxis?: number | string;
-            zIndex?: number;
-            zoneAxis?: 'x' | 'y' | 'z';
-            zones?: NYI;
-        };
+                accessibility?: NYI;
+                allowPointSelect?: boolean;
+                className?: string;
+                clip?: boolean;
+                color?: Color;
+                colorAxis?: number | string | boolean;
+                colorIndex?: number;
+                colorKey?: string;
+                crisp?: boolean;
+                cropThreshold?: number;
+                cursor?: string;
+                custom?: Record<string, unknown>;
+                dashStyle?: DashStyle;
+                data: Data1D | Data2D | DataNamed;
+                dataAsColumns?: boolean;
+                dataLabels?: DataLabelOptions;
+                dataSorting?: DataSortingOptions;
+                description?: string;
+                dragDrop?: NYI;
+                enableMouseTracking?: boolean;
+                events?: NYI;
+                getExtremesFromAll?: boolean;
+                id?: string;
+                includeInDataExport?: boolean;
+                index?: number;
+                keys?: string[];
+                label?: ScatterLabelOptions;
+                legendIndex?: number;
+                linecap?: LinecapStyle | string;
+                lineWidth?: number;
+                linkedTo?: string;
+                marker?: ScatterMarkerOptions;
+                name?: string;
+                negativeColor?: Color;
+                onPoint?: NYI;
+                opacity?: number;
+                point?: NYI;
+                pointDescriptionFormatter?: NYI;
+                pointInterval?: number;
+                pointIntervalUnit?: string;
+                pointPlacement?: 'on' | 'between' | number;
+                pointStart?: number;
+                relativeXValue?: boolean;
+                selected?: boolean;
+                shadow?: NYI;
+                showCheckbox?: boolean;
+                showInLegend?: boolean;
+                skipKeyboardNavigation?: boolean;
+                softThreshold?: boolean;
+                stack?: number | string;
+                stacking?: 'normal' | 'percent';
+                states?: NYI;
+                step?: 'left' | 'center' | 'right';
+                stickyTracking?: boolean;
+                threshold?: number | null;
+                tooltip?: NYI;
+                turboThreshold?: number;
+                visible?: boolean;
+                xAxis?: number | string;
+                yAxis?: number | string;
+                zIndex?: number;
+                zoneAxis?: 'x' | 'y' | 'z';
+                zones?: NYI;
+            };
 
         type BaseSeries<T extends string> = OmitDisallowed<CommonProps> & {
             type: T;
@@ -2188,7 +2188,7 @@ export namespace Highcharts {
         plotOptions?: {
             [Key in Series.Any['type']]: AsOptions<
                 Extract<Series.Any, { type: Key }>
-                >;
+            >;
         };
         colors?: Color[];
         series: Series.Any[];
@@ -2212,7 +2212,7 @@ export namespace Highcharts {
 export namespace RpgLogs {
     // this lint is disabled because interfaces show the new name in the Monaco editor, but type aliases do not
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    export interface ChartComponentProps extends Highcharts.Options {}
+    export interface ChartComponentProps extends Highcharts.Options { }
 }
 
 export namespace RpgLogs {

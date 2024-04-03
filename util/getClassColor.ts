@@ -1,4 +1,4 @@
-import {Class} from "../definitions/Template";
+import { Class } from "../definitions/Template";
 
 export default function (classSlug: Class) {
     switch (classSlug) {

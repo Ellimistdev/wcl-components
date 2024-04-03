@@ -36,8 +36,8 @@ module.exports = [
     rules: {
       ...ts.configs['eslint-recommended'].rules,
       ...ts.configs['recommended'].rules,
-      '@typescript-eslint/ban-ts-comment':[
-          "error",
+      '@typescript-eslint/ban-ts-comment': [
+        "error",
         {
           "ts-expect-error": "allow-with-description",
           minimumDescriptionLength: 5

@@ -1,8 +1,8 @@
 import CustomLogger from "../../util/debugging/CustomLogger";
 import throwError from "../../util/returnHelper/throwError";
-import {eventsByCategoryAndDisposition} from "../../util/wrappers/getEventsByTypeAndDisposition";
+import { eventsByCategoryAndDisposition } from "../../util/wrappers/getEventsByTypeAndDisposition";
 import BuffManager from "../../util/managers/BuffManager";
-import {RpgLogs} from "../../definitions/RpgLogs";
+import { RpgLogs } from "../../definitions/RpgLogs";
 
 const STARLORD_BUFF_ID = 279709
 const DEBUG = false
@@ -11,7 +11,7 @@ const COMPONENT_NAME = "Canceled Starlord"
 
 
 export default getComponent = () => {
-    if (reportGroup.fights.length !== 1){
+    if (reportGroup.fights.length !== 1) {
         return throwError(COMPONENT_NAME, "Please select a single fight")
     }
 
@@ -30,7 +30,7 @@ export default getComponent = () => {
     const bm = new BuffManager(
         buffGained,
         {
-            sourceFilters: [{idInReport: actor.idInReport}],
+            sourceFilters: [{ idInReport: actor.idInReport }],
             auraIds: new Set([STARLORD_BUFF_ID]),
             captureEvent: true
         }
@@ -45,11 +45,11 @@ export default getComponent = () => {
 
     let canceledCount = 0
     const allDurations = []
-    for (const [start, end] of timings){
+    for (const [start, end] of timings) {
         const duration = Math.round(end / 1000) - Math.round(start / 1000)
         const rawDuration = end / 1000 - start / 1000
         allDurations.push(rawDuration)
-        if (duration < 15 && duration > 1){
+        if (duration < 15 && duration > 1) {
             canceledCount++
         }
     }
@@ -59,7 +59,7 @@ export default getComponent = () => {
     logger.addMessage("All Durations", allDurations)
     logger.addMessage("All Timings", timings)
 
-    if (DEBUG){
+    if (DEBUG) {
         return logger.messages
     }
 

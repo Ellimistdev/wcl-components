@@ -10,17 +10,17 @@ const AutoTestPlugin = require("./plugins/AutoTestPlugin");
 const glob = require('glob');
 
 function buildEntryObject() {
-  const basePath = path.join(__dirname, 'components');
-  const files = glob.sync('**/*.ts', { cwd: basePath });
-  const entry = {};
+    const basePath = path.join(__dirname, 'components');
+    const files = glob.sync('**/*.ts', { cwd: basePath });
+    const entry = {};
 
-  for (const file of files) {
-    if (file.endsWith('.ts') && !file.endsWith('index.ts')) {
-        entry[file.replace('.ts', '')] = path.relative(__dirname, path.join(basePath, file));
+    for (const file of files) {
+        if (file.endsWith('.ts') && !file.endsWith('index.ts')) {
+            entry[file.replace('.ts', '')] = path.relative(__dirname, path.join(basePath, file));
+        }
     }
-  }
 
-  return entry;
+    return entry;
 }
 
 function createPluginArray(env) {

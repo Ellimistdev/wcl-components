@@ -1,5 +1,5 @@
 
-const resources: {[key: number]: string} = {
+const resources: { [key: number]: string } = {
     0: "Mana",
     1: "Rage",
     2: "Focus",

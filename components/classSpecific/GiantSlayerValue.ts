@@ -1,9 +1,9 @@
 import throwError from "../../util/returnHelper/throwError";
 import BuffManager from "../../util/managers/BuffManager";
-import {eventsByCategoryAndDisposition} from "../../util/wrappers/getEventsByTypeAndDisposition";
-import {RpgLogs} from "../../definitions/RpgLogs";
+import { eventsByCategoryAndDisposition } from "../../util/wrappers/getEventsByTypeAndDisposition";
+import { RpgLogs } from "../../definitions/RpgLogs";
 import CustomLogger from "../../util/debugging/CustomLogger";
-import {IsInTimeSpan} from "../../util/managers/IsInTimeSpan";
+import { IsInTimeSpan } from "../../util/managers/IsInTimeSpan";
 
 const COMPONENT_NAME = "Mastery: Giant Slayer Value"
 const DRAGON_RAGE_BUFF_ID = 375087
@@ -55,7 +55,7 @@ export default getComponent = () => {
 
     const buffs = eventsByCategoryAndDisposition(fight, "aurasGained", "friendly")
     const bm = new BuffManager(buffs, {
-        sourceFilters: [{idInReport: actor.idInReport}],
+        sourceFilters: [{ idInReport: actor.idInReport }],
         auraIds: new Set([DRAGON_RAGE_BUFF_ID])
     })
 
@@ -76,7 +76,7 @@ export default getComponent = () => {
     for (const damageSummary of damageSummaries) {
         if (hasTyranny(fight.combatantInfoEvents[0]) && (damageSummary.hasDragonrage || damageSummary.isDeepBreath)) {
             averageMasteryValueWithTyranny += 1
-            let baseDamage = (damageSummary.damageDone / (1 +  masteryPercent))
+            let baseDamage = (damageSummary.damageDone / (1 + masteryPercent))
             let damageWithoutTyranny = baseDamage * (masteryPercent * damageSummary.healthPercent + 1)
             let tyrannyDamageGain = damageSummary.damageDone - damageWithoutTyranny
             damageGainByTyranny += tyrannyDamageGain
@@ -189,7 +189,7 @@ function getDamageSummaries(damageEvents: ReadonlyArray<RpgLogs.DamageEvent>, co
         const damageDone = damageEvent.amount
         const hasDragonrage = timeSpanManager.isInTimeSpan(damageEvent.timestamp)
 
-        damageSummaries.push({healthPercent, damageDone, hasDragonrage, isDeepBreath, timestamp: damageEvent.timestamp})
+        damageSummaries.push({ healthPercent, damageDone, hasDragonrage, isDeepBreath, timestamp: damageEvent.timestamp })
     }
 
     return damageSummaries

@@ -1,4 +1,4 @@
-import {RpgLogs} from "../definitions/RpgLogs";
+import { RpgLogs } from "../definitions/RpgLogs";
 import Ability = RpgLogs.Ability;
 
 export default function getAbilityMarkdown(ability: Ability) {

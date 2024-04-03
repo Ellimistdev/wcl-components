@@ -1,7 +1,7 @@
-import {eventsByCategoryAndDisposition} from "../../util/wrappers/getEventsByTypeAndDisposition";
+import { eventsByCategoryAndDisposition } from "../../util/wrappers/getEventsByTypeAndDisposition";
 import BuffManager from "../../util/managers/BuffManager";
 import HealthManager from "../../util/managers/HealthManager";
-import {RpgLogs} from "../../definitions/RpgLogs";
+import { RpgLogs } from "../../definitions/RpgLogs";
 import throwError from "../../util/returnHelper/throwError";
 import timestampToTime from "../../util/timestampToTime";
 import CustomLogger from "../../util/debugging/CustomLogger";
@@ -51,7 +51,7 @@ export default getComponent = () => {
         }
     }
 
-    if(heals.length === 0){
+    if (heals.length === 0) {
         return noAlterTimeComponent
     }
 
@@ -89,7 +89,7 @@ export default getComponent = () => {
 function getAlterTimeHeals(fight: RpgLogs.Fight, actor: RpgLogs.Actor): Row[] {
     const gained = eventsByCategoryAndDisposition(fight, "aurasGained", "friendly")
     const bm = new BuffManager(gained, {
-        sourceFilters: [{idInReport: actor.idInReport}],
+        sourceFilters: [{ idInReport: actor.idInReport }],
         auraIds: new Set([ALTER_TIME_BUFF_ID]),
         captureEvent: true
     })
@@ -97,7 +97,7 @@ function getAlterTimeHeals(fight: RpgLogs.Fight, actor: RpgLogs.Actor): Row[] {
 
     const health = eventsByCategoryAndDisposition(fight, "healing", "friendly")
     const damage = eventsByCategoryAndDisposition(fight, "damage", "enemy")
-    const hm = new HealthManager([health, damage], db,{targetFilters: [{idInReport: actor.idInReport}]})
+    const hm = new HealthManager([health, damage], db, { targetFilters: [{ idInReport: actor.idInReport }] })
 
     if (!bm.actors[actor.id] || !bm.actors[actor.id].targets[actor.id] || !bm.actors[actor.id].targets[actor.id].buffs[ALTER_TIME_BUFF_ID]) {
         return []
@@ -110,7 +110,7 @@ function getAlterTimeHeals(fight: RpgLogs.Fight, actor: RpgLogs.Actor): Row[] {
     for (const [start, end] of timings) {
         let startHealth = hm.getHealth(actor.idInReport, start, "before")
         const endHealth = hm.getHealth(actor.idInReport, end, "before")
-        db.addMessage("AT", {startHealth, endHealth, start, end})
+        db.addMessage("AT", { startHealth, endHealth, start, end })
         const duration = Math.round(end / 1000) - Math.round(start / 1000)
 
         if (duration < 10 && !isRecast(fight, actor, end)) {
@@ -125,11 +125,11 @@ function getAlterTimeHeals(fight: RpgLogs.Fight, actor: RpgLogs.Actor): Row[] {
         const time = timestampToTime(end - fight.startTime)
         const timestamp = healingAmount >= 0 ? time + "" : `<span style='color:red'>${time}</span>`
 
-        heals.push({timestamp: timestamp, amount: amount})
+        heals.push({ timestamp: timestamp, amount: amount })
     }
     const formattedOverall = overall >= 0 ? `<span style='font-weight: bold'>${overall}</span>` : `<span style='color:red; font-weight: bold'>${overall}</span>`
     const overallTimestamp = overall >= 0 ? `<span style='font-weight: bold'>overall</span>` : `<span style='color:red; font-weight: bold'>overall</span>`
-    heals.push({timestamp: overallTimestamp, amount: formattedOverall})
+    heals.push({ timestamp: overallTimestamp, amount: formattedOverall })
 
     return heals
 }

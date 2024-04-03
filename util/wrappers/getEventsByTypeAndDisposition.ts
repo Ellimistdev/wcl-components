@@ -1,5 +1,5 @@
-import {RpgLogs} from "../../definitions/RpgLogs";
-import {EventTypeUnions} from "../../definitions/Template";
+import { RpgLogs } from "../../definitions/RpgLogs";
+import { EventTypeUnions } from "../../definitions/Template";
 
 /**
  * The wrappers are purely for typing convenience instead of modifying the original definitions file.
@@ -15,7 +15,7 @@ import {EventTypeUnions} from "../../definitions/Template";
  * @returns The cached event set. Use this method to quickly retrieve a subset of events.
  * @see {@link RpgLogs.Fight.eventsByCategoryAndDisposition}
  */
-export function eventsByCategoryAndDisposition<T extends RpgLogs.EventCategory>(fight: RpgLogs.Fight, category: T, disposition: RpgLogs.ActorDisposition): ReadonlyArray<EventTypeUnions<T>>  {
+export function eventsByCategoryAndDisposition<T extends RpgLogs.EventCategory>(fight: RpgLogs.Fight, category: T, disposition: RpgLogs.ActorDisposition): ReadonlyArray<EventTypeUnions<T>> {
     return fight.eventsByCategoryAndDisposition(category, disposition) as unknown as ReadonlyArray<EventTypeUnions<T>>
 }
 
@@ -29,7 +29,7 @@ export function eventsByCategoryAndDisposition<T extends RpgLogs.EventCategory>(
  * @returns The cached event set. Use this method to quickly retrieve a subset of events.
  * @see {@link RpgLogs.Fight.allEventsByCategoryAndDisposition}
  */
-export function allEventsByCategoryAndDisposition<T extends RpgLogs.EventCategory>(fight: RpgLogs.Fight, category: T, disposition: RpgLogs.ActorDisposition): ReadonlyArray<EventTypeUnions<T>>  {
+export function allEventsByCategoryAndDisposition<T extends RpgLogs.EventCategory>(fight: RpgLogs.Fight, category: T, disposition: RpgLogs.ActorDisposition): ReadonlyArray<EventTypeUnions<T>> {
     return fight.allEventsByCategoryAndDisposition(category, disposition) as unknown as ReadonlyArray<EventTypeUnions<T>>
 }
 

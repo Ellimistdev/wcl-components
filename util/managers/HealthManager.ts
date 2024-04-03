@@ -1,10 +1,10 @@
-import {EventTypeUnions, ManagerOptions} from "../../definitions/Template";
+import { EventTypeUnions, ManagerOptions } from "../../definitions/Template";
 import checkFilter from "./checkFilter";
 import CustomLogger from "../debugging/CustomLogger";
-import {RpgLogs} from "../../definitions/RpgLogs";
+import { RpgLogs } from "../../definitions/RpgLogs";
 
 type HealthManagerOptions = ManagerOptions
-export default class HealthManager{
+export default class HealthManager {
     targets: Map<number, Target> = new Map()
     options: HealthManagerOptions
     private readonly logger: CustomLogger
@@ -13,9 +13,9 @@ export default class HealthManager{
         this.options = options
         this.logger = logger
         this.logger.addMessage("Events in Health Manager", events)
-        for (const eventList of events){
-            for (const event of eventList){
-                if (!event.targetResources || !event.target){
+        for (const eventList of events) {
+            for (const event of eventList) {
+                if (!event.targetResources || !event.target) {
                     continue
                 }
                 if (options.targetFilters && checkFilter(event.target, options.targetFilters)) {
@@ -32,14 +32,14 @@ export default class HealthManager{
                 target.addHealth(event)
             }
         }
-        for (const target of this.targets){
+        for (const target of this.targets) {
             target[1].sortHealth()
         }
     }
 
-    private addTarget(target: Target){
+    private addTarget(target: Target) {
         const existingTarget = this.targets.get(target.id)
-        if (existingTarget){
+        if (existingTarget) {
             return existingTarget
         }
         this.targets.set(target.id, target)
@@ -52,14 +52,14 @@ export default class HealthManager{
      * @param timingOverride By default the closest damage event to your timestamp is chosen. This will set the behaviour to always return the known health directly before or after a timestamp.
      * If the health at the exact timestamp is known that is still returned regardless
      */
-    getHealth(idInReport: number, timeStamp: number, timingOverride?: "before" | "after"){
+    getHealth(idInReport: number, timeStamp: number, timingOverride?: "before" | "after") {
         const target = this.targets.get(idInReport)
-        if (!target){
+        if (!target) {
             return Infinity
         }
 
         const health = target.getHealth(timeStamp, timingOverride)
-        if (!health){
+        if (!health) {
             return Infinity
         }
         return health
@@ -79,24 +79,24 @@ class Target {
         this.logger = logger
     }
 
-    sortHealth(){
+    sortHealth() {
         this.health = new Map([...this.health.entries()].sort());
     }
 
-    addHealth(event: EventTypeUnions<"healing"> | RpgLogs.DamageEvent){
-        if (!event.target || !event.targetResources){
+    addHealth(event: EventTypeUnions<"healing"> | RpgLogs.DamageEvent) {
+        if (!event.target || !event.targetResources) {
             return
         }
         let health = event.targetResources.hitPoints
         // this is actually before / after specific this implementation just works with before
-        if (event.type === "damage"){
+        if (event.type === "damage") {
 
             health -= event.amount
             if (health <= 0)
                 return;
             this.health.set(event.timestamp + 1, health)
         }
-        if (event.type === "heal"){
+        if (event.type === "heal") {
 
             health += event.amount
             this.health.set(event.timestamp + 1, health)
@@ -109,67 +109,67 @@ class Target {
     }
 
 
-    getHealth(timestamp:number, timingOverride?: "before" | "after"){
-        this.logger.addMessage("Checking health at", {timestamp, health: Object.fromEntries(this.health)})
+    getHealth(timestamp: number, timingOverride?: "before" | "after") {
+        this.logger.addMessage("Checking health at", { timestamp, health: Object.fromEntries(this.health) })
         const possibleHealth = this.health.get(timestamp)
-        if (possibleHealth){
+        if (possibleHealth) {
             return possibleHealth
         }
 
-        if (this.health.size === 0){
+        if (this.health.size === 0) {
             return null
         }
 
         let currentHealth = null;
         let currentTime = null;
-        if (timingOverride === "before"){
+        if (timingOverride === "before") {
             // If no prior damage event happened we assume the actor is full health. This may be inaccurate sometimes
             currentHealth = this.maxHealth
 
-            for (const [time, health] of this.health){
+            for (const [time, health] of this.health) {
                 //this.logger.addMessage("checked time", {time, against:timestamp})
-                if (time > timestamp){
-                    this.logger.addMessage("broke with", {breakTime: time, currentTime})
+                if (time > timestamp) {
+                    this.logger.addMessage("broke with", { breakTime: time, currentTime })
                     break
                 }
                 currentTime = time
                 currentHealth = health
             }
-            this.logger.addMessage(`returned health`, {currentTime, currentHealth, timestamp})
+            this.logger.addMessage(`returned health`, { currentTime, currentHealth, timestamp })
             return currentHealth
         }
 
-        if (timingOverride === "after"){
-            for (const [time, health] of this.health){
+        if (timingOverride === "after") {
+            for (const [time, health] of this.health) {
                 currentHealth = health
                 currentTime = time
-                if (time > timestamp){
+                if (time > timestamp) {
                     break
                 }
             }
-            this.logger.addMessage(`returned health`, {currentTime, currentHealth, timestamp})
+            this.logger.addMessage(`returned health`, { currentTime, currentHealth, timestamp })
             return currentHealth
         }
         return this.getClosestHealth(timestamp)
     }
 
-    private getClosestHealth(timestamp: number){
+    private getClosestHealth(timestamp: number) {
         let currentHealth: number | null = null
         let smallestDiff = Infinity
-        let currentTime : null | number = null
-        for (const [time, health] of this.health){
+        let currentTime: null | number = null
+        for (const [time, health] of this.health) {
             currentHealth ??= health
             const diff = Math.abs(time - timestamp)
-            if (diff <= smallestDiff){
+            if (diff <= smallestDiff) {
                 currentHealth = health
                 smallestDiff = diff
                 currentTime = time
             }
-            else{
+            else {
                 break
             }
         }
-        this.logger.addMessage(`returned health`, {currentTime, currentHealth, timestamp})
+        this.logger.addMessage(`returned health`, { currentTime, currentHealth, timestamp })
         return currentHealth
     }
 }

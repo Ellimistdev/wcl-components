@@ -6,8 +6,8 @@ export default class CustomLogger {
         this.debug = debug
     }
 
-    addMessage(name: string, message: unknown){
-        if(!this.debug){
+    addMessage(name: string, message: unknown) {
+        if (!this.debug) {
             return
         }
 

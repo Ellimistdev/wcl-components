@@ -1,8 +1,8 @@
 import { RpgLogs } from "../../definitions/RpgLogs";
-import type {BuffOrDebuffEvents, ManagerOptions} from "../../definitions/Template";
+import type { BuffOrDebuffEvents, ManagerOptions } from "../../definitions/Template";
 import checkFilter from "./checkFilter";
 
-type BuffManagerOptions  = ManagerOptions & {
+type BuffManagerOptions = ManagerOptions & {
   auraIds?: Set<number>;
   fight?: RpgLogs.Fight;
 
@@ -77,13 +77,13 @@ export default class BuffManager {
     return source;
   }
 
-  getAurasBySourceActor(id: number){
-    if (this.actors[id]){
+  getAurasBySourceActor(id: number) {
+    if (this.actors[id]) {
       return this.actors[id]
     }
   }
 
-  getSelfBuff(idInReport: number, auraId: number){
+  getSelfBuff(idInReport: number, auraId: number) {
     return this.actors[idInReport].targets[idInReport].buffs[auraId]
   }
 }
@@ -133,23 +133,23 @@ export class Aura {
 
   buffApplied(event: BuffOrDebuffEvents, captureEvent = false) {
     this.applied.push(event.timestamp);
-    if (captureEvent){
+    if (captureEvent) {
       this.events[event.timestamp] = event
     }
   }
 
   buffRemoved(event: BuffOrDebuffEvents, captureEvent = false) {
     this.removed.push(event.timestamp);
-    if (captureEvent){
+    if (captureEvent) {
       this.events[event.timestamp] = event
     }
   }
 
-  get appliedTimings(): ReadonlyArray<number>{
+  get appliedTimings(): ReadonlyArray<number> {
     return this.applied
   }
 
-  get removedTimings(): ReadonlyArray<number>{
+  get removedTimings(): ReadonlyArray<number> {
     return this.removed
   }
 
@@ -210,7 +210,7 @@ export class Aura {
    * @param fight
    * @return number the sum of duration in milliseconds
    */
-  getFullDuration(fight: RpgLogs.Fight): number{
+  getFullDuration(fight: RpgLogs.Fight): number {
 
     let duration = 0
     // Prevent some unneeded deep copying if this is called multiple times.

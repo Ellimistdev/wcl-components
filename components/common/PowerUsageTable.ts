@@ -1,6 +1,6 @@
 import CustomLogger from "../../util/debugging/CustomLogger";
-import {RpgLogs} from "../../definitions/RpgLogs";
-import {eventsByCategoryAndDisposition} from "../../util/wrappers/getEventsByTypeAndDisposition";
+import { RpgLogs } from "../../definitions/RpgLogs";
+import { eventsByCategoryAndDisposition } from "../../util/wrappers/getEventsByTypeAndDisposition";
 import GetResourceName from "../../util/GetResourceName";
 import CastEvent = RpgLogs.CastEvent;
 import getAbilityMarkdown from "../../util/getAbilityMarkdown";
@@ -34,7 +34,7 @@ export default getComponent = () => {
     LOGGER.addMessage("Columns", columns)
 
     let data = mergeAllRows(allRows)
-    if (allFightData.length > 1){
+    if (allFightData.length > 1) {
         // we need to recalculate all the percentages
         data = updatePercentages(data, allFightData)
     }
@@ -55,21 +55,21 @@ export default getComponent = () => {
         }
     }
 
-    if (LOGGER.debug){
+    if (LOGGER.debug) {
         return LOGGER.messages
     }
 
     return returnTable
 }
 
-function updatePercentages(allRows: Row[], allFightData: FightData[]){
+function updatePercentages(allRows: Row[], allFightData: FightData[]) {
     const completeResourceMap: Record<string, Record<string, number>> = {}
 
     // build a complete map for all fights and players
-    for (const fightData of allFightData){
-        for (const player in fightData.players){
+    for (const fightData of allFightData) {
+        for (const player in fightData.players) {
             const resourcesUsed = fightData.players[player].getTotalResourcesUsed()
-            if (!completeResourceMap[player]){
+            if (!completeResourceMap[player]) {
                 completeResourceMap[player] = resourcesUsed
             } else {
                 for (const resourceName in resourcesUsed) {
@@ -80,16 +80,16 @@ function updatePercentages(allRows: Row[], allFightData: FightData[]){
         }
     }
 
-    for (const row of allRows){
+    for (const row of allRows) {
         const totalResourceUse = completeResourceMap[row.actorName]
 
-        for (const columnHeader in row){
-            if (!columnHeader.endsWith("%")){
+        for (const columnHeader in row) {
+            if (!columnHeader.endsWith("%")) {
                 continue
             }
             const resourceName = columnHeader.slice(0, -1);
             const usageOfResourceInRow = row[resourceName]
-            if (typeof usageOfResourceInRow === "number" && usageOfResourceInRow !== 0){
+            if (typeof usageOfResourceInRow === "number" && usageOfResourceInRow !== 0) {
                 const percentage = usageOfResourceInRow / totalResourceUse[resourceName]
                 row[columnHeader] = Math.round(percentage * 100)
             }
@@ -104,10 +104,10 @@ function ParseFight(fight: RpgLogs.Fight, actorIdFilter: number | undefined): Fi
     const events = eventsByCategoryAndDisposition(fight, "casts", "friendly")
     for (const event of events) {
 
-        if(event.type !== "cast")
+        if (event.type !== "cast")
             continue
 
-        if (actorIdFilter && event.source?.id !== actorIdFilter){
+        if (actorIdFilter && event.source?.id !== actorIdFilter) {
             continue
         }
         fightData.AddCastEvent(event)
@@ -189,7 +189,7 @@ function mergeColumns(columnsList: Array<Record<string, RpgLogs.TableColumn>>): 
     let mergedColumns: Record<string, RpgLogs.TableColumn> = {};
 
     for (let columns of columnsList) {
-        mergedColumns = {...mergedColumns, ...columns};
+        mergedColumns = { ...mergedColumns, ...columns };
     }
 
     return mergedColumns;
@@ -201,14 +201,14 @@ class FightData {
     public readonly players: Record<string, ActorData> = {}
     public readonly AbilitiesUsed: Record<string, RpgLogs.Ability> = {}
 
-    public AddCastEvent(event: RpgLogs.CastEvent){
-        if (!event.source){
+    public AddCastEvent(event: RpgLogs.CastEvent) {
+        if (!event.source) {
             return
         }
-        if (event.source.type === "Pet"){
+        if (event.source.type === "Pet") {
             return;
         }
-        if (!event.ability){
+        if (!event.ability) {
             return;
         }
         this.AbilitiesUsed[event.ability.name] = event.ability
@@ -216,7 +216,7 @@ class FightData {
         this.players[event.source.name].AddCastEvent(event)
     }
 
-    GetColumns(): Record<string, RpgLogs.TableColumn>{
+    GetColumns(): Record<string, RpgLogs.TableColumn> {
         const columns: ReturnType<typeof this.GetColumns> = {
             actorName: {
                 header: "Player Name",
@@ -235,7 +235,7 @@ class FightData {
         const allResourcesInvolved: Set<string> = new Set()
         for (const actor of Object.values(this.players)) {
             for (const ability of Object.values(actor.abilityDataByName)) {
-                for (const resourceName in ability.totalResourcesUsed){
+                for (const resourceName in ability.totalResourcesUsed) {
                     allResourcesInvolved.add(resourceName)
                 }
             }
@@ -246,8 +246,8 @@ class FightData {
                 header: resourceName,
                 textAlign: "center"
             }
-            columns[resourceName+"%"] = {
-                header: resourceName+"%",
+            columns[resourceName + "%"] = {
+                header: resourceName + "%",
                 textAlign: "center"
             }
         }
@@ -255,13 +255,13 @@ class FightData {
         return columns
     }
 
-    GetRows(columns: Record<string, RpgLogs.TableColumn>): Row[]{
+    GetRows(columns: Record<string, RpgLogs.TableColumn>): Row[] {
         const dataRows: ReturnType<typeof this.GetRows> = []
 
         for (const playerName in this.players) {
             const totalUsed = this.players[playerName].getTotalResourcesUsed()
 
-            for (const abilityName in this.players[playerName].abilityDataByName){
+            for (const abilityName in this.players[playerName].abilityDataByName) {
                 const abilityData = this.players[playerName].abilityDataByName[abilityName]
                 const row: Row = {
                     actorName: playerName,
@@ -270,12 +270,12 @@ class FightData {
                 }
                 for (const resourceName in abilityData.totalResourcesUsed) {
                     const resourceUsedDisplay = abilityData.totalResourcesUsed[resourceName] ? abilityData.totalResourcesUsed[resourceName] : 0
-                    const resourcePercentDisplay = totalUsed[resourceName] ? Math.round((abilityData.totalResourcesUsed[resourceName] / totalUsed[resourceName])*100) : 0
+                    const resourcePercentDisplay = totalUsed[resourceName] ? Math.round((abilityData.totalResourcesUsed[resourceName] / totalUsed[resourceName]) * 100) : 0
                     row[resourceName] = resourceUsedDisplay
-                    row[resourceName+"%"] = resourcePercentDisplay
+                    row[resourceName + "%"] = resourcePercentDisplay
                 }
 
-                for (const columnKey in columns){
+                for (const columnKey in columns) {
                     row[columnKey] ??= 0
                 }
 
@@ -288,14 +288,14 @@ class FightData {
     }
 }
 
-class ActorData{
+class ActorData {
     public readonly abilityDataByName: Record<string, AbilityData> = {}
 
-    public getTotalResourcesUsed(){
+    public getTotalResourcesUsed() {
         const totalUsed: Record<string, number> = {}
 
         for (const ability of Object.values(this.abilityDataByName)) {
-            for (const resourceName in ability.totalResourcesUsed){
+            for (const resourceName in ability.totalResourcesUsed) {
                 totalUsed[resourceName] ??= 0
                 totalUsed[resourceName] += ability.totalResourcesUsed[resourceName]
             }
@@ -304,8 +304,8 @@ class ActorData{
         return totalUsed
     }
 
-    public AddCastEvent(event: RpgLogs.CastEvent){
-        if (!event.ability){
+    public AddCastEvent(event: RpgLogs.CastEvent) {
+        if (!event.ability) {
             return
         }
 
@@ -314,7 +314,7 @@ class ActorData{
     }
 }
 
-class AbilityData{
+class AbilityData {
     public readonly totalResourcesUsed: Record<string, number> = {}
     public readonly Name: string
     public Casts = 0
@@ -322,18 +322,18 @@ class AbilityData{
 
     constructor(name: string) {
         //LOGGER.addMessage("AbilityData:ctor", this)
-        if (CAPTURE_EVENTS){
-            LOGGER.addMessage("CastEvents "+name, this.events)
+        if (CAPTURE_EVENTS) {
+            LOGGER.addMessage("CastEvents " + name, this.events)
         }
         this.Name = name
     }
 
-    public AddCastEvent(event: RpgLogs.CastEvent){
+    public AddCastEvent(event: RpgLogs.CastEvent) {
 
-        if(!event.sourceResources){
+        if (!event.sourceResources) {
             return
         }
-        if (CAPTURE_EVENTS){
+        if (CAPTURE_EVENTS) {
             this.events.push(event)
         }
 
@@ -342,8 +342,8 @@ class AbilityData{
         this.ParseClassResource(event.sourceResources)
     }
 
-    ParseClassResource(resourceData: RpgLogs.ResourceData){
-        if (resourceData.resourceType !== 0 && !resourceData.resourceType){
+    ParseClassResource(resourceData: RpgLogs.ResourceData) {
+        if (resourceData.resourceType !== 0 && !resourceData.resourceType) {
             return
         }
 
@@ -351,13 +351,13 @@ class AbilityData{
         this.totalResourcesUsed[resourceName] ??= 0
         this.totalResourcesUsed[resourceName] += resourceData.resourceCost
 
-        if (resourceData.additionalResources){
+        if (resourceData.additionalResources) {
             this.ParseAdditionalResources(resourceData.additionalResources)
         }
     }
 
-    ParseAdditionalResources(classResource: RpgLogs.ClassResource){
-        if (!classResource.resourceType){
+    ParseAdditionalResources(classResource: RpgLogs.ClassResource) {
+        if (!classResource.resourceType) {
             return
         }
 
@@ -366,7 +366,7 @@ class AbilityData{
         this.totalResourcesUsed[resourceName] ??= 0
         this.totalResourcesUsed[resourceName] += classResource.resourceAmount
 
-        if (classResource.next){
+        if (classResource.next) {
             this.ParseAdditionalResources(classResource.next)
         }
     }
