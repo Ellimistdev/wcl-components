@@ -604,6 +604,8 @@ export namespace RpgLogs {
          * The subType of the actor. This will be the job (for FF) or class (for other games) of players. NPCs can be "Boss" or "NPC".
          */
         subType: string;
+
+        petOwner: Actor | null;
     }
 
     export interface ActorInstance {

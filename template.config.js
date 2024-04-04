@@ -7,8 +7,11 @@ module.exports = {
         exportString: true,
         autoTest: {
             active: true,
-            loginMethod: "USA",
+            loginMethod: "WCL",
             components: {
+                common: {
+                    DamagePerInterval: "https://www.warcraftlogs.com/reports/w6VJgD4MGHtzpxZb#view=components&boss=2786&difficulty=5",
+                },
                 classSpecific: {
                     GiantSlayerValue: "https://www.warcraftlogs.com/reports/cNtPvy17QJb9wrX4#fight=15&view=components&source=194",
                     AlterTimeHeals: "https://www.warcraftlogs.com/reports/mRGZtWpdfYvng78a#fight=15&view=components&source=4"
