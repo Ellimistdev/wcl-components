@@ -1,5 +1,3 @@
-// noinspection JSUnusedGlobalSymbols
-
 declare global {
     /**
      * The current API version. Used to see if a report component is out of date.
