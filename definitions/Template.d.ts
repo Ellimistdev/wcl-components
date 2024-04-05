@@ -65,14 +65,12 @@ export type ManagerOptions = {
     abilityFilters?: abilityFilter[];
 }
 
-
 export type ApplyBuffOrDebuff = RpgLogs.ApplyBuffEvent | RpgLogs.ApplyDebuffEvent
 export type RemoveBuffOrDebuff = RpgLogs.RemoveBuffEvent | RpgLogs.RemoveDebuffEvent
 export type RemoveBuffOrDebuffStack = RpgLogs.RemoveBuffStackEvent | RpgLogs.RemoveDebuffStackEvent
 export type ApplyBuffOrDebuffStack = RpgLogs.ApplyBuffStackEvent | RpgLogs.ApplyDebuffStackEvent
 export type RefreshBuffOrDebuff = RpgLogs.RefreshBuffEvent | RpgLogs.RefreshDebuffEvent
 export type BuffOrDebuffEvents = ApplyBuffOrDebuff | RemoveBuffOrDebuff | ApplyBuffOrDebuffStack | RemoveBuffOrDebuffStack | RefreshBuffOrDebuff
-
 
 export type EventTypeUnions<T extends RpgLogs.EventCategory> =
     T extends "damage" ? RpgLogs.DamageEvent :
@@ -91,5 +89,3 @@ export type EventTypeUnions<T extends RpgLogs.EventCategory> =
     T extends "calculatedDamage" ? RpgLogs.DamageEvent :
     T extends "calculatedHealing" ? RpgLogs.HealingEvent | RpgLogs.AbsorbedEvent | RpgLogs.RemoveBuffEvent :
     RpgLogs.AnyEvent;
-
-export type Class = "DeathKnight" | "DemonHunter" | "Druid" | "Evoker" | "Hunter" | "Mage" | "Monk" | "Paladin" | "Priest" | "Rogue" | "Shaman" | "Warlock" | "Warrior"

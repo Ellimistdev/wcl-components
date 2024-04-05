@@ -57,7 +57,453 @@ declare global {
     let initializePinForFight: (fight: RpgLogs.Fight) => void;
 }
 
+export namespace Highcharts {
+    type NYI = unknown;
+    // the T here is purely for documentation, not actually used
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    interface Unsupported<T = unknown> {
+        _: never;
+    }
+
+    /**
+     * A field where Highcharts supports HTML, but we do not. Tokens will be escaped.
+     * This will eventually be converted to Markdown, but that is NYI.
+     *
+     * Unfortunately, I can't get this docstring to show in Monaco, so it is duplicated on the text field.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface Html extends String { } // see https://www.highcharts.com/docs/chart-concepts/security
+    type Css = NYI;
+    type GradientColorObject = { stops: Array<[number, Color]> } & (
+        | {
+            linearGradient: { x1: number; x2: number; y1: number; y2: number };
+        }
+        | { radialGradient: { cx: number; cy: number; r: number } }
+    );
+
+    type Color = string | GradientColorObject;
+    enum DashStyle {
+        Dash = 'Dash',
+        DashDot = 'DashDot',
+        Dot = 'Dot',
+        LongDash = 'LongDash',
+        LongDashDot = 'LongDashDot',
+        LongDashDotDot = 'LongDashDotDot',
+        ShortDash = 'ShortDash',
+        ShortDashDot = 'ShortDashDot',
+        ShortDashDotDot = 'ShortDashDotDot',
+        ShortDot = 'ShortDot',
+        Solid = 'Solid',
+    }
+
+    enum LinecapStyle {
+        Butt = 'butt',
+        Round = 'round',
+        Square = 'square',
+    }
+
+    namespace Series {
+        /**
+         * requires modules/boost, which we may not have?
+         */
+        type BoostProps = {
+            boostBlending?: string;
+            boostThreshold?: number;
+        };
+
+        type AnimationProps = {
+            animation?: boolean;
+            animationLimit?: number;
+        };
+
+        type Data1D = number[];
+        type Data2D = Array<[number, number]>;
+        type DataNamed = Array<{
+            x?: number;
+            y?: number;
+            name?: string;
+            color?: Color;
+            [otherKey: string]: unknown;
+        }>;
+
+        type DataLabelOptions = NYI;
+        type DataSortingOptions = {
+            enabled?: boolean;
+            matchByName?: boolean;
+            sortKey?: string;
+        };
+
+        type ScatterJitterOptions = {
+            x: number;
+            y: number;
+        };
+
+        type ScatterLabelOptions = NYI;
+        type ScatterMarkerOptions = {
+            enabled?: boolean;
+            enabledThreshold?: number;
+            fillColor?: Color;
+            height?: number;
+            lineColor?: Color;
+            lineWidth?: number;
+            radius?: number;
+            symbol?: string;
+            width?: number;
+            states?: NYI;
+        };
+
+        type OmitDisallowed<T> = Omit<
+            T,
+            | 'animationLimit'
+            | 'cursor'
+            | 'dragDrop'
+            | 'events'
+            | 'pointDescriptionFormatter'
+            | 'turboThreshold'
+            | keyof BoostProps
+        >;
+
+        type CommonProps = AnimationProps &
+            BoostProps & {
+                accessibility?: NYI;
+                allowPointSelect?: boolean;
+                className?: string;
+                clip?: boolean;
+                color?: Color;
+                colorAxis?: number | string | boolean;
+                colorIndex?: number;
+                colorKey?: string;
+                crisp?: boolean;
+                cropThreshold?: number;
+                cursor?: string;
+                custom?: Record<string, unknown>;
+                dashStyle?: DashStyle;
+                data: Data1D | Data2D | DataNamed;
+                dataAsColumns?: boolean;
+                dataLabels?: DataLabelOptions;
+                dataSorting?: DataSortingOptions;
+                description?: string;
+                dragDrop?: NYI;
+                enableMouseTracking?: boolean;
+                events?: NYI;
+                getExtremesFromAll?: boolean;
+                id?: string;
+                includeInDataExport?: boolean;
+                index?: number;
+                keys?: string[];
+                label?: ScatterLabelOptions;
+                legendIndex?: number;
+                linecap?: LinecapStyle | string;
+                lineWidth?: number;
+                linkedTo?: string;
+                marker?: ScatterMarkerOptions;
+                name?: string;
+                negativeColor?: Color;
+                onPoint?: NYI;
+                opacity?: number;
+                point?: NYI;
+                pointDescriptionFormatter?: NYI;
+                pointInterval?: number;
+                pointIntervalUnit?: string;
+                pointPlacement?: 'on' | 'between' | number;
+                pointStart?: number;
+                relativeXValue?: boolean;
+                selected?: boolean;
+                shadow?: NYI;
+                showCheckbox?: boolean;
+                showInLegend?: boolean;
+                skipKeyboardNavigation?: boolean;
+                softThreshold?: boolean;
+                stack?: number | string;
+                stacking?: 'normal' | 'percent';
+                states?: NYI;
+                step?: 'left' | 'center' | 'right';
+                stickyTracking?: boolean;
+                threshold?: number | null;
+                tooltip?: NYI;
+                turboThreshold?: number;
+                visible?: boolean;
+                xAxis?: number | string;
+                yAxis?: number | string;
+                zIndex?: number;
+                zoneAxis?: 'x' | 'y' | 'z';
+                zones?: NYI;
+            };
+
+        type BaseSeries<T extends string> = OmitDisallowed<CommonProps> & {
+            type: T;
+        };
+
+        /**
+         * @see https://api.highcharts.com/highcharts/series.scatter
+         */
+        export type Scatter = BaseSeries<'scatter'> &
+            Partial<{
+                cluster: NYI;
+                jitter: ScatterJitterOptions;
+            }>;
+
+        /**
+         * @see https://api.highcharts.com/highcharts/series.line
+         */
+        export type Line = BaseSeries<'line'> &
+            Partial<{
+                connectEnds: boolean;
+                connectNulls: boolean;
+                findNearestPointBy: string;
+            }>;
+
+        /**
+         * @see https://api.highcharts.com/highcharts/series.bar
+         */
+        export type Bar = BaseSeries<'bar'> & {
+            borderColor: Color;
+            borderRadius: number;
+            borderWidth: number;
+            centerInCategory: boolean;
+            edgeColor: Color;
+            edgeWidth: number;
+            findNearestPointBy: string;
+            grouping: boolean;
+            groupPadding: number;
+            groupZPadding: number;
+            pointRange: number | null;
+            depth: number;
+        };
+
+        // sometimes any is justified, man
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        type ExtendedSeries<T extends BaseSeries<any>, Key> = Omit<T, 'type'> & {
+            type: Key;
+        };
+
+        /**
+         * @see https://api.highcharts.com/highcharts/series.histogram
+         */
+        export type Histogram = ExtendedSeries<Bar, 'histogram'> &
+            Partial<{
+                /**
+                 * The number of bins to use.
+                 *
+                 * The Highchart docs indicate that you can use a function for this, but that is not supported
+                 * within a report component.
+                 */
+                binsNumber: 'square-root' | 'sturges' | 'rice' | number;
+                binWidth: number;
+                connectEnds: boolean;
+                connectNulls: boolean;
+            }>;
+
+        /**
+         * @see https://api.highcharts.com/highcharts/series.boxplot
+         */
+        export type BoxPlot = BaseSeries<'boxplot'> &
+            Partial<{
+                boxDashStyle: DashStyle;
+                centerInCategory: boolean;
+                colorByPoint: boolean;
+                colors: Color[];
+                connectEnds: boolean;
+                connectNulls: boolean;
+                depth: number;
+                edgeColor: Color;
+                edgeWidth: number;
+                fillColor: Color;
+                grouping: boolean;
+                groupPadding: number;
+                medianColor: Color;
+                medianDashStyle: DashStyle;
+                medianWidth: number | null;
+                minPointLength: number;
+                pointRange: number | null;
+                stemDashStyle: DashStyle;
+                stemWidth: number;
+                whiskerColor: Color;
+                whiskerDashStyle: DashStyle;
+                whiskerLength: number;
+                whiskerWidth: number;
+            }>;
+
+        type KnownSeries = Scatter | Line | Histogram | Bar | BoxPlot;
+        type UnknownSeries = BaseSeries<any>;
+
+        /**
+         * @see https://api.highcharts.com/highcharts/series
+         */
+        export type Any = KnownSeries | UnknownSeries;
+    }
+
+    type AsOptions<T> = Omit<T, 'data'>;
+
+    type TextOptions = Partial<{
+        align: 'left' | 'center' | 'right';
+        floating: boolean;
+        margin: number;
+        /**
+         * Text to display.
+         *
+         * Note that while Highcharts supports HTML, we do not. HTML-like tokens will be escaped.
+         * This will eventually be converted to Markdown, but that is NYI.
+         *
+         * This note applies to all fields labeled with the `Html` type.
+         */
+        text: Html;
+        verticalAlign: 'top' | 'middle' | 'bottom';
+        x: number;
+        y: number;
+        useHTML: boolean;
+        style: Css;
+    }>;
+
+    type TooltipOptions = Partial<{
+        animation: boolean;
+        backgroundColor: Color;
+        borderColor: Color;
+        borderRadius: number;
+        borderWidth: number;
+        className: Unsupported;
+        dateTimeLabelFormats: NYI;
+        distance: number;
+        enabled: boolean;
+        followPointer: boolean;
+        followTouchMove: boolean;
+        clusterFormat: Html;
+        footerFormat: Html;
+        formatter: Unsupported;
+        headerFormat: Html;
+        headerShape: NYI;
+        hideDelay: number;
+        nullFormat: Html;
+        nullFormatter: Unsupported;
+        outside: boolean;
+        padding: number;
+        pointFormat: Html;
+        positioner: Unsupported;
+        shadow: boolean | NYI;
+        shape: 'callout' | 'circle' | 'square';
+        shared: boolean;
+        snap: number;
+        split: boolean;
+        stickOnContact: boolean;
+        style: Css;
+        useHTML: boolean;
+        valueDecimals: number | undefined;
+        valuePrefix: string;
+        valueSuffix: string;
+        xDateFormat: string;
+    }>;
+
+    type AxisOptions = Partial<{
+        accessibility: NYI;
+        alignTicks: boolean;
+        allowDecimals: boolean;
+        alternateGridColor: Color;
+        angle: number;
+        breaks: NYI;
+        categories: string[];
+        ceiling: number;
+        className: Unsupported;
+        crosshair: NYI;
+        dateTimeLabelFormats: NYI;
+        endOnTick: boolean;
+        events: Unsupported;
+        floor: number;
+        gridLineColor: Color;
+        gridLineDashStyle: DashStyle;
+        gridLineInterpolation: 'circle' | 'polygon';
+        gridLineWidth: number;
+        gridZIndex: number;
+        height: number | string;
+        id: string;
+        labels: NYI;
+        left: number | string;
+        lineColor: Color;
+        lineWidth: number;
+        linkedTo: number;
+        margin: number;
+        max: number | null;
+        maxPadding: number;
+        min: number | null;
+        minorGridLineColor: Color;
+        minorGridLineDashStyle: DashStyle;
+        minorGridLineWidth: number;
+        minorTickColor: Color;
+        minorTickInterval: number | string | null;
+        minorTickLength: number;
+        minorTickPosition: string;
+        minorTicks: boolean;
+        minorTickWidth: number;
+        minPadding: number;
+        minRange: number;
+        minTickInterval: number;
+        offset: number;
+        opposite: boolean;
+        pane: number;
+        panningEnabled: boolean;
+        plotBands: NYI;
+        plotLines: NYI;
+        reversed: boolean;
+        reversedStacks: boolean;
+        showEmpty: boolean;
+        showFirstLabel: boolean;
+        showLastLabel: boolean;
+        softMax: number;
+        softMin: number;
+        startOfWeek: number;
+        startOnTick: boolean;
+        tickAmount: number;
+        tickColor: Color;
+        tickInterval: number;
+        tickLength: number;
+        tickmarkPlacement: string;
+        tickPixelInterval: number;
+        tickPosition: string;
+        tickPositioner: Unsupported;
+        tickPositions: number[];
+        tickWidth: number | undefined;
+        title: NYI;
+        top: number | string;
+        type: 'linear' | 'logarithmic' | 'datetime' | 'category';
+        uniqueNames: boolean;
+        units: NYI;
+        visible: boolean;
+        width: number | string;
+        zIndex: number;
+        zoomEnabled: boolean;
+    }>;
+
+    type ChartOptions = NYI;
+
+    export type Options = {
+        plotOptions?: {
+            [Key in Series.Any['type']]: AsOptions<
+                Extract<Series.Any, { type: Key }>
+            >;
+        };
+        colors?: Color[];
+        series: Series.Any[];
+        caption?: TextOptions;
+        title?: TextOptions;
+        subtitle?: TextOptions;
+        tooltip?: TooltipOptions;
+        xAxis?: AxisOptions;
+        yAxis?: AxisOptions;
+        zAxis?: AxisOptions;
+        colorAxis?: NYI; // does not really share axis options with the x/y/z axes
+        chart?: ChartOptions;
+        annotations?: NYI[];
+        legend?: NYI;
+        labels?: NYI;
+        pane?: NYI;
+        time?: NYI;
+    };
+}
+// definitions/RpgLogs.d.ts
 export namespace RpgLogs {
+    // this lint is disabled because interfaces show the new name in the Monaco editor, but type aliases do not
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    export interface ChartComponentProps extends Highcharts.Options { }
+
     export interface ReportGroup {
         /**
          * The version of the parser that was used to parse the log file for this report.
@@ -442,6 +888,36 @@ export namespace RpgLogs {
          * @returns - The group count of the actor
          */
         instanceGroupCountForNpc(actor: Actor): number;
+
+        /**
+         * The season of Classic the fight belongs to. For example, Season of Mastery will have a season id of 1.
+         */
+        classicSeasonId: number | null;
+
+        /**
+         * If the fight is a keystone dungeon, then this field contains the keystone level. Null otherwise.
+         */
+        keystoneDungeonLevel: number | null;
+
+        /**
+         * If the fight is a keystone dungeon, then this field contains the official completion time. Null otherwise.
+         */
+        keystoneDungeonTime: number | null;
+
+        /**
+         * If the fight is a keystone dungeon, then this field contains the set of affixes in effect. Null otherwise.
+         */
+        keystoneDungeonAffixes: Array<number> | null;
+
+        /**
+         * If the fight is a tower run (e.g., Torghast), then this field contains the layer number. Null otherwise.
+         */
+        towerLayer: number | null;
+
+        /**
+         * Whether or not the fight had classic world buffs on any player (Vanilla only)
+         */
+        hasClassicWorldBuffs: boolean;
     }
 
     export type WorldMarker = {
@@ -603,6 +1079,9 @@ export namespace RpgLogs {
          */
         subType: string;
 
+        /**
+         * The owner of the pet. Null if the actor is not a pet.
+         */
         petOwner: Actor | null;
     }
 
@@ -654,6 +1133,16 @@ export namespace RpgLogs {
          * Whether or not the ability is a melee attack. In FF, this is typically called "Attack".
          */
         isMelee: boolean;
+
+        /**
+         * Whether or not the ability is the stagger absorb that happens when a Brewmaster takes damage.
+         */
+        isStaggerAbsorb: boolean;
+
+        /**
+         * Whether or not the ability is the deferred stagger damage that happens after a Brewmaster took an earlier hit.
+         */
+        isStaggerDmaage: boolean;
     }
 
     export interface ResourceData {
@@ -681,6 +1170,47 @@ export namespace RpgLogs {
          * The unit's facing. Null for games that do not support facing.
          */
         facing: number | null;
+
+        /**
+         * The current attack power of the actor.
+         */
+        attackPower: number;
+
+        /**
+         * The current spell power of the actor.
+         */
+        spellPower: number;
+
+        /**
+         * The current item level of the actor.
+         */
+        itemLevel: number;
+
+        /**
+         * Only for Mists of Pandaria Logs, the resolve of a tank actor. Null for other expansions.
+         */
+        resolve: number | null;
+
+        /**
+         * The current armor of the actor. Does not exist in older logs.
+         */
+        armor: number | null;
+
+        /**
+         * The current absorb shield on the actor. Does not exist in older logs.
+         */
+        absorb: number | null;
+
+        /**
+         * The map id that the logging unit is on (not the unit represented by the resources). Not present in older logs.
+         */
+        mapId: number | null;
+
+        resourceAmount: number;
+        resourceCap: number;
+        resourceCost: number;
+        resourceType: number;
+        additionalResources: ClassResource | null;
     }
 
     export type CompleteRaid = {
@@ -1765,543 +2295,6 @@ export namespace RpgLogs {
         textAlign?: 'left' | 'center' | 'right';
         columns?: Record<string, TableColumn>;
     };
-}
-
-export namespace Highcharts {
-    type NYI = unknown;
-    // the T here is purely for documentation, not actually used
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    interface Unsupported<T = unknown> {
-        _: never;
-    }
-
-    /**
-     * A field where Highcharts supports HTML, but we do not. Tokens will be escaped.
-     * This will eventually be converted to Markdown, but that is NYI.
-     *
-     * Unfortunately, I can't get this docstring to show in Monaco, so it is duplicated on the text field.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface Html extends String { } // see https://www.highcharts.com/docs/chart-concepts/security
-    type Css = NYI;
-    type GradientColorObject = { stops: Array<[number, Color]> } & (
-        | {
-            linearGradient: { x1: number; x2: number; y1: number; y2: number };
-        }
-        | { radialGradient: { cx: number; cy: number; r: number } }
-    );
-
-    type Color = string | GradientColorObject;
-    enum DashStyle {
-        Dash = 'Dash',
-        DashDot = 'DashDot',
-        Dot = 'Dot',
-        LongDash = 'LongDash',
-        LongDashDot = 'LongDashDot',
-        LongDashDotDot = 'LongDashDotDot',
-        ShortDash = 'ShortDash',
-        ShortDashDot = 'ShortDashDot',
-        ShortDashDotDot = 'ShortDashDotDot',
-        ShortDot = 'ShortDot',
-        Solid = 'Solid',
-    }
-
-    enum LinecapStyle {
-        Butt = 'butt',
-        Round = 'round',
-        Square = 'square',
-    }
-
-    namespace Series {
-        /**
-         * requires modules/boost, which we may not have?
-         */
-        type BoostProps = {
-            boostBlending?: string;
-            boostThreshold?: number;
-        };
-
-        type AnimationProps = {
-            animation?: boolean;
-            animationLimit?: number;
-        };
-
-        type Data1D = number[];
-        type Data2D = Array<[number, number]>;
-        type DataNamed = Array<{
-            x?: number;
-            y?: number;
-            name?: string;
-            color?: Color;
-            [otherKey: string]: unknown;
-        }>;
-
-        type DataLabelOptions = NYI;
-        type DataSortingOptions = {
-            enabled?: boolean;
-            matchByName?: boolean;
-            sortKey?: string;
-        };
-
-        type ScatterJitterOptions = {
-            x: number;
-            y: number;
-        };
-
-        type ScatterLabelOptions = NYI;
-        type ScatterMarkerOptions = {
-            enabled?: boolean;
-            enabledThreshold?: number;
-            fillColor?: Color;
-            height?: number;
-            lineColor?: Color;
-            lineWidth?: number;
-            radius?: number;
-            symbol?: string;
-            width?: number;
-            states?: NYI;
-        };
-
-        type OmitDisallowed<T> = Omit<
-            T,
-            | 'animationLimit'
-            | 'cursor'
-            | 'dragDrop'
-            | 'events'
-            | 'pointDescriptionFormatter'
-            | 'turboThreshold'
-            | keyof BoostProps
-        >;
-
-        type CommonProps = AnimationProps &
-            BoostProps & {
-                accessibility?: NYI;
-                allowPointSelect?: boolean;
-                className?: string;
-                clip?: boolean;
-                color?: Color;
-                colorAxis?: number | string | boolean;
-                colorIndex?: number;
-                colorKey?: string;
-                crisp?: boolean;
-                cropThreshold?: number;
-                cursor?: string;
-                custom?: Record<string, unknown>;
-                dashStyle?: DashStyle;
-                data: Data1D | Data2D | DataNamed;
-                dataAsColumns?: boolean;
-                dataLabels?: DataLabelOptions;
-                dataSorting?: DataSortingOptions;
-                description?: string;
-                dragDrop?: NYI;
-                enableMouseTracking?: boolean;
-                events?: NYI;
-                getExtremesFromAll?: boolean;
-                id?: string;
-                includeInDataExport?: boolean;
-                index?: number;
-                keys?: string[];
-                label?: ScatterLabelOptions;
-                legendIndex?: number;
-                linecap?: LinecapStyle | string;
-                lineWidth?: number;
-                linkedTo?: string;
-                marker?: ScatterMarkerOptions;
-                name?: string;
-                negativeColor?: Color;
-                onPoint?: NYI;
-                opacity?: number;
-                point?: NYI;
-                pointDescriptionFormatter?: NYI;
-                pointInterval?: number;
-                pointIntervalUnit?: string;
-                pointPlacement?: 'on' | 'between' | number;
-                pointStart?: number;
-                relativeXValue?: boolean;
-                selected?: boolean;
-                shadow?: NYI;
-                showCheckbox?: boolean;
-                showInLegend?: boolean;
-                skipKeyboardNavigation?: boolean;
-                softThreshold?: boolean;
-                stack?: number | string;
-                stacking?: 'normal' | 'percent';
-                states?: NYI;
-                step?: 'left' | 'center' | 'right';
-                stickyTracking?: boolean;
-                threshold?: number | null;
-                tooltip?: NYI;
-                turboThreshold?: number;
-                visible?: boolean;
-                xAxis?: number | string;
-                yAxis?: number | string;
-                zIndex?: number;
-                zoneAxis?: 'x' | 'y' | 'z';
-                zones?: NYI;
-            };
-
-        type BaseSeries<T extends string> = OmitDisallowed<CommonProps> & {
-            type: T;
-        };
-
-        /**
-         * @see https://api.highcharts.com/highcharts/series.scatter
-         */
-        export type Scatter = BaseSeries<'scatter'> &
-            Partial<{
-                cluster: NYI;
-                jitter: ScatterJitterOptions;
-            }>;
-
-        /**
-         * @see https://api.highcharts.com/highcharts/series.line
-         */
-        export type Line = BaseSeries<'line'> &
-            Partial<{
-                connectEnds: boolean;
-                connectNulls: boolean;
-                findNearestPointBy: string;
-            }>;
-
-        /**
-         * @see https://api.highcharts.com/highcharts/series.bar
-         */
-        export type Bar = BaseSeries<'bar'> & {
-            borderColor: Color;
-            borderRadius: number;
-            borderWidth: number;
-            centerInCategory: boolean;
-            edgeColor: Color;
-            edgeWidth: number;
-            findNearestPointBy: string;
-            grouping: boolean;
-            groupPadding: number;
-            groupZPadding: number;
-            pointRange: number | null;
-            depth: number;
-        };
-
-        // sometimes any is justified, man
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        type ExtendedSeries<T extends BaseSeries<any>, Key> = Omit<T, 'type'> & {
-            type: Key;
-        };
-
-        /**
-         * @see https://api.highcharts.com/highcharts/series.histogram
-         */
-        export type Histogram = ExtendedSeries<Bar, 'histogram'> &
-            Partial<{
-                /**
-                 * The number of bins to use.
-                 *
-                 * The Highchart docs indicate that you can use a function for this, but that is not supported
-                 * within a report component.
-                 */
-                binsNumber: 'square-root' | 'sturges' | 'rice' | number;
-                binWidth: number;
-                connectEnds: boolean;
-                connectNulls: boolean;
-            }>;
-
-        /**
-         * @see https://api.highcharts.com/highcharts/series.boxplot
-         */
-        export type BoxPlot = BaseSeries<'boxplot'> &
-            Partial<{
-                boxDashStyle: DashStyle;
-                centerInCategory: boolean;
-                colorByPoint: boolean;
-                colors: Color[];
-                connectEnds: boolean;
-                connectNulls: boolean;
-                depth: number;
-                edgeColor: Color;
-                edgeWidth: number;
-                fillColor: Color;
-                grouping: boolean;
-                groupPadding: number;
-                medianColor: Color;
-                medianDashStyle: DashStyle;
-                medianWidth: number | null;
-                minPointLength: number;
-                pointRange: number | null;
-                stemDashStyle: DashStyle;
-                stemWidth: number;
-                whiskerColor: Color;
-                whiskerDashStyle: DashStyle;
-                whiskerLength: number;
-                whiskerWidth: number;
-            }>;
-
-        type KnownSeries = Scatter | Line | Histogram | Bar | BoxPlot;
-        type UnknownSeries = BaseSeries<any>;
-
-        /**
-         * @see https://api.highcharts.com/highcharts/series
-         */
-        export type Any = KnownSeries | UnknownSeries;
-    }
-
-    type AsOptions<T> = Omit<T, 'data'>;
-
-    type TextOptions = Partial<{
-        align: 'left' | 'center' | 'right';
-        floating: boolean;
-        margin: number;
-        /**
-         * Text to display.
-         *
-         * Note that while Highcharts supports HTML, we do not. HTML-like tokens will be escaped.
-         * This will eventually be converted to Markdown, but that is NYI.
-         *
-         * This note applies to all fields labeled with the `Html` type.
-         */
-        text: Html;
-        verticalAlign: 'top' | 'middle' | 'bottom';
-        x: number;
-        y: number;
-        useHTML: boolean;
-        style: Css;
-    }>;
-
-    type TooltipOptions = Partial<{
-        animation: boolean;
-        backgroundColor: Color;
-        borderColor: Color;
-        borderRadius: number;
-        borderWidth: number;
-        className: Unsupported;
-        dateTimeLabelFormats: NYI;
-        distance: number;
-        enabled: boolean;
-        followPointer: boolean;
-        followTouchMove: boolean;
-        clusterFormat: Html;
-        footerFormat: Html;
-        formatter: Unsupported;
-        headerFormat: Html;
-        headerShape: NYI;
-        hideDelay: number;
-        nullFormat: Html;
-        nullFormatter: Unsupported;
-        outside: boolean;
-        padding: number;
-        pointFormat: Html;
-        positioner: Unsupported;
-        shadow: boolean | NYI;
-        shape: 'callout' | 'circle' | 'square';
-        shared: boolean;
-        snap: number;
-        split: boolean;
-        stickOnContact: boolean;
-        style: Css;
-        useHTML: boolean;
-        valueDecimals: number | undefined;
-        valuePrefix: string;
-        valueSuffix: string;
-        xDateFormat: string;
-    }>;
-
-    type AxisOptions = Partial<{
-        accessibility: NYI;
-        alignTicks: boolean;
-        allowDecimals: boolean;
-        alternateGridColor: Color;
-        angle: number;
-        breaks: NYI;
-        categories: string[];
-        ceiling: number;
-        className: Unsupported;
-        crosshair: NYI;
-        dateTimeLabelFormats: NYI;
-        endOnTick: boolean;
-        events: Unsupported;
-        floor: number;
-        gridLineColor: Color;
-        gridLineDashStyle: DashStyle;
-        gridLineInterpolation: 'circle' | 'polygon';
-        gridLineWidth: number;
-        gridZIndex: number;
-        height: number | string;
-        id: string;
-        labels: NYI;
-        left: number | string;
-        lineColor: Color;
-        lineWidth: number;
-        linkedTo: number;
-        margin: number;
-        max: number | null;
-        maxPadding: number;
-        min: number | null;
-        minorGridLineColor: Color;
-        minorGridLineDashStyle: DashStyle;
-        minorGridLineWidth: number;
-        minorTickColor: Color;
-        minorTickInterval: number | string | null;
-        minorTickLength: number;
-        minorTickPosition: string;
-        minorTicks: boolean;
-        minorTickWidth: number;
-        minPadding: number;
-        minRange: number;
-        minTickInterval: number;
-        offset: number;
-        opposite: boolean;
-        pane: number;
-        panningEnabled: boolean;
-        plotBands: NYI;
-        plotLines: NYI;
-        reversed: boolean;
-        reversedStacks: boolean;
-        showEmpty: boolean;
-        showFirstLabel: boolean;
-        showLastLabel: boolean;
-        softMax: number;
-        softMin: number;
-        startOfWeek: number;
-        startOnTick: boolean;
-        tickAmount: number;
-        tickColor: Color;
-        tickInterval: number;
-        tickLength: number;
-        tickmarkPlacement: string;
-        tickPixelInterval: number;
-        tickPosition: string;
-        tickPositioner: Unsupported;
-        tickPositions: number[];
-        tickWidth: number | undefined;
-        title: NYI;
-        top: number | string;
-        type: 'linear' | 'logarithmic' | 'datetime' | 'category';
-        uniqueNames: boolean;
-        units: NYI;
-        visible: boolean;
-        width: number | string;
-        zIndex: number;
-        zoomEnabled: boolean;
-    }>;
-
-    type ChartOptions = NYI;
-
-    export type Options = {
-        plotOptions?: {
-            [Key in Series.Any['type']]: AsOptions<
-                Extract<Series.Any, { type: Key }>
-            >;
-        };
-        colors?: Color[];
-        series: Series.Any[];
-        caption?: TextOptions;
-        title?: TextOptions;
-        subtitle?: TextOptions;
-        tooltip?: TooltipOptions;
-        xAxis?: AxisOptions;
-        yAxis?: AxisOptions;
-        zAxis?: AxisOptions;
-        colorAxis?: NYI; // does not really share axis options with the x/y/z axes
-        chart?: ChartOptions;
-        annotations?: NYI[];
-        legend?: NYI;
-        labels?: NYI;
-        pane?: NYI;
-        time?: NYI;
-    };
-}
-
-export namespace RpgLogs {
-    // this lint is disabled because interfaces show the new name in the Monaco editor, but type aliases do not
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    export interface ChartComponentProps extends Highcharts.Options { }
-}
-
-export namespace RpgLogs {
-    export interface Fight {
-        /**
-         * The season of Classic the fight belongs to. For example, Season of Mastery will have a season id of 1.
-         */
-        classicSeasonId: number | null;
-
-        /**
-         * If the fight is a keystone dungeon, then this field contains the keystone level. Null otherwise.
-         */
-        keystoneDungeonLevel: number | null;
-
-        /**
-         * If the fight is a keystone dungeon, then this field contains the official completion time. Null otherwise.
-         */
-        keystoneDungeonTime: number | null;
-
-        /**
-         * If the fight is a keystone dungeon, then this field contains the set of affixes in effect. Null otherwise.
-         */
-        keystoneDungeonAffixes: Array<number> | null;
-
-        /**
-         * If the fight is a tower run (e.g., Torghast), then this field contains the layer number. Null otherwise.
-         */
-        towerLayer: number | null;
-
-        /**
-         * Whether or not the fight had classic world buffs on any player (Vanilla only)
-         */
-        hasClassicWorldBuffs: boolean;
-    }
-
-    export interface Ability {
-        /**
-         * Whether or not the ability is the stagger absorb that happens when a Brewmaster takes damage.
-         */
-        isStaggerAbsorb: boolean;
-
-        /**
-         * Whether or not the ability is the deferred stagger damage that happens after a Brewmaster took an earlier hit.
-         */
-        isStaggerDmaage: boolean;
-    }
-
-    export interface ResourceData {
-        /**
-         * The current attack power of the actor.
-         */
-        attackPower: number;
-
-        /**
-         * The current spell power of the actor.
-         */
-        spellPower: number;
-
-        /**
-         * The current item level of the actor.
-         */
-        itemLevel: number;
-
-        /**
-         * Only for Mists of Pandaria Logs, the resolve of a tank actor. Null for other expansions.
-         */
-        resolve: number | null;
-
-        /**
-         * The current armor of the actor. Does not exist in older logs.
-         */
-        armor: number | null;
-
-        /**
-         * The current absorb shield on the actor. Does not exist in older logs.
-         */
-        absorb: number | null;
-
-        /**
-         * The map id that the logging unit is on (not the unit represented by the resources). Not present in older logs.
-         */
-        mapId: number | null;
-
-        resourceAmount: number;
-        resourceCap: number;
-        resourceCost: number;
-        resourceType: number;
-        additionalResources: ClassResource | null;
-    }
 
     export interface ClassResource {
         resourceAmount: number;

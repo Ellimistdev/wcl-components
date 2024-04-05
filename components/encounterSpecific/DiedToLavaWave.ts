@@ -2,7 +2,7 @@ import { eventsByCategoryAndDisposition } from "../../util/wrappers/getEventsByT
 import { RpgLogs } from "../../definitions/RpgLogs";
 import getClassColor from "../../util/getClassColor";
 import DeathEvent = RpgLogs.DeathEvent;
-import { Class } from "../../definitions/Template";
+import { ClassName } from "../../definitions/Classes";
 
 const RASHOK_ENCOUNTER_ID = 2680
 const LAVA_WAVE_ID = 403543
@@ -81,7 +81,7 @@ export default getComponent = () => {
             deathCounts[name]["y"] += 1
             continue
         }
-        deathCounts[name] = { y: 1, color: getClassColor(death.subType as Class) }
+        deathCounts[name] = { y: 1, color: getClassColor(death.subType as ClassName) }
     }
 
     const sortList: [string, { "y": number, color: string }][] = []

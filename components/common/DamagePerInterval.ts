@@ -2,27 +2,25 @@ import CustomLogger from "../../util/debugging/CustomLogger";
 import { RpgLogs } from "../../definitions/RpgLogs";
 import { eventsByCategoryAndDisposition } from "../../util/wrappers/getEventsByTypeAndDisposition";
 import DamageEvent = RpgLogs.DamageEvent;
+import { formatTime } from "../../util/utils";
+import { Role, Spec } from "../../definitions/Classes";
+import { CLASSES } from "../../definitions/types";
+import getActorRole from "../../util/getActorRole";
 
 const COMPONENT_NAME = "Damage Per Interval"
 const DEBUG = false
 const LOGGER = new CustomLogger(DEBUG)
 
-const componentIntervals = 8;
-// Aug intervalDuration is 27s with talent
+const componentIntervals = 2;
+// Aug intervalDuration is 27s with talent, 30s without
 const intervalDuration = 27 * 1000;
 const componentDuration = componentIntervals * intervalDuration;
 // Aug pull is 4s til first ebon might completion
 const startTimeOffset = 4 * 1000;
 
 const ignoredAbilities: { [key: number]: boolean } = { 425610: true };
-const ignoredSpecs: { [key: string]: boolean } = { Blood: true, Holy: true, Discipline: true, Mistweaver: true, Brewmaster: true, Vengeance: true, Protection: true, Restoration: true, Preservation: true };
-
-const formatTime = (milliseconds: number) => {
-    const seconds = Math.floor(milliseconds / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-};
+const ignoredRoles: Partial<{ [role in Role]: boolean }> = { Tank: true, Healer: true};
+const ignoredSpecs: Partial<{ [spec in Spec]: boolean }> = { Augmentation: false };
 
 const transformAggregatedDataToChartData = (aggregatedDamage: { [key: string]: { [key: number]: number } }) => {
     const tableData: { [key: string]: string | number }[] = new Array(componentIntervals);
@@ -96,7 +94,8 @@ export default getComponent = () => {
 
         for (const event of fight.allCombatantInfoEvents) {
             const actor = event.source;
-            if (actor && ignoredSpecs[fight.specForPlayer(actor)]) {
+            if (actor && ignoredRoles[getActorRole(fight, actor) as Role]) {
+            // if (actor && ignoredSpecs[fight.specForPlayer(actor) as Spec]) {
                 ignoredActors[actor.id] = true;
             } else {
                 const playerName = actor?.name;

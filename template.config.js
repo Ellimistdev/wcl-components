@@ -11,6 +11,7 @@ module.exports = {
             components: {
                 common: {
                     DamagePerInterval: "https://www.warcraftlogs.com/reports/w6VJgD4MGHtzpxZb#view=components&boss=2786&difficulty=5",
+                    DefensivesUsed: "https://www.warcraftlogs.com/reports/TfgLYxFXCd64HWca#view=components&fight=36&source=36",
                 },
                 classSpecific: {
                     GiantSlayerValue: "https://www.warcraftlogs.com/reports/cNtPvy17QJb9wrX4#fight=15&view=components&source=194",

@@ -1,6 +1,6 @@
-import { Class } from "../definitions/Template";
+import { ClassName } from "../definitions/Classes";
 
-export default function (classSlug: Class) {
+export default function (classSlug: ClassName) {
     switch (classSlug) {
         case "DeathKnight":
             return "#C41E3A"
