@@ -9,9 +9,9 @@ export default function getActorRole(fight: Fight, actor: Actor) {
     const spec = fight.specForPlayer(actor);
     if (actorClass in CLASSES && spec) {
         const classDetails = CLASSES[actorClass as ClassName];
-        if (spec in classDetails) {
-            return classDetails[spec as Spec]?.role;
+        const specs = classDetails.specs;
+        if (spec in specs) {
+            return specs[spec as Spec]?.role;
         }
     }
-    // throw new Error("Could not find the Actor role in report")
 }

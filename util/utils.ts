@@ -1,3 +1,5 @@
+import { RpgLogs } from "../definitions/RpgLogs";
+
 export const formatTime = (milliseconds: number) => {
     const seconds = Math.floor(milliseconds / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -17,3 +19,21 @@ export const unslug = (slug: string) => {
 
     return result;
 };
+
+export const binarySearch = (events: readonly RpgLogs.AnyEvent[], time: number, left: number, right: number) => {
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        const midTimestamp = events[mid].timestamp;
+
+        if (midTimestamp < time) {
+            left = mid + 1;
+        } else if (midTimestamp > time) {
+            right = mid - 1;
+        } else {
+            return mid;
+        }
+    }
+
+    return left;
+};
+

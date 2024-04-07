@@ -2,68 +2,107 @@ import { Classes } from './Classes';
 
 export const CLASSES: Classes = {
     DeathKnight: {
-        Blood: { role: 'Tank' },
-        Frost: { role: 'Dps' },
-        Unholy: { role: 'Dps' },
+        color: '#C41E3A',
+        specs: {
+            Blood: { role: 'Tank' },
+            Frost: { role: 'Dps' },
+            Unholy: { role: 'Dps' },
+        }
     },
     DemonHunter: {
-        Havoc: { role: 'Dps' },
-        Vengeance: { role: 'Tank' },
+        color: '#A330C9',
+        specs: {
+            Havoc: { role: 'Dps' },
+            Vengeance: { role: 'Tank' },
+        }
     },
     Druid: {
-        Balance: { role: 'Dps' },
-        Feral: { role: 'Dps' },
-        Guardian: { role: 'Tank' },
-        Restoration: { role: 'Healer' },
+        color: '#FF7C0A',
+        specs: {
+            Balance: { role: 'Dps' },
+            Feral: { role: 'Dps' },
+            Guardian: { role: 'Tank' },
+            Restoration: { role: 'Healer' },
+        }
     },
     Evoker: {
-        Devastation: { role: 'Dps' },
-        Preservation: { role: 'Healer' },
+        color: '#33937F',
+        specs: {
+            Devastation: { role: 'Dps' },
+            Preservation: { role: 'Healer' },
+        }
     },
     Hunter: {
-        BeastMastery: { role: 'Dps' },
-        Marksmanship: { role: 'Dps' },
-        Survival: { role: 'Dps' },
+        color: '#AAD372',
+        specs: {
+            BeastMastery: { role: 'Dps' },
+            Marksmanship: { role: 'Dps' },
+            Survival: { role: 'Dps' },
+        }
     },
     Mage: {
-        Arcane: { role: 'Dps' },
-        Fire: { role: 'Dps' },
-        Frost: { role: 'Dps' },
+        color: '#3FC7EB',
+        specs: {
+            Arcane: { role: 'Dps' },
+            Fire: { role: 'Dps' },
+            Frost: { role: 'Dps' },
+        }
     },
     Monk: {
-        Brewmaster: { role: 'Tank' },
-        Mistweaver: { role: 'Healer' },
-        Windwalker: { role: 'Dps' },
+        color: '#00FF98',
+        specs: {
+            Brewmaster: { role: 'Tank' },
+            Mistweaver: { role: 'Healer' },
+            Windwalker: { role: 'Dps' },
+        }
     },
     Paladin: {
-        Holy: { role: 'Healer' },
-        Protection: { role: 'Tank' },
-        Retribution: { role: 'Dps' },
+        color: '#F48CBA',
+        specs: {
+            Holy: { role: 'Healer' },
+            Protection: { role: 'Tank' },
+            Retribution: { role: 'Dps' },
+        }
     },
     Priest: {
-        Discipline: { role: 'Healer' },
-        Holy: { role: 'Healer' },
-        Shadow: { role: 'Dps' },
+        color: '#FFFFFF',
+        specs: {
+            Discipline: { role: 'Healer' },
+            Holy: { role: 'Healer' },
+            Shadow: { role: 'Dps' },
+        }
     },
     Rogue: {
-        Assassination: { role: 'Dps' },
-        Outlaw: { role: 'Dps' },
-        Subtlety: { role: 'Dps' },
+        color: '#FFF468',
+        specs: {
+            Assassination: { role: 'Dps' },
+            Outlaw: { role: 'Dps' },
+            Subtlety: { role: 'Dps' },
+        }
     },
     Shaman: {
-        Elemental: { role: 'Dps' },
-        Enhancement: { role: 'Dps' },
-        Restoration: { role: 'Healer' },
+        color: '#0070DD',
+        specs: {
+            Elemental: { role: 'Dps' },
+            Enhancement: { role: 'Dps' },
+            Restoration: { role: 'Healer' },
+        }
     },
     Warlock: {
-        Affliction: { role: 'Dps' },
-        Demonology: { role: 'Dps' },
-        Destruction: { role: 'Dps' },
+        color: '#8788EE',
+        specs: {
+            Affliction: { role: 'Dps' },
+            Demonology: { role: 'Dps' },
+            Destruction: { role: 'Dps' },
+        }
     },
     Warrior: {
-        Arms: { role: 'Dps' },
-        Fury: { role: 'Dps' },
-        Protection: { role: 'Tank' },
+        color: '#C69B6D',
+        specs: {
+            Arms: { role: 'Dps' },
+            Fury: { role: 'Dps' },
+            Protection: { role: 'Tank' },
+        }
     },
 }
 

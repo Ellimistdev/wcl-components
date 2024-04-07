@@ -28,6 +28,6 @@ const resources: { [key: number]: string } = {
     25: "Alternate Mount"
 }
 
-export default function GetResourceName(resourceType: number): string {
+export default function getResourceName(resourceType: number): string {
     return resources[resourceType] || `${resourceType}`;
 }

@@ -2,12 +2,10 @@ import CustomLogger from "../../util/debugging/CustomLogger";
 import { RpgLogs } from "../../definitions/RpgLogs";
 import { eventsByCategoryAndDisposition } from "../../util/wrappers/getEventsByTypeAndDisposition";
 import DamageEvent = RpgLogs.DamageEvent;
-import { formatTime } from "../../util/utils";
+import { binarySearch, formatTime } from "../../util/utils";
 import { Role, Spec } from "../../definitions/Classes";
-import { CLASSES } from "../../definitions/types";
-import getActorRole from "../../util/getActorRole";
+import { getIgnoredActors } from "../../util/getIgnoredActors";
 
-const COMPONENT_NAME = "Damage Per Interval"
 const DEBUG = false
 const LOGGER = new CustomLogger(DEBUG)
 
@@ -19,7 +17,7 @@ const componentDuration = componentIntervals * intervalDuration;
 const startTimeOffset = 4 * 1000;
 
 const ignoredAbilities: { [key: number]: boolean } = { 425610: true };
-const ignoredRoles: Partial<{ [role in Role]: boolean }> = { Tank: true, Healer: true};
+const ignoredRoles: Partial<{ [role in Role]: boolean }> = { Tank: true, Healer: true };
 const ignoredSpecs: Partial<{ [spec in Spec]: boolean }> = { Augmentation: false };
 
 const transformAggregatedDataToChartData = (aggregatedDamage: { [key: string]: { [key: number]: number } }) => {
@@ -88,47 +86,13 @@ export default getComponent = () => {
     const playerFightCount: { [key: string]: number } = {};
 
     for (const fight of reportGroup.fights) {
-        const ignoredActors: { [key: number]: boolean } = {};
         const startTime = fight.startTime + startTimeOffset;
         const endTime = startTime + componentDuration;
-
-        for (const event of fight.allCombatantInfoEvents) {
-            const actor = event.source;
-            if (actor && ignoredRoles[getActorRole(fight, actor) as Role]) {
-            // if (actor && ignoredSpecs[fight.specForPlayer(actor) as Spec]) {
-                ignoredActors[actor.id] = true;
-            } else {
-                const playerName = actor?.name;
-                if (playerName) {
-                    if (!playerFightCount[playerName]) {
-                        playerFightCount[playerName] = 0;
-                    }
-                    playerFightCount[playerName]++;
-                }
-            }
-        }
-
-        LOGGER.addMessage("ignoredActors", ignoredActors)
+        const ignoredActors: { [key: number]: boolean; } =
+            getIgnoredActors(fight, playerFightCount, ignoredRoles, ignoredSpecs, LOGGER);
 
         const events = eventsByCategoryAndDisposition(fight, "damage", "friendly");
         const intervalEventIndexes: { [key: number]: { startIndex: number; endIndex: number } } = {};
-
-        const binarySearch = (events: readonly RpgLogs.AnyEvent[], time: number, left: number, right: number) => {
-            while (left <= right) {
-                const mid = Math.floor((left + right) / 2);
-                const midTimestamp = events[mid].timestamp;
-
-                if (midTimestamp < time) {
-                    left = mid + 1;
-                } else if (midTimestamp > time) {
-                    right = mid - 1;
-                } else {
-                    return mid;
-                }
-            }
-
-            return left;
-        };
 
         const startIndex = binarySearch(events, startTime, 0, events.length - 1);
         const endIndex = binarySearch(events, endTime, startIndex, events.length - 1);
@@ -139,8 +103,11 @@ export default getComponent = () => {
             const actor = event.source;
             if (actor) {
                 const sourceId = actor.id;
+                const isPet = actor.type === "Pet";
+                const isPetWithOwner = isPet && actor.petOwner !== null;
                 if (sourceId && ignoredActors[sourceId] ||
-                    (actor.type === "Pet" &&
+                    (isPet &&
+                        isPetWithOwner &&
                         actor.petOwner &&
                         ignoredActors[actor.petOwner?.id])
                 ) {
@@ -152,8 +119,6 @@ export default getComponent = () => {
                     continue;
                 }
 
-                const isPet = actor.type === "Pet";
-                const isPetWithOwner = isPet && actor.petOwner !== null;
                 const playerName = isPetWithOwner ? actor.petOwner?.name : actor.name;
                 const damage = event.amount;
                 const intervalIndex = Math.floor((event.timestamp - startTime) / intervalDuration);
@@ -172,7 +137,8 @@ export default getComponent = () => {
                         }
                     }
 
-                    aggregatedDamage[playerName][intervalIndex] = (aggregatedDamage[playerName][intervalIndex] || 0) + damage;
+                    aggregatedDamage[playerName][intervalIndex] =
+                        (aggregatedDamage[playerName][intervalIndex] || 0) + damage;
                 }
             }
         }

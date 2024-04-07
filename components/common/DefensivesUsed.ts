@@ -189,14 +189,14 @@ getComponent = () => {
     });
 
     const chartData: {
-        marker: { enabled: boolean; }; 
+        marker: { enabled: boolean; };
         name: string;
         // duration: abilityData.duration,
-        id: any; 
-        data: { 
-            x: number; 
-            x2: number | null; 
-            y: number; 
+        id: any;
+        data: {
+            x: number;
+            x2: number | null;
+            y: number;
         }[];
     }[] = [];
 

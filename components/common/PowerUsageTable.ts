@@ -1,7 +1,7 @@
 import CustomLogger from "../../util/debugging/CustomLogger";
 import { RpgLogs } from "../../definitions/RpgLogs";
 import { eventsByCategoryAndDisposition } from "../../util/wrappers/getEventsByTypeAndDisposition";
-import GetResourceName from "../../util/GetResourceName";
+import getResourceName from "../../util/getResourceName";
 import CastEvent = RpgLogs.CastEvent;
 import getAbilityMarkdown from "../../util/getAbilityMarkdown";
 
@@ -347,7 +347,7 @@ class AbilityData {
             return
         }
 
-        const resourceName = GetResourceName(resourceData.resourceType)
+        const resourceName = getResourceName(resourceData.resourceType)
         this.totalResourcesUsed[resourceName] ??= 0
         this.totalResourcesUsed[resourceName] += resourceData.resourceCost
 
@@ -362,7 +362,7 @@ class AbilityData {
         }
 
 
-        const resourceName = GetResourceName(classResource.resourceType)
+        const resourceName = getResourceName(classResource.resourceType)
         this.totalResourcesUsed[resourceName] ??= 0
         this.totalResourcesUsed[resourceName] += classResource.resourceAmount
 
@@ -370,5 +370,4 @@ class AbilityData {
             this.ParseAdditionalResources(classResource.next)
         }
     }
-
 }
