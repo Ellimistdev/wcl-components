@@ -1,4 +1,5 @@
 import { Classes } from './Classes';
+import { RpgLogs } from './RpgLogs';
 
 export const CLASSES: Classes = {
     DeathKnight: {
@@ -172,3 +173,66 @@ export type Ability = {
     textAlign?: string,
     labelOffsetY?: number,
 };
+
+export interface HeartLocation {
+    x: number;
+    y: number;
+    i: number;
+    assignment: string;
+    name: string;
+    fightId: number;
+    timestamp: string;
+}
+
+export interface PlayerAssignments {
+    [key: string]: string;
+}
+
+export interface PlotLocation {
+    x: number;
+    y: number;
+    i: number;
+    assignment: string;
+    name: string;
+    fightId: number;
+    timestamp: string;
+    targetId?: number;
+}
+
+export interface ChartSeries {
+    name: string;
+    data: PlotLocation[];
+    tooltip: {
+        headerFormat: string;
+    };
+}
+
+export interface ChartBounds {
+    Y_MIN: number;
+    Y_MAX: number;
+    X_MIN: number;
+    X_MAX: number;
+}
+
+export type EventFilter = {
+    type: 'damage' | 'debuffApply' | 'debuffRemove';
+    abilityId: number;
+    targetFilter?: (event: RpgLogs.AnyEvent) => boolean;
+}
+
+export type SetDefinition = {
+    triggerEvent: EventFilter;
+    plotEvent: EventFilter;
+    window: number;
+}
+
+export interface EventPlotterConfig {
+    bossEncounterId: number;
+    setDefinition: SetDefinition;
+    chartBounds: ChartBounds;
+    assignmentMapping?: {
+        [key: string]: string;
+    };
+    title: string;
+    background: string;
+}

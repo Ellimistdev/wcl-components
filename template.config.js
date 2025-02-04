@@ -11,12 +11,17 @@ module.exports = {
             loginMethod: "WCL",
             components: {
                 common: {
-                    DamagePerInterval: "https://www.warcraftlogs.com/reports/w6VJgD4MGHtzpxZb#view=components&boss=2786&difficulty=5",
-                    DefensivesUsed: "https://www.warcraftlogs.com/reports/TfgLYxFXCd64HWca#view=components&fight=36&source=36",
+                    DamagePerInterval: "https://www.warcraftlogs.com/reports/Nr9ZjP8vtAQkD4w3#fight=29&view=components",
+                    DefensivesUsed: "https://www.warcraftlogs.com/reports/Nr9ZjP8vtAQkD4w3#fight=29&view=components",
+                    DefensivesUsedTable: "https://www.warcraftlogs.com/reports/Nr9ZjP8vtAQkD4w3#fight=29&view=components",
+                    DefensivesTimeline: "https://www.warcraftlogs.com/reports/Nr9ZjP8vtAQkD4w3#fight=29&view=components"
                 },
                 classSpecific: {
-                    GiantSlayerValue: "https://www.warcraftlogs.com/reports/cNtPvy17QJb9wrX4#fight=15&view=components&source=194",
-                    AlterTimeHeals: "https://www.warcraftlogs.com/reports/mRGZtWpdfYvng78a#fight=15&view=components&source=4"
+                    GiantSlayerValue: "https://www.warcraftlogs.com/reports/Nr9ZjP8vtAQkD4w3#fight=29&view=components",
+                    AlterTimeHeals: "https://www.warcraftlogs.com/reports/Nr9ZjP8vtAQkD4w3#fight=29&view=components"
+                },
+                encounterSpecific: {
+                    VolcanicHeartPlot: "https://www.warcraftlogs.com/reports/g8V9vCj7tKGMQwan?fight=26&view=components"
                 },
             }
         },
@@ -29,13 +34,23 @@ module.exports = {
         }
     },
     components: {
-        AlterTimeHeals: {
-            h: 3,
-            w: 1
+        common: {
+            DefensivesUsed: {
+                h: 3,
+                w: 1
+            },
         },
-        GiantSlayerValue: {
-            h: 1,
-            w: 2
+        classSpecific: {
+            GiantSlayerValue: {
+                h: 1,
+                w: 2
+            },
+        },
+        encounterSpecific: {
+            VolcanicHeartPlot: {
+                h: 3,
+                w: 1
+            }
         }
     },
     watch: true
