@@ -1,8 +1,34 @@
 import { RpgLogs } from "./RpgLogs";
 
+
+interface ComponentDimensions {
+    /**
+     * Width of the component, default 1 if not specified
+     */
+    w?: number;
+
+    /**
+     * Height of the component, default 2 if not specified
+     */
+    h?: number;
+}
+
+interface ComponentConfig extends ComponentDimensions {
+    /**
+     * Optional static ID for the component
+     * If not provided, a random ID will be generated
+     */
+    i?: string;
+}
+
+type RecursiveComponentMap = {
+    [key: string]: ComponentConfig | RecursiveComponentMap;
+};
+
 interface TemplateConfig {
     /**
-     * Config options for the included custom plugins. Omitting a plugin or assigning a falsy value will deactivate it.
+     * Config options for the included custom plugins.
+     * Omitting a plugin or assigning a falsy value will deactivate it.
      */
     plugins: {
         clearSource?: false | ClearSourcePluginOptions
@@ -10,11 +36,10 @@ interface TemplateConfig {
         autoTest?: false | AutoTestPluginOption
     },
     /**
-     * This allows to assign individual sizes or static ids to your components.
-     * It takes the component name (The file name without any endings).
+     * Component configuration including dimensions and optional static IDs.
+     * Supports nested organization of components.
      */
-    components: { [componentName: string]: Omit<Component, "component"> },
-
+    components: RecursiveComponentMap
 }
 
 interface AutoTestPluginOption {
@@ -33,20 +58,19 @@ interface ClearSourcePluginOptions {
 
 export interface Component {
     /**
-     * The Components UUID
+     * The component's UUID (either provided in config or generated)
      */
     i: string
 
     /**
-     * Width of the component, default 1
+     * Final width of the component (config value or default)
      */
     w: number
 
     /**
-     * Height of the component, default 2
+     * Final height of the component (config value or default)
      */
     h: number
-
 
     component: {
         /**
@@ -55,6 +79,14 @@ export interface Component {
         script: string
     }
 }
+
+export type { 
+    TemplateConfig,
+    ComponentConfig,
+    ComponentDimensions,
+    AutoTestPluginOption,
+    ClearSourcePluginOptions 
+};
 
 type actorFilter = Partial<RpgLogs.Actor>;
 type abilityFilter = Omit<Partial<RpgLogs.Ability>, "id">;

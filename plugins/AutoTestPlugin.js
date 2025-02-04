@@ -16,6 +16,8 @@ class AutoTestPlugin {
      */
     componentCache = {}
 
+    importedComponents = {}  // Track imported components
+
     /**
      * @param options {import("../definitions/template").AutoTestPluginOption}
      */
@@ -47,12 +49,13 @@ class AutoTestPlugin {
 
     apply(compiler) {
         compiler.hooks.assetEmitted.tapAsync('AutoTestPlugin', (file, info, callback) => {
-            if (!file.endsWith('.component.js')) {
+            if (!file.endsWith('.component.js') && !file.endsWith('component.import.txt')) {
                 callback();
                 return;
             }
 
-            const componentPath = file.replace('.component.js', '');
+            let componentPath = file.replace('.component.js', '')
+                .replace('.component.import.txt', '');
             const componentParts = componentPath.split(path.sep);
             const componentName = componentParts[componentParts.length - 1];
             const componentCategory = componentParts.slice(0, -1).join(path.sep);
@@ -72,37 +75,77 @@ class AutoTestPlugin {
                 return;
             }
 
+            console.log(file);
+            console.log(file.endsWith('.component.import.txt'));
+
+            // Determine if this is an import file or the first load
+            const isImportFile = file.endsWith('.component.import.txt');
+            const isFirstLoad = !this.pageCache[componentName];
+            console.log("IsFirstLoad", isFirstLoad);
+            console.log("Component Cache:", this.componentCache);
+            console.log("Page Cache:", this.pageCache);
+
             const content = info.content.toString();
             const hash = this.cyrb53(content);
 
-            if (this.componentCache[componentName] === hash) {
+            // Check if this component has already been imported
+            if (isImportFile && this.importedComponents[componentName]) {
+                console.log(`Import file for ${componentName} already processed. Skipping.`);
                 callback();
                 return;
             }
 
-            this.componentCache[componentName] = hash;
-
-            // Save the updated component cache
-            const folder = path.resolve(__dirname, 'tmp');
-            if (!fs.existsSync(folder)) {
-                fs.mkdirSync(folder);
+            // For first load, try to read the import file
+            let importContent = null;
+            if (isFirstLoad) {
+                 // Construct path using dist directory
+                 const distPath = path.resolve(compiler.options.output.path);
+                 const importFilePath = path.join(distPath, componentPath + '.component.import.txt');
+                 if (fs.existsSync(importFilePath)) {
+                    importContent = fs.readFileSync(importFilePath, 'utf8');
+                    console.log(`Found import file for ${componentName}`);
+                } else {
+                    console.log(`No import file found for ${componentName} at ${importFilePath}`);
+                }
             }
-            const ws = fs.createWriteStream(path.join(folder, '/fileHashes.json'));
-            ws.write(JSON.stringify(this.componentCache));
-            console.log('Cache saved');
 
-            // Run test for the changed component
-            this.getTestingPage(this.browser, componentName, testingURL)
-                .then((page) => {
-                    return this.runCode(page, content, testingURL);
-                })
-                .then(() => {
-                    callback();
-                })
-                .catch((err) => {
-                    console.error(`Error running test for component: ${componentName}`, err);
-                    callback();
-                });
+            // Get the cached hash, defaulting to -1 if not found
+            const cachedHash = this.componentCache[componentName] || -1;
+
+            // Only proceed if the hash is different from the cached hash
+            if (hash !== cachedHash) {
+                console.log(`Component ${componentName} changed (hash: ${hash}, cached: ${cachedHash})`);
+                this.componentCache[componentName] = hash;
+
+                // Save the updated component cache
+                const folder = path.resolve(__dirname, 'tmp');
+                if (!fs.existsSync(folder)) {
+                    fs.mkdirSync(folder);
+                }
+                const ws = fs.createWriteStream(path.join(folder, '/fileHashes.json'));
+                ws.write(JSON.stringify(this.componentCache));
+
+                // Mark as imported if this is an import file
+                if (isImportFile) {
+                    this.importedComponents[componentName] = true;
+                }
+
+                // Run test for the changed component
+                this.getTestingPage(this.browser, componentName, testingURL, importContent)
+                    .then((page) => {
+                        return this.runCode(page, content, testingURL);
+                    })
+                    .then(() => {
+                        callback();
+                    })
+                    .catch((err) => {
+                        console.error(`Error running test for component: ${componentName}`, err);
+                        callback();
+                    });
+            } else {
+                console.log(`Component ${componentName} unchanged (hash: ${hash})`);
+                callback();
+            }
         });
     }
 
@@ -112,13 +155,13 @@ class AutoTestPlugin {
      * @param componentName {string}
      * @return {Promise<import("puppeteer").Page>}
      */
-    async getTestingPage(browser, componentName, testingURL) {
+    async getTestingPage(browser, componentName, testingURL, importString) {
         if (this.pageCache[componentName]) {
             return this.pageCache[componentName]
         }
-
+    
         const page = await browser.newPage()
-
+    
         // Get the screen dimensions
         const { width, height } = await page.evaluate(() => {
             return {
@@ -126,40 +169,106 @@ class AutoTestPlugin {
                 height: window.screen.availHeight,
             };
         });
-
-        // Set the viewport size to match the screen dimensions
+    
         await page.setViewport({ width, height });
-
         await page.goto(testingURL)
-
+    
         const changeTitle = page.evaluate(({ componentName }) => {
-            // eslint-disable-next-line no-undef
             document.title = componentName
         }, { componentName })
-
+    
         // enter dashboard edit
         await page.click("button.react-tile__action:nth-child(3)")
-        const componentsCount = (await page.$$('.report-component-dashboard__cell-overlay')).length
-        // create new component
-        const newComponentButton = ".report-component-dashboard__component-buttons > button:nth-child(1)";
-        await page.waitForSelector(newComponentButton, { timeout: 60000 })
-        await page.$eval(newComponentButton, element => element.click())
-
+    
+        // Selectors for import process
+        const importButtonSelector = ".report-component-dashboard__component-buttons > button:nth-child(2)";
+        const importTextareaSelector = '#report-component-dashboard-container > div > div:nth-child(2) > div.react-tile__content.react-tile__content--regular > div > div.textarea > textarea';
+        const importContinueButtonSelector = '#report-component-dashboard-container > div > div:nth-child(2) > div.react-tile__content.react-tile__content--regular > div > div.vertical-content.save-changes-or-cancel-buttons.vertical-content--position-center.vertical-content--gap-content-padding > div > button.react-button.react-button--style-primary';
+    
+        await page.waitForSelector(importButtonSelector, { timeout: 60000 });
+        
+        const componentsCount = (await page.$$('.report-component-dashboard__cell-overlay')).length;
+    
+        if (importString) {
+            await page.click(importButtonSelector);
+            
+            await page.waitForSelector(importTextareaSelector);
+            await page.focus(importTextareaSelector);
+            await page.keyboard.down('Control');
+            await page.keyboard.press('A');
+            await page.keyboard.up('Control');
+            await page.keyboard.press('Backspace');
+            
+            // Use clipboardy to paste the string
+            const clipboardy = (await import("clipboardy")).default;
+            await clipboardy.writeSync(importString);
+            await page.keyboard.down('Control');
+            await page.keyboard.press('V');
+            await page.keyboard.up('Control');
+    
+            await page.click(importContinueButtonSelector);
+            
+            // // Wait for import to complete and for edit button to be registered
+            // await page.waitForSelector('#report-component-dashboard-container > div > div.react-tile.report-component-dashboard.report-component-dashboard--is-being-edited > div.react-tile__content.react-tile__content--narrow > div > div.react-grid-layout.layout > div:nth-child(1) > div.report-component-dashboard__cell-buttons > button:nth-child(2)', { timeout: 60000 });
+            
+            // // Add a small delay to ensure component is fully loaded
+            // await page.waitForTimeout(1000);
+        } else {
+            // If no import string, create a new component
+            const newComponentButton = ".report-component-dashboard__component-buttons > button:nth-child(1)";
+            await page.waitForSelector(newComponentButton, { timeout: 60000 })
+            await page.$eval(newComponentButton, element => element.click())
+        }
+    
         await page.waitForFunction(componentsCount => {
-            // eslint-disable-next-line no-undef
             return document.getElementsByClassName("report-component-dashboard__cell-overlay").length > componentsCount
         }, {}, componentsCount)
-
-        const firstComponentSelector = "div.react-grid-item:nth-child(1) > div:nth-child(2)";
-        await page.hover(firstComponentSelector)
-
-        const editButton = "div.react-grid-item:nth-child(1) > div:nth-child(3) > button:nth-child(2)";
-        await page.click(editButton)
-
+    
+        // Wait for component to be fully rendered and interactable
+        // await page.waitForTimeout(500);
+    
+        // Improved component selection and editing
+        try {
+            // Wait for all components to be visible
+            await page.waitForSelector('.react-grid-layout .react-grid-item', { visible: true, timeout: 5000 });
+    
+            // Find the most recently added component
+            const components = await page.$$('.react-grid-layout .react-grid-item');
+            const latestComponent = components[0];
+    
+            // Hover over the latest component
+            await latestComponent.hover();
+    
+            // Wait briefly after hover
+            await page.waitForTimeout(100);
+    
+            // Find and click the edit button for this specific component
+            const editButton = await latestComponent.$('button.react-button:nth-child(2)');
+            if (editButton) {
+                await editButton.click();
+            } else {
+                console.warn('Edit button not found for the latest component');
+                
+                // Fallback: try to find edit button using more generic selector
+                const fallbackEditSelector = '.react-grid-layout .react-grid-item button.react-button:nth-child(2)';
+                await page.click(fallbackEditSelector);
+            }
+        } catch (error) {
+            console.error('Error selecting and editing component:', error);
+            
+            // Last resort: try original method
+            const firstComponentSelector = "div.react-grid-layout div.react-grid-item:first-child";
+            await page.waitForSelector(firstComponentSelector, { visible: true });
+            await page.hover(firstComponentSelector);
+            await page.waitForTimeout(100);
+            const editButtonSelector = `${firstComponentSelector} button.react-button:nth-child(2)`;
+            await page.waitForSelector(editButtonSelector, { visible: true });
+            await page.click(editButtonSelector);
+        }
+    
         const printResponse = (response) => {
             if (response.url().includes('https://www.warcraftlogs.com/reports/evaluate-component-script') && response.ok()) {
                 response.json().then((content) => {
-                    //WCL Evals the newly created component. This will remove some log spam
                     if (content.result?.props?.content && content.result.props.content === "Hello world!") {
                         return
                     }
@@ -167,9 +276,8 @@ class AutoTestPlugin {
                 })
             }
         }
-        // Intercept request and response
         page.on('response', printResponse);
-
+    
         await changeTitle
         this.pageCache[componentName] = page
         return page
@@ -228,7 +336,6 @@ class AutoTestPlugin {
         await page.type("#email", login)
         await page.type("#password", passwort)
 
-
         await Promise.all([
             page.click(".dialog-table > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(1) > input:nth-child(1)"),
             page.waitForNavigation({
@@ -265,7 +372,6 @@ class AutoTestPlugin {
         await page.type("#password", passwort)
         await page.click('#submit');
         await page.waitForFunction(() => {
-            // eslint-disable-next-line no-undef
             return !document.URL.includes("battle.net")
         }, { timeout: 60000 });
     }
@@ -273,17 +379,17 @@ class AutoTestPlugin {
     /**
      *
      * @param page {import("puppeteer").Page}
-     * @param text {string}
+     * @param content {string}
      * @return {Promise<void>}
      */
-    async runCode(page, text, testingURL) {
+    async runCode(page, content, testingURL) {
         try {
             await page.bringToFront()
         } catch (e) {
             this.browser = undefined
             this.pageCache = {}
             this.browser = await this.setupTestingBrowser()
-            this.pageCache = await this.getTestingPage(this.browser, await page.title(), testingURL)
+            this.pageCache = await this.getTestingPage(this.browser, await page.title(), testingURL, content)
         }
 
         const monacoEditor = ".monaco-editor.no-user-select"
@@ -294,12 +400,12 @@ class AutoTestPlugin {
         await page.keyboard.up('ControlLeft')
         await page.keyboard.press('Backspace')
         const clipboardy = (await import("clipboardy")).default
-        await clipboardy.writeSync(text)
+        await clipboardy.writeSync(content)
         await page.keyboard.down('ControlLeft')
         await page.keyboard.press('KeyV')
         await page.keyboard.up('ControlLeft')
-        const runButtonSelector = "#report-component-dashboard-container > div > div.react-tile.report-component-dashboard__cell-edited > div.react-tile__content.react-tile__content--regular > div > div:nth-child(1) > div.report-component-sandbox__buttons > button"
 
+        const runButtonSelector = "#report-component-dashboard-container > div > div.react-tile.report-component-dashboard__cell-edited > div.react-tile__content.react-tile__content--regular > div > div:nth-child(1) > div.report-component-sandbox__buttons > button"
         await page.$eval(runButtonSelector, element => element.click())
     }
 }

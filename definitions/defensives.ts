@@ -24,11 +24,11 @@ export const defensives: Defensives =
             "cooldown": 120000
         },
         // This is rotational for bdk and makes the chart unreadable :(
-        // "49998": {
-        //     "name": "Death Strike",
-        //     "duration": 0,
-        //     "cooldown": 0
-        // },
+        "49998": {
+            "name": "Death Strike",
+            "duration": 0,
+            "cooldown": 0
+        },
         "327574": {
             "name": "Sacrificial Pact",
             "duration": 0,
@@ -83,6 +83,11 @@ export const defensives: Defensives =
             "duration": 0,
             "cooldown": 90000
         },
+        "124974": {
+            "name": "Nature's Vigil",
+            "duration": 15000,
+            "cooldown": 90000
+        },
         "319454": {
             "name": "Heart of the Wild",
             "duration": 45000,
@@ -93,6 +98,11 @@ export const defensives: Defensives =
         "355913": {
             "name": "Emerald Blossom",
             "duration": 1500,
+            "cooldown": 30000
+        },
+        "360827": {
+            "name": "Blistering Scales", // targeted
+            "duration": 0,
             "cooldown": 30000
         },
         "360995": {
@@ -146,6 +156,11 @@ export const defensives: Defensives =
             "name": "Fortitude of the Bear",
             "duration": 10000,
             "cooldown": 120000
+        },
+        "392956": {
+            "name": "Fortitude of the Bear", // cast
+            "duration": 10000,
+            "cooldown": 120000
         }
     },
     "Mage": {
@@ -179,16 +194,16 @@ export const defensives: Defensives =
             "duration": 3000,
             "cooldown": 120000
         },
-        // "110959": {
-        //     "name": "Greater Invisibility", // cast
-        //     "duration": 3000,
-        //     "cooldown": 120000
-        // },
-        // "110960": {
-        //     "name": "Greater Invisibility", // invis
-        //     "duration": 3000,
-        //     "cooldown": 120000
-        // },
+        "110959": {
+            "name": "Greater Invisibility", // cast
+            "duration": 3000,
+            "cooldown": 120000
+        },
+        "110960": {
+            "name": "Greater Invisibility", // invis
+            "duration": 3000,
+            "cooldown": 120000
+        },
         "235219": {
             "name": "Cold Snap",
             "duration": 0,
@@ -225,6 +240,11 @@ export const defensives: Defensives =
             "name": "Fortifying Brew",
             "duration": 15000,
             "cooldown": 360000
+        },
+        "116670": {
+            "name": "Vivify",
+            "duration": 0,
+            "cooldown": 0
         },
         "122278": {
             "name": "Dampen Harm",
@@ -339,10 +359,20 @@ export const defensives: Defensives =
             "duration": 600000,
             "cooldown": 0
         },
+        "108270": {
+            "name": "Stone Bulwark Totem",
+            "duration": 12000,
+            "cooldown": 120000
+        },
         "108271": {
             "name": "Astral Shift",
             "duration": 12000,
             "cooldown": 120000
+        },
+        "108281": {
+            "name": "Ancestral Guidance",
+            "duration": 60000,
+            "cooldown": 300000
         },
         "198103": {
             "name": "Earth Elemental",
@@ -369,6 +399,11 @@ export const defensives: Defensives =
         "234153": {
             "name": "Drain Life",
             "duration": 5000,
+            "cooldown": 0
+        },
+        "452930": {
+            "name": "Demonic Healthstone",
+            "duration": 0,
             "cooldown": 0
         }
     },
@@ -424,33 +459,6 @@ export const defensives: Defensives =
             "textAlign": "left",
             "labelOffsetY": 1 // can't be 0
         },
-        "191378": {
-            "name": "Refreshing Healing Potion - R1",
-            "duration": 0,
-            "cooldown": 300000,
-            "color": "#E795A3",
-            "verticalAlign": "top",
-            "textAlign": "left",
-            "labelOffsetY": 1
-        },
-        "191379": {
-            "name": "Refreshing Healing Potion - R2",
-            "duration": 0,
-            "cooldown": 300000,
-            "color": "#E795A3",
-            "verticalAlign": "top",
-            "textAlign": "left",
-            "labelOffsetY": 1
-        },
-        "191380": {
-            "name": "Refreshing Healing Potion - R3",
-            "duration": 0,
-            "cooldown": 300000,
-            "color": "#E795A3",
-            "verticalAlign": "top",
-            "textAlign": "left",
-            "labelOffsetY": 1
-        },
         "370511": {
             "name": "Refreshing Healing Potion - Cast",
             "duration": 0,
@@ -460,35 +468,17 @@ export const defensives: Defensives =
             "textAlign": "left",
             "labelOffsetY": 1
         },
-        "207021": {
-            "name": "Dreamwalker's Healing Potion - R1",
-            "duration": 0,
-            "cooldown": 300000,
-            "color": "#E795A3",
-            "verticalAlign": "top",
-            "textAlign": "left",
-            "labelOffsetY": 1
-        },
-        "207022": {
-            "name": "Dreamwalker's Healing Potion - R2",
-            "duration": 0,
-            "cooldown": 300000,
-            "color": "#E795A3",
-            "verticalAlign": "top",
-            "textAlign": "left",
-            "labelOffsetY": 1
-        },
-        "207023": {
-            "name": "Dreamwalker's Healing Potion - R3",
-            "duration": 0,
-            "cooldown": 300000,
-            "color": "#E795A3",
-            "verticalAlign": "top",
-            "textAlign": "left",
-            "labelOffsetY": 1
-        },
         "415569": {
             "name": "Dreamwalker's Healing Potion - Cast",
+            "duration": 0,
+            "cooldown": 300000,
+            "color": "#E795A3",
+            "verticalAlign": "top",
+            "textAlign": "left",
+            "labelOffsetY": 1
+        },
+        "431416": {
+            "name": "Algari Healing Potion - Cast",
             "duration": 0,
             "cooldown": 300000,
             "color": "#E795A3",

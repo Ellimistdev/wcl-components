@@ -33,3 +33,10 @@ export function allEventsByCategoryAndDisposition<T extends RpgLogs.EventCategor
     return fight.allEventsByCategoryAndDisposition(category, disposition) as unknown as ReadonlyArray<EventTypeUnions<T>>
 }
 
+export const isDamageEvent = (event: RpgLogs.AnyEvent): event is RpgLogs.DamageEvent => {
+    return event.type === 'damage';
+};
+
+export const isApplyDebuffEvent = (event: RpgLogs.AnyEvent): event is RpgLogs.ApplyDebuffEvent => {
+    return event.type === 'applydebuff';
+};

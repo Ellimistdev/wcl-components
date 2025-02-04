@@ -5,6 +5,7 @@ module.exports = {
             compress: true
         },
         exportString: true,
+        componentImportString: true,
         autoTest: {
             active: true,
             loginMethod: "WCL",

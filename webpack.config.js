@@ -4,6 +4,7 @@ const webpack = require("webpack")
 const TerserPlugin = require("terser-webpack-plugin");
 const ClearSourcePlugin = require("./plugins/ClearSourcePlugin")
 const CreateExportStringPlugin = require("./plugins/CreateExportStringPlugin")
+const CreateComponentImportStringPlugin = require("./plugins/CreateComponentImportStringPlugin")
 const templateConfig = require("./template.config")
 const WCLCompatibilityPlugin = require("./plugins/WCLCompatibilityPlugin");
 const AutoTestPlugin = require("./plugins/AutoTestPlugin");
@@ -34,6 +35,9 @@ function createPluginArray(env) {
     }
     if (templateConfig.plugins.exportString) {
         plugins.push(new CreateExportStringPlugin())
+    }
+    if (templateConfig.plugins.componentImportString) {
+        plugins.push(new CreateComponentImportStringPlugin())
     }
 
     plugins.push(new WCLCompatibilityPlugin())
