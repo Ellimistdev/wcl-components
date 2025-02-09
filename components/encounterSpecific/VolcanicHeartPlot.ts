@@ -1,8 +1,9 @@
 // Example usage for Volcanic Heart
+import { EncounterIds } from '../../definitions/encounterIds';
 import EventPlotter from '../generic/EventPlotter';
 
 const CONFIG = {
-    bossEncounterId: 2684,
+    bossEncounterId: EncounterIds.Aberrus.EchoOfNeltharian,
     background: 'https://i.imgur.com/sVKDJ0d.png',
     setDefinition: {
         // Trigger sets based on debuff application

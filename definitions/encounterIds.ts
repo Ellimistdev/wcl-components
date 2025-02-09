@@ -16,4 +16,8 @@ export namespace EncounterIds {
         TheSilkenCourt = 2921,
         QueenAnsurek = 2922
     }
+
+    export enum Aberrus {
+        EchoOfNeltharian = 2684
+    }
 }

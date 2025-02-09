@@ -3,6 +3,7 @@ import { eventsByCategoryAndDisposition } from "../../util/wrappers/getEventsByT
 import { filterEvents, getEventCategory, groupEventsByTime } from "../../util/eventUtils";
 import { RpgLogs } from "../../definitions/RpgLogs";
 import { EventPlotterConfig, PlotLocation, ChartSeries } from "../../definitions/types";
+import { EncounterIds } from "../../definitions/encounterIds";
 
 const markerAssignments: Record<number, string> = {
     0: 'star',
@@ -115,14 +116,26 @@ export default getComponent = (config: EventPlotterConfig) => {
     const isBoss = reportGroup.fights
         .every(fight => fight.encounterId === config.bossEncounterId);
 
-    if (!isBoss) {
-        return {
-            component: 'EnhancedMarkdown',
-            props: {
-                content: `This component only works for <EncounterIcon id="${config.bossEncounterId}">Boss</EncounterIcon>.`
+        function getBossName(bossId: number): string {
+            // Get all raid enums
+            const raids = Object.values(EncounterIds);
+            // Find the right boss name
+            for (const raid of raids) {
+                const bossName = Object.entries(raid)
+                    .find(([_, value]) => value === bossId)?.[0];
+                if (bossName) return bossName;
             }
-        };
-    }
+            throw new Error(`Boss ID ${bossId} not found`);
+        }
+        
+        if (!isBoss) {
+            return {
+                component: 'EnhancedMarkdown',
+                props: {
+                    content: `This component only works for <EncounterIcon id="${config.bossEncounterId}">${getBossName(config.bossEncounterId)}</EncounterIcon>.`
+                }
+            };
+        }
 
     let maxSetCount = 0;
     const data = reportGroup.fights.flatMap(fight => {
