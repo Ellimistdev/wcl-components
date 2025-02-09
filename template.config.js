@@ -21,7 +21,8 @@ module.exports = {
                     AlterTimeHeals: "https://www.warcraftlogs.com/reports/Nr9ZjP8vtAQkD4w3#fight=29&view=components"
                 },
                 encounterSpecific: {
-                    VolcanicHeartPlot: "https://www.warcraftlogs.com/reports/g8V9vCj7tKGMQwan?fight=26&view=components"
+                    VolcanicHeartPlot: "https://www.warcraftlogs.com/reports/g8V9vCj7tKGMQwan?fight=26&view=components",
+                    TwilightMassacrePlot: "https://www.warcraftlogs.com/reports/cBwzFpRdrZH4xbga?fight=34&view=components"
                 },
             }
         },
@@ -48,6 +49,10 @@ module.exports = {
         },
         encounterSpecific: {
             VolcanicHeartPlot: {
+                h: 3,
+                w: 1
+            },
+            TwilightMassacrePlot: {
                 h: 3,
                 w: 1
             }

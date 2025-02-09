@@ -192,11 +192,18 @@ export interface PlotLocation {
     x: number;
     y: number;
     i: number;
-    assignment: string;
-    name: string;
     fightId: number;
     timestamp: string;
+    name?: string;
     targetId?: number;
+    symbol?: PlotSymbol;
+}
+
+export interface PlotSymbol {
+    enabled: boolean;
+    symbol?: string;
+    height?: number;
+    width?: number;
 }
 
 export interface ChartSeries {
@@ -208,10 +215,12 @@ export interface ChartSeries {
 }
 
 export interface ChartBounds {
-    Y_MIN: number;
-    Y_MAX: number;
-    X_MIN: number;
-    X_MAX: number;
+    Y_MIN: number; // sets base Y
+    Y_MAX: number; // scales Y
+    X_MIN: number; // sets base X
+    X_MAX: number; // scales X
+    NUDGE_X: number; // fine-tune X
+    NUDGE_Y: number; // fine-tune Y
 }
 
 export type EventFilter = {
@@ -230,9 +239,6 @@ export interface EventPlotterConfig {
     bossEncounterId: number;
     setDefinition: SetDefinition;
     chartBounds: ChartBounds;
-    assignmentMapping?: {
-        [key: string]: string;
-    };
     title: string;
     background: string;
 }

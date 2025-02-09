@@ -37,6 +37,39 @@ export namespace EncounterAbilities {
             SearingBreath = 402051
         }
     }
+
+    export namespace NerubarPalace {
+        export enum UlgraxTheDevourer { }
+
+        export enum TheBloodboundHorror { }
+
+        export enum SikranCaptainOfTheSurki { }
+
+        export enum Rashanan { }
+
+        export enum BroodtwisterOvinax { }
+
+        export enum NexusPrincessKyveza {
+            TwilightMassacreCharge = 438139, // Charge
+            TwilightMassacrePlayerTargeted = 438141, // Targeted Debuff
+            TwilightMassacreDamageEvent = 438145, // Damage event
+            TwilightMassacreGhostTargeting = 438153, // Targeting
+            TwilightMassacre = 438245, // Initial cast
+            Queensbane = 437343,       // Debuff 
+            Regicide1 = 435534,        // Debuff
+            Regicide2 = 436596,        // nothing?
+            Regicide3 = 436663,        // Debuff
+            Regicide4 = 436664,        // Debuff
+            Regicide5 = 436665,        // Debuff
+            Regicide6 = 436666,        // Debuff
+            Regicide7 = 436671,        // Debuff
+            RegicideDamageEvent = 436787,        // Damage taken
+        }
+        
+        export enum TheSilkenCourt { }
+
+        export enum QueenAnsurek { }
+    }
 }
 
 // Companion type for the styling information
@@ -78,5 +111,5 @@ export const AbilityStyles: Record<number, AbilityStyle> = {
     [EncounterAbilities.Aberrus.Tindral.Supernova]: createAbilityStyle('Supernova', '#D7CDCC'),
     [EncounterAbilities.Aberrus.Tindral.SeedOfFlame]: createAbilityStyle('Seed of Flame', '#5C457'),
     [EncounterAbilities.Aberrus.Tindral.FieryGrowth]: createAbilityStyle('Fiery Growth', '#C69B6D'),
-    [EncounterAbilities.Aberrus.Tindral.Sunflame]: createAbilityStyle('Sunflame', '#638CF2'),
-};
+    [EncounterAbilities.Aberrus.Tindral.Sunflame]: createAbilityStyle('Sunflame', '#638CF2')
+}

@@ -21,16 +21,9 @@ const CONFIG = {
         Y_MIN: 2400,
         Y_MAX: 2533,
         X_MIN: -2549,
-        X_MAX: -2415
-    },
-    assignmentMapping: {
-        'Zaratul': '7',
-        'Sindir': '1',
-        'Vox': '3',
-        'ZennTyo': '2',
-        'Maomitrasza': '5',
-        'Gibbit': '6',
-        'Xerog': '4',
+        X_MAX: -2415,
+        NUDGE_X: 0,
+        NUDGE_Y: 0,
     },
     title: 'Volcanic Heart Drops'
 };
@@ -38,8 +31,3 @@ const CONFIG = {
 export default getComponent = () => {
   return EventPlotter(CONFIG);
 }
-
-// `#report-component-dashboard-container > div > div.react-tile.report-component-dashboard.report-component-dashboard--is-being-edited > div.react-tile__content.react-tile__content--narrow > div > div.react-grid-layout.layout > div:nth-child(1) > div.report-component-dashboard__cell-overlay`
-// `#report-component-dashboard-container > div > div.react-tile.report-component-dashboard.report-component-dashboard--is-being-edited > div.react-tile__content.react-tile__content--narrow > div > div.react-grid-layout.layout > div:nth-child(1) > div.report-component-dashboard__cell-buttons > button:nth-child(2)`
-// `#report-component-dashboard-container > div > div:nth-child(2) > div.react-tile__content.react-tile__content--regular > div > div.editor > div > div.monaco-editor.no-user-select`
-    

@@ -7,6 +7,8 @@ require('dotenv').config({ path: ".env" });
 class AutoTestPlugin {
     pageCache = {}
     browser = undefined
+    componentEditStates = {} // Track whether components are in edit mode
+    importedComponents = {}  // Track imported components
 
     /**@type {import("../definitions/template").AutoTestPluginOption}*/
     options
@@ -15,8 +17,6 @@ class AutoTestPlugin {
      * @type {Record<string, number>}
      */
     componentCache = {}
-
-    importedComponents = {}  // Track imported components
 
     /**
      * @param options {import("../definitions/template").AutoTestPluginOption}
@@ -98,10 +98,10 @@ class AutoTestPlugin {
             // For first load, try to read the import file
             let importContent = null;
             if (isFirstLoad) {
-                 // Construct path using dist directory
-                 const distPath = path.resolve(compiler.options.output.path);
-                 const importFilePath = path.join(distPath, componentPath + '.component.import.txt');
-                 if (fs.existsSync(importFilePath)) {
+                // Construct path using dist directory
+                const distPath = path.resolve(compiler.options.output.path);
+                const importFilePath = path.join(distPath, componentPath + '.component.import.txt');
+                if (fs.existsSync(importFilePath)) {
                     importContent = fs.readFileSync(importFilePath, 'utf8');
                     console.log(`Found import file for ${componentName}`);
                 } else {
@@ -159,9 +159,12 @@ class AutoTestPlugin {
         if (this.pageCache[componentName]) {
             return this.pageCache[componentName]
         }
-    
+
+        // Component will start in edit mode when first created/imported
+        this.componentEditStates[componentName] = true;
+
         const page = await browser.newPage()
-    
+
         // Get the screen dimensions
         const { width, height } = await page.evaluate(() => {
             return {
@@ -169,48 +172,48 @@ class AutoTestPlugin {
                 height: window.screen.availHeight,
             };
         });
-    
+
         await page.setViewport({ width, height });
         await page.goto(testingURL)
-    
+
         const changeTitle = page.evaluate(({ componentName }) => {
             document.title = componentName
         }, { componentName })
-    
+
         // enter dashboard edit
         await page.click("button.react-tile__action:nth-child(3)")
-    
+
         // Selectors for import process
         const importButtonSelector = ".report-component-dashboard__component-buttons > button:nth-child(2)";
         const importTextareaSelector = '#report-component-dashboard-container > div > div:nth-child(2) > div.react-tile__content.react-tile__content--regular > div > div.textarea > textarea';
         const importContinueButtonSelector = '#report-component-dashboard-container > div > div:nth-child(2) > div.react-tile__content.react-tile__content--regular > div > div.vertical-content.save-changes-or-cancel-buttons.vertical-content--position-center.vertical-content--gap-content-padding > div > button.react-button.react-button--style-primary';
-    
+
         await page.waitForSelector(importButtonSelector, { timeout: 60000 });
-        
+
         const componentsCount = (await page.$$('.report-component-dashboard__cell-overlay')).length;
-    
+
         if (importString) {
             await page.click(importButtonSelector);
-            
+
             await page.waitForSelector(importTextareaSelector);
             await page.focus(importTextareaSelector);
             await page.keyboard.down('Control');
             await page.keyboard.press('A');
             await page.keyboard.up('Control');
             await page.keyboard.press('Backspace');
-            
+
             // Use clipboardy to paste the string
             const clipboardy = (await import("clipboardy")).default;
             await clipboardy.writeSync(importString);
             await page.keyboard.down('Control');
             await page.keyboard.press('V');
             await page.keyboard.up('Control');
-    
+
             await page.click(importContinueButtonSelector);
-            
+
             // // Wait for import to complete and for edit button to be registered
             // await page.waitForSelector('#report-component-dashboard-container > div > div.react-tile.report-component-dashboard.report-component-dashboard--is-being-edited > div.react-tile__content.react-tile__content--narrow > div > div.react-grid-layout.layout > div:nth-child(1) > div.report-component-dashboard__cell-buttons > button:nth-child(2)', { timeout: 60000 });
-            
+
             // // Add a small delay to ensure component is fully loaded
             // await page.waitForTimeout(1000);
         } else {
@@ -219,53 +222,17 @@ class AutoTestPlugin {
             await page.waitForSelector(newComponentButton, { timeout: 60000 })
             await page.$eval(newComponentButton, element => element.click())
         }
-    
+
         await page.waitForFunction(componentsCount => {
             return document.getElementsByClassName("report-component-dashboard__cell-overlay").length > componentsCount
         }, {}, componentsCount)
-    
+
         // Wait for component to be fully rendered and interactable
         // await page.waitForTimeout(500);
-    
-        // Improved component selection and editing
-        try {
-            // Wait for all components to be visible
-            await page.waitForSelector('.react-grid-layout .react-grid-item', { visible: true, timeout: 5000 });
-    
-            // Find the most recently added component
-            const components = await page.$$('.react-grid-layout .react-grid-item');
-            const latestComponent = components[0];
-    
-            // Hover over the latest component
-            await latestComponent.hover();
-    
-            // Wait briefly after hover
-            await page.waitForTimeout(100);
-    
-            // Find and click the edit button for this specific component
-            const editButton = await latestComponent.$('button.react-button:nth-child(2)');
-            if (editButton) {
-                await editButton.click();
-            } else {
-                console.warn('Edit button not found for the latest component');
-                
-                // Fallback: try to find edit button using more generic selector
-                const fallbackEditSelector = '.react-grid-layout .react-grid-item button.react-button:nth-child(2)';
-                await page.click(fallbackEditSelector);
-            }
-        } catch (error) {
-            console.error('Error selecting and editing component:', error);
-            
-            // Last resort: try original method
-            const firstComponentSelector = "div.react-grid-layout div.react-grid-item:first-child";
-            await page.waitForSelector(firstComponentSelector, { visible: true });
-            await page.hover(firstComponentSelector);
-            await page.waitForTimeout(100);
-            const editButtonSelector = `${firstComponentSelector} button.react-button:nth-child(2)`;
-            await page.waitForSelector(editButtonSelector, { visible: true });
-            await page.click(editButtonSelector);
-        }
-    
+
+        await this.selectAndEditLatestComponent(page, componentName);
+
+
         const printResponse = (response) => {
             if (response.url().includes('https://www.warcraftlogs.com/reports/evaluate-component-script') && response.ok()) {
                 response.json().then((content) => {
@@ -277,10 +244,53 @@ class AutoTestPlugin {
             }
         }
         page.on('response', printResponse);
-    
+
         await changeTitle
         this.pageCache[componentName] = page
         return page
+    }
+
+    // Improved component selection and editing
+    async selectAndEditLatestComponent(page, componentName) {
+        try {
+            // Wait for all components to be visible
+            await page.waitForSelector('.react-grid-layout .react-grid-item', { visible: true, timeout: 5000 });
+
+            // Find the most recently added component
+            const components = await page.$$('.react-grid-layout .react-grid-item');
+            const latestComponent = components[0];
+
+            // Hover over the latest component
+            await latestComponent.hover();
+
+            // Wait briefly after hover
+            await page.waitForTimeout(100);
+
+            // Find and click the edit button for this specific component
+            const editButton = await latestComponent.$('button.react-button:nth-child(2)');
+            if (editButton) {
+                await editButton.click();
+            } else {
+                console.warn('Edit button not found for the latest component');
+
+                // Fallback: try to find edit button using more generic selector
+                const fallbackEditSelector = '.react-grid-layout .react-grid-item button.react-button:nth-child(2)';
+                await page.click(fallbackEditSelector);
+            }
+        } catch (error) {
+            console.error('Error selecting and editing component:', error);
+
+            // Last resort: try original method
+            const firstComponentSelector = "div.react-grid-layout div.react-grid-item:first-child";
+            await page.waitForSelector(firstComponentSelector, { visible: true });
+            await page.hover(firstComponentSelector);
+            await page.waitForTimeout(100);
+            const editButtonSelector = `${firstComponentSelector} button.react-button:nth-child(2)`;
+            await page.waitForSelector(editButtonSelector, { visible: true });
+            await page.click(editButtonSelector);
+            this.componentEditStates[componentName] = true;
+        }
+        this.componentEditStates[componentName] = true;
     }
 
     async setupTestingBrowser() {
@@ -392,21 +402,55 @@ class AutoTestPlugin {
             this.pageCache = await this.getTestingPage(this.browser, await page.title(), testingURL, content)
         }
 
-        const monacoEditor = ".monaco-editor.no-user-select"
-        const editorHandle = (await page.$$(monacoEditor))[1]
-        await editorHandle.click()
-        await page.keyboard.down('ControlLeft')
-        await page.keyboard.press('KeyA')
-        await page.keyboard.up('ControlLeft')
-        await page.keyboard.press('Backspace')
-        const clipboardy = (await import("clipboardy")).default
-        await clipboardy.writeSync(content)
-        await page.keyboard.down('ControlLeft')
-        await page.keyboard.press('KeyV')
-        await page.keyboard.up('ControlLeft')
+        const componentName = await page.title();
 
+        // If component is not in edit mode, enter edit mode
+        if (!this.componentEditStates[componentName]) {
+            await this.selectAndEditLatestComponent(page, componentName);
+        }
+
+        await this.pasteCode(page, content);
+
+        // Click Run
         const runButtonSelector = "#report-component-dashboard-container > div > div.react-tile.report-component-dashboard__cell-edited > div.react-tile__content.react-tile__content--regular > div > div:nth-child(1) > div.report-component-sandbox__buttons > button"
-        await page.$eval(runButtonSelector, element => element.click())
+        console.log("runCode: Waiting for run button");
+        await page.waitForSelector(runButtonSelector, { timeout: 60000 });
+        console.log("runCode: Clicking run button");
+        await page.$eval(runButtonSelector, element => element.click());
+        console.log("runCode: Clicked run button");
+
+        // Click Continue
+        console.log("runCode: Waiting for continue button");
+        const continueButtonSelector = "div.vertical-content.save-changes-or-cancel-buttons.vertical-content--position-center.vertical-content--gap-content-padding > div > button.react-button.react-button--style-primary";
+        await page.waitForSelector(continueButtonSelector, { timeout: 60000 });
+
+        // Wait for the button to not be disabled
+        await page.waitForFunction((selector) => {
+            const button = document.querySelector(selector);
+            return button && !button.disabled;
+        }, { timeout: 60000 }, continueButtonSelector);
+        
+        console.log("runCode: Clicking continue button");
+        await page.click(continueButtonSelector);
+        console.log("runCode: Clicked continue button");
+
+        // Update edit state
+        this.componentEditStates[componentName] = false;
+    }
+
+    async pasteCode(page, content) {
+        const monacoEditor = ".monaco-editor.no-user-select";
+        const editorHandle = (await page.$$(monacoEditor))[1];
+        await editorHandle.click();
+        await page.keyboard.down('ControlLeft');
+        await page.keyboard.press('KeyA');
+        await page.keyboard.up('ControlLeft');
+        await page.keyboard.press('Backspace');
+        const clipboardy = (await import("clipboardy")).default;
+        clipboardy.writeSync(content);
+        await page.keyboard.down('ControlLeft');
+        await page.keyboard.press('KeyV');
+        await page.keyboard.up('ControlLeft');
     }
 }
 
