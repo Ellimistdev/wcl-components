@@ -197,6 +197,10 @@ export interface PlotLocation {
     name?: string;
     targetId?: number;
     symbol?: PlotSymbol;
+    isNPC?: boolean;
+    isPlayer?: boolean;
+    setStart?: number;
+    eventStart?: number;
 }
 
 export interface PlotSymbol {
@@ -223,14 +227,27 @@ export interface ChartBounds {
     NUDGE_Y: number; // fine-tune Y
 }
 
-export type EventFilter = {
-    type: 'damage' | 'debuffApply' | 'debuffRemove';
+type BaseEventFilter = {
     abilityId: number;
+    sourceFilter?: (event: RpgLogs.AnyEvent) => boolean;
     targetFilter?: (event: RpgLogs.AnyEvent) => boolean;
-}
+};
+
+type SingleEventType = 'damage' | 'debuffApply' | 'debuffRemove' | 'cast';
+
+export type SingleEventFilter = BaseEventFilter & {
+    type: SingleEventType;
+};
+
+export type MultiEventFilter = {
+    type: 'multi';
+    events: SingleEventFilter[];
+};
+
+export type EventFilter = SingleEventFilter | MultiEventFilter;
 
 export type SetDefinition = {
-    triggerEvent: EventFilter;
+    triggerEvent: SingleEventFilter;
     plotEvent: EventFilter;
     window: number;
 }

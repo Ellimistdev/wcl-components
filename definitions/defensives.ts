@@ -24,11 +24,11 @@ export const defensives: Defensives =
             "cooldown": 120000
         },
         // This is rotational for bdk and makes the chart unreadable :(
-        "49998": {
-            "name": "Death Strike",
-            "duration": 0,
-            "cooldown": 0
-        },
+        // "49998": {
+        //     "name": "Death Strike",
+        //     "duration": 0,
+        //     "cooldown": 0
+        // },
         "327574": {
             "name": "Sacrificial Pact",
             "duration": 0,
@@ -241,11 +241,12 @@ export const defensives: Defensives =
             "duration": 15000,
             "cooldown": 360000
         },
-        "116670": {
-            "name": "Vivify",
-            "duration": 0,
-            "cooldown": 0
-        },
+        // Rotational for MW Monk
+        // "116670": {
+        //     "name": "Vivify",
+        //     "duration": 0,
+        //     "cooldown": 0
+        // },
         "122278": {
             "name": "Dampen Harm",
             "duration": 10000,
@@ -283,11 +284,12 @@ export const defensives: Defensives =
             "duration": 10000,
             "cooldown": 1500
         },
-        "53600": {
-            "name": "Shield of the Righteous",
-            "duration": 4500,
-            "cooldown": 1000
-        },
+        // Rotational for Prot Paladin
+        // "53600": {
+        //     "name": "Shield of the Righteous",
+        //     "duration": 4500,
+        //     "cooldown": 1000
+        // },
         "184662": {
             "name": "Shield of Vengeance",
             "duration": 10000,
@@ -354,11 +356,12 @@ export const defensives: Defensives =
         }
     },
     "Shaman": {
-        "974": {
-            "name": "Earth Shield",
-            "duration": 600000,
-            "cooldown": 0
-        },
+        // Rotational for Resto Shaman
+        // "974": {
+        //     "name": "Earth Shield",
+        //     "duration": 600000,
+        //     "cooldown": 0
+        // },
         "108270": {
             "name": "Stone Bulwark Totem",
             "duration": 12000,
@@ -479,6 +482,15 @@ export const defensives: Defensives =
         },
         "431416": {
             "name": "Algari Healing Potion - Cast",
+            "duration": 0,
+            "cooldown": 300000,
+            "color": "#E795A3",
+            "verticalAlign": "top",
+            "textAlign": "left",
+            "labelOffsetY": 1
+        },
+        "1238009": {
+            "name": "Invigorating Healing Potion - Cast",
             "duration": 0,
             "cooldown": 300000,
             "color": "#E795A3",

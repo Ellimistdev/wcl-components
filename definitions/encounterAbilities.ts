@@ -53,7 +53,7 @@ export namespace EncounterAbilities {
             TwilightMassacreCharge = 438139, // Charge
             TwilightMassacrePlayerTargeted = 438141, // Targeted Debuff
             TwilightMassacreDamageEvent = 438145, // Damage event
-            TwilightMassacreGhostTargeting = 438153, // Targeting
+            TwilightMassacreGhostTargetingCast = 438153, // Targeting Cast
             TwilightMassacre = 438245, // Initial cast
             Queensbane = 437343,       // Debuff 
             Regicide1 = 435534,        // Debuff

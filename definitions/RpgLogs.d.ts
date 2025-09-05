@@ -2129,7 +2129,8 @@ export namespace RpgLogs {
         | 'aggro'
         | 'threat'
         | 'calculatedDamage'
-        | 'calculatedHealing';
+        | 'calculatedHealing'
+        | 'unknown';
 
     export type ActorDisposition = 'friendly' | 'enemy' | 'neutral';
 

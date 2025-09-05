@@ -12,8 +12,8 @@ module.exports = {
             components: {
                 common: {
                     DamagePerInterval: "https://www.warcraftlogs.com/reports/Nr9ZjP8vtAQkD4w3#fight=29&view=components",
-                    DefensivesUsed: "https://www.warcraftlogs.com/reports/Nr9ZjP8vtAQkD4w3#fight=29&view=components",
-                    DefensivesUsedTable: "https://www.warcraftlogs.com/reports/Nr9ZjP8vtAQkD4w3#fight=29&view=components",
+                    DefensivesUsed: "https://www.warcraftlogs.com/reports/4dvfXaD7crHbwN1t?fight=24&view=components",
+                    DefensivesUsedTable: "https://www.warcraftlogs.com/reports/4dvfXaD7crHbwN1t?fight=24&view=components",
                     DefensivesTimeline: "https://www.warcraftlogs.com/reports/Nr9ZjP8vtAQkD4w3#fight=29&view=components"
                 },
                 classSpecific: {
