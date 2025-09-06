@@ -19,7 +19,7 @@ export const LoomitharEncounter: EnhancedEncounterData = {
                         plotImportance: 'primary'
                     },
                     display: {
-                        color: '#E74C3C',
+                        color: '#1e81bbff',
                         text: 'Arcane Outrage',
                         priority: 2
                     }
@@ -66,7 +66,7 @@ export const LoomitharEncounter: EnhancedEncounterData = {
                         plotImportance: 'primary'
                     },
                     display: {
-                        color: '#C0392B',
+                        color: '#0b9beeff',
                         text: 'Outrage Explosion',
                         priority: 1
                     }
@@ -100,7 +100,7 @@ export const LoomitharEncounter: EnhancedEncounterData = {
                     notes: "Tank beam (32M unmitigated)",
                     usageHints: {
                         defensiveTiming: 'proactive',
-                        plotImportance: 'primary'
+                        plotImportance: 'secondary'
                     },
                     display: {
                         color: '#F39C12',
@@ -114,7 +114,7 @@ export const LoomitharEncounter: EnhancedEncounterData = {
                     description: "Alternative cast event for Piercing Strand",
                     usageHints: {
                         defensiveTiming: 'proactive',
-                        plotImportance: 'primary'
+                        plotImportance: 'secondary'
                     }
                 },
                 damage: {
@@ -127,7 +127,7 @@ export const LoomitharEncounter: EnhancedEncounterData = {
                     },
                     triggeredBy: 1227263,
                     usageHints: {
-                        defensiveTiming: 'reactive',
+                        defensiveTiming: 'proactive',
                         plotImportance: 'primary'
                     },
                     display: {
@@ -178,7 +178,7 @@ export const LoomitharEncounter: EnhancedEncounterData = {
                     notes: "Begin cast and cast event",
                     usageHints: {
                         defensiveTiming: 'proactive',
-                        plotImportance: 'primary'
+                        plotImportance: 'secondary'
                     },
                     display: {
                         color: '#27AE60',
@@ -214,7 +214,7 @@ export const LoomitharEncounter: EnhancedEncounterData = {
                     },
                     display: {
                         color: '#2ECC71',
-                        text: 'Wave Hit',
+                        text: 'Writhing Wave',
                         priority: 1
                     }
                 },
@@ -336,7 +336,7 @@ export const LoomitharEncounter: EnhancedEncounterData = {
                     notes: "Nuke from boss when beams from Infusion Pylons are not properly soaked (2.1M Unmitigated)",
                     usageHints: {
                         defensiveTiming: 'reactive',
-                        plotImportance: 'primary'
+                        plotImportance: 'detail'
                     },
                     display: {
                         color: '#8E44AD',
@@ -375,9 +375,14 @@ export const LoomitharEncounter: EnhancedEncounterData = {
                     tickInterval: 1000,
                     usageHints: {
                         defensiveTiming: 'during',
-                        plotImportance: 'secondary'
+                        plotImportance: 'primary'
+                    },
+                    display: {
+                        color: '#16A085',
+                        text: 'Tether',
+                        priority: 2
                     }
-                }
+                },
             },
             metadata: {
                 priority: 'medium',
@@ -396,7 +401,7 @@ export const LoomitharEncounter: EnhancedEncounterData = {
                     notes: "Lines connecting Infused Tangles (20M unmitigated & 8s stun)",
                     usageHints: {
                         defensiveTiming: 'proactive',
-                        plotImportance: 'primary'
+                        plotImportance: 'secondary'
                     },
                     display: {
                         color: '#16A085',
@@ -419,8 +424,11 @@ export const LoomitharEncounter: EnhancedEncounterData = {
                         plotImportance: 'primary'
                     },
                     display: {
-                        color: '#1ABC9C',
+                        color: '#d674d1ff',
                         text: 'Tangle Hit',
+                        textAlign: 'left',
+                        verticalAlign: 'top',
+                        y: 10,
                         priority: 1
                     }
                 }
@@ -450,7 +458,7 @@ export const LoomitharEncounter: EnhancedEncounterData = {
                     notes: "Ground webs dropped by clearing Infused Tethers (6.5M/s unmitigated & 25% slow)",
                     usageHints: {
                         defensiveTiming: 'proactive',
-                        plotImportance: 'primary'
+                        plotImportance: 'detail'
                     },
                     display: {
                         color: '#D35400',
@@ -486,7 +494,7 @@ export const LoomitharEncounter: EnhancedEncounterData = {
                     triggeredBy: 1226395,
                     usageHints: {
                         defensiveTiming: 'reactive',
-                        plotImportance: 'primary'
+                        plotImportance: 'detail'
                     },
                     display: {
                         color: '#E67E22',

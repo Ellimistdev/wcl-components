@@ -1,42 +1,120 @@
 import { RpgLogs } from "../../definitions/RpgLogs";
 import { BuffMap, InstantCasts, VBar } from "../../definitions/types";
 import { defensives } from "../../definitions/defensives";
-import { referenceCasts } from "../../definitions/referenceCasts";
+import { getEncounterReferenceCasts } from "../../encounters";
 
 getComponent = () => {
-    // const encounterID = 2680; // Rashok
-    // const encounterID = 2689; // Zkarn
-    // const encounterID = 2683 // Magmorax
-    // const encounterID = 2685 // Sarkareth
-    // const encounterID = 2708 // Nymue
-    // const encounterID = 2709 // Smolderon
-    // const encounterID = 2786 // Tindral
-
     const onlyOneFightSelected = reportGroup.fights.length === 1;
-    const onlyOneCombatantInfoEvent = reportGroup.fights[0].combatantInfoEvents.length === 1;
-    const isBossConfigured = reportGroup.fights.every(fight => fight.encounterId === 0);
-    // if (!onlyOneFightSelected) {
-    //     return {
-    //         component: 'EnhancedMarkdown',
-    //         props: {
-    //             content: `Please select a single encounter.`
-    //         }
-    //     }
-    // } else if (!onlyOneCombatantInfoEvent) {
-    //     return {
-    //         component: 'EnhancedMarkdown',
-    //         props: {
-    //             content: `This component works best when viewing a single player`
-    //         }
-    //     }
-    // } else if (!isBossConfigured) {
-    //     return {
-    //         component: 'EnhancedMarkdown',
-    //         props: {
-    //             content: `This component is currently configured for <EncounterIcon id="${encounterID}"></EncounterIcon>.`
-    //         }
-    //     }
-    // }
+
+    if (!onlyOneFightSelected) {
+        return {
+            component: 'EnhancedMarkdown',
+            props: {
+                content: `Defensive Timeline<br/>Please select a single encounter.`
+            }
+        }
+    }
+    
+    // Collect all unique actors from all data sources
+    const uniqueActors = new Set<string>();
+    
+    // Check combatantInfoEvents (if available)
+    reportGroup.fights.forEach(fight => {
+        fight.combatantInfoEvents.forEach(event => {
+            if (event.source?.name) {
+                uniqueActors.add(event.source.name);
+            }
+        });
+    });
+    
+    // Check defensive casts
+    const defensiveCasts = reportGroup.fights.flatMap(fight => {
+        return fight.eventsByCategoryAndDisposition("casts", "friendly")
+            .filter(cast => {
+                const actor = cast.source;
+                const ability = cast.ability;
+                const defensiveAbilities = {
+                    ...(defensives[actor?.subType ?? ""] || {}),
+                    ...(defensives["Everyone"] || {})
+                };
+
+                return (
+                    defensiveAbilities &&
+                    ability !== null &&
+                    defensiveAbilities.hasOwnProperty(ability.id)
+                );
+            })
+            .map(cast => ({
+                ...cast,
+                timestamp: cast.timestamp - fight.startTime,
+                startTime: fight.startTime
+            }));
+    });
+    
+    defensiveCasts.forEach(cast => {
+        if (cast.source?.name) {
+            uniqueActors.add(cast.source.name);
+        }
+    });
+    
+    // Check auras gained
+    const aurasGained = reportGroup.fights.flatMap(fight => {
+        return fight.eventsByCategoryAndDisposition("aurasGained", "friendly")
+            .filter(cast => {
+                const defensiveAbilities = {
+                    ...(defensives[cast.target?.subType ?? ""] || {}),
+                    ...(defensives["Everyone"] || {})
+                };
+
+                return (
+                    defensiveAbilities &&
+                    cast.ability !== null &&
+                    defensiveAbilities.hasOwnProperty(cast.ability.id)
+                );
+            })
+            .map(cast => ({
+                ...cast,
+                timestamp: cast.timestamp - fight.startTime,
+                startTime: fight.startTime
+            }));
+    });
+    
+    aurasGained.forEach(event => {
+        if (event.target?.name) {
+            uniqueActors.add(event.target.name);
+        }
+    });
+    
+    // Fail fast if multiple actors found
+    if (uniqueActors.size > 1) {
+        return {
+            component: 'EnhancedMarkdown',
+            props: {
+                content: `Defensive Timeline<br/>This component works best when viewing a single player<br/>Found ${uniqueActors.size} players: ${Array.from(uniqueActors).join(', ')}`
+            }
+        };
+    }
+    
+    if (uniqueActors.size === 0) {
+        return {
+            component: 'EnhancedMarkdown',
+            props: {
+                content: `Defensive Timeline<br/>No player data found in the selected time window`
+            }
+        };
+    }
+
+    // Get the encounter ID from the fight
+    const encounterId = reportGroup.fights[0]?.encounterId || 0;
+    
+    // Get reference casts for this specific encounter
+    const encounterReferenceCasts = getEncounterReferenceCasts(encounterId);
+    
+    // Merge with default reference casts (if any)
+    const referenceCasts = {
+        ...encounterReferenceCasts
+        // Add any default/global reference casts here if needed
+    };
 
     const processInstantCasts = (eventsData: RpgLogs.AnyEvent[]) => {
         const instantCasts: InstantCasts = {};
@@ -131,61 +209,88 @@ getComponent = () => {
         const instantCasts = processInstantCasts(eventsData);
         const buffMap = processBuffMap(aurasGained);
 
+        // Special handling for Stone Bulwark Totem - convert cast to buff duration
+        eventsData.forEach(event => {
+            if (event.ability?.id === 108270 && event.source?.name) { // Stone Bulwark cast
+                const playerName = event.source.name;
+                const abilityName = "Stone Bulwark Totem";
+
+                if (!buffMap[playerName]) {
+                    buffMap[playerName] = {};
+                }
+                if (!buffMap[playerName][108270]) {
+                    buffMap[playerName][108270] = {
+                        name: abilityName,
+                        casts: []
+                    };
+                }
+
+                // Create a synthetic 30-second buff from the cast time
+                buffMap[playerName][108270].casts.push({
+                    applied: event.timestamp,
+                    removed: event.timestamp + 30000 // 30 seconds later
+                });
+            }
+        });
+
         return { instantCasts, buffMap };
     };
 
+    // Fallback chain to find selected player info
+    let selectedPlayer: RpgLogs.Actor | null = null;
+
+    // 1. First try: combatantInfoEvents (works for full fight or early time windows)
+    if (reportGroup.fights[0]?.combatantInfoEvents?.length > 0) {
+        selectedPlayer = reportGroup.fights[0].combatantInfoEvents[0].source;
+    }
+
+    // 2. Second try: get from defensive casts
+    if (!selectedPlayer && defensiveCasts.length > 0) {
+        selectedPlayer = defensiveCasts[0]?.source;
+    }
+
+    // 3. Third try: get from auras gained
+    if (!selectedPlayer && aurasGained.length > 0) {
+        selectedPlayer = aurasGained[0]?.target;
+    }
+
+    // 4. Final fallback: show error
+    if (!selectedPlayer) {
+        return {
+            component: 'EnhancedMarkdown',
+            props: {
+                content: 'No player data available in the selected time window. Try expanding the time range or selecting a different player.'
+            }
+        };
+    }
+
+    const fightName = reportGroup.fights[0]?.name || "Fight";
+    const fightDifficulty = reportGroup.fights[0]?.difficulty || 1;
+
     const data = reportGroup.fights.map(fight => ({
         id: fight.id,
+        name: fight.name,
         startTime: fight.startTime,
+        endTime: fight.endTime,
+        firstEvent: fight.events.length > 0 ? fight.events[0]?.timestamp : null,
+        lastEvent: fight.events.length > 0 ? fight.events[fight.events.length - 1]?.timestamp : null,
         deaths: fight.friendlyPlayerDeathEvents,
-        casts: fight.allEventsByCategoryAndDisposition('casts', 'enemy').filter(event => event.ability && referenceCasts[event.ability.id] !== undefined && event.type === 'cast')
+        casts: [
+        // Include cast events
+        ...fight.allEventsByCategoryAndDisposition('casts', 'enemy').filter(event => 
+            event.ability && referenceCasts[event.ability.id] !== undefined && event.type === 'cast'
+        ),
+        // Include damage events  
+        ...fight.allEventsByCategoryAndDisposition('damage', 'enemy').filter(event => 
+            event.ability && 
+            referenceCasts[event.ability.id] !== undefined && 
+            event.type === 'damage' &&
+            event.target?.id === selectedPlayer?.id // only show damaging events that affected the selected player
+        )
+    ]
     }));
 
-    const aurasGained = reportGroup.fights.flatMap(fight => {
-        // "type": "applybuff"
-        // "type": "removebuff"
-        return fight.eventsByCategoryAndDisposition("aurasGained", "friendly")
-            .filter(cast => {
-                const defensiveAbilities = {
-                    ...(defensives[cast.target?.subType ?? ""] || {}),
-                    ...(defensives["Everyone"] || {})
-                };
-
-                return (
-                    defensiveAbilities &&
-                    cast.ability !== null && // Add null check
-                    defensiveAbilities.hasOwnProperty(cast.ability.id)
-                );
-            })
-            .map(cast => ({
-                ...cast,
-                timestamp: cast.timestamp - fight.startTime,
-                startTime: fight.startTime
-            }));
-    });
-
-    const defensiveCasts = reportGroup.fights.flatMap(fight => {
-        return fight.eventsByCategoryAndDisposition("casts", "friendly")
-            .filter(cast => {
-                const actor = cast.source;
-                const ability = cast.ability;
-                const defensiveAbilities = {
-                    ...(defensives[actor?.subType ?? ""] || {}),
-                    ...(defensives["Everyone"] || {})
-                };
-
-                return (
-                    defensiveAbilities &&
-                    ability !== null &&
-                    defensiveAbilities.hasOwnProperty(ability.id)
-                );
-            })
-            .map(cast => ({
-                ...cast,
-                timestamp: cast.timestamp - fight.startTime,
-                startTime: fight.startTime
-            }));
-    });
+    // return data;
 
     const chartData: {
         marker: { enabled: boolean; };
@@ -201,39 +306,51 @@ getComponent = () => {
 
     const { instantCasts, buffMap } = formatEventData(defensiveCasts, aurasGained);
 
-    const labels = {};
-
     const vbars: VBar[] = data.flatMap(({ id, startTime, casts }) => {
+        const labelTracker: { [abilityId: string]: number } = {}; // Track last label time per ability
+        const LABEL_WINDOW = 30000; // 30 seconds in milliseconds
+        
         return casts.map(event => {
             const ability = event.ability;
-            const labels: { [key: string]: boolean } = {};
+            const abilityId = ability?.id?.toString() || '';
+            const eventTime = event.timestamp - startTime;
             const label = ability ? referenceCasts[ability.id].text : null;
-            const isFirstEventWithText = label && !labels[label];
-            if (isFirstEventWithText) {
-                labels[label] = true;
+            
+            // Check if we should show a label for this ability
+            let shouldShowLabel = false;
+            if (label && abilityId) {
+                const lastLabelTime = labelTracker[abilityId] || -Infinity;
+                const timeSinceLastLabel = eventTime - lastLabelTime;
+                
+                if (timeSinceLastLabel >= LABEL_WINDOW) {
+                    shouldShowLabel = true;
+                    labelTracker[abilityId] = eventTime; // Update last label time for this ability
+                }
             }
+            
+            const displayInfo = ability ? referenceCasts[ability.id] : null;
+            
             return {
                 width: 1,
-                value: event.timestamp - startTime,
-                color: ability ? referenceCasts[ability.id].color : '', // Assign an empty string as the default value
-                label: isFirstEventWithText ? {
+                value: eventTime,
+                color: ability ? referenceCasts[ability.id].color : '',
+                label: shouldShowLabel && label ? {
                     text: label,
                     align: "center",
-                    verticalAlign: "bottom",// referenceCasts[ability.id].verticalAlign,
-                    textAlign: "right",// referenceCasts[ability.id].verticalAlign,
-                    y: -5,// referenceCasts[ability.id].y,
-                    x: -12,// referenceCasts[ability.id].y,
+                    verticalAlign: displayInfo?.verticalAlign || "bottom",
+                    textAlign: displayInfo?.textAlign || "right",
+                    y: displayInfo?.y || -5,
+                    x: displayInfo?.x || -12,
                     style: {
-                        color: ability ? referenceCasts[ability.id].color : '', // Assign an empty string as the default value
+                        color: ability ? referenceCasts[ability.id].color : '',
                     }
                 } : null
             };
         });
     });
 
-    const instantCastsVbars = [];
-
     // Iterate through instantCasts
+    const instantCastsVbars = [];
     for (const playerName in instantCasts) {
         for (const abilityId in instantCasts[playerName]) {
             const ability = instantCasts[playerName][abilityId];
@@ -261,11 +378,40 @@ getComponent = () => {
         }
     }
 
+    // Add death vertical lines
+    const deathVbars: {
+        width: number;
+        value: number; color: string;
+        dashStyle: string;
+        label: { text: string; verticalAlign: string; textAlign: string; y: number; style: { color: string; fontWeight: string; }; };
+    }[] = [];
+    data.forEach(({ deaths, startTime }) => {
+        deaths.forEach(deathEvent => {
+            const deathVbar = {
+                width: 2,
+                value: deathEvent.timestamp - startTime,
+                color: "#FF0000",
+                dashStyle: "Dash",
+                label: {
+                    text: `💀`,
+                    verticalAlign: "top",
+                    textAlign: "left",
+                    y: -15,
+                    style: {
+                        color: "#FF0000",
+                        fontWeight: "bold"
+                    }
+                }
+            };
+            deathVbars.push(deathVbar);
+        });
+    });
+
     // Combine vbars and instantCastsVbars arrays
-    const allVbars = [...vbars, ...instantCastsVbars];
+    const allVbars = [...vbars, ...instantCastsVbars, ...deathVbars];
 
+    // Create categories from buffMap
     const categories: string[] = [];
-
     Object.entries(buffMap).forEach(([playerName, abilities]) => {
         // Iterate over each ability for the player
         Object.entries(abilities).forEach(([abilityId, abilityData]) => {
@@ -275,6 +421,12 @@ getComponent = () => {
             if (!categories.includes(abilityName)) {
                 categories.push(abilityName);
             }
+
+            // Ensure we have at least an empty category if no defensives were used
+            if (categories.length === 0) {
+                categories.push("No Defensives Used");
+            }
+
             const casts = abilityData.casts;
 
             // Create a series object for each ability
@@ -296,6 +448,35 @@ getComponent = () => {
         });
     });
 
+    // If no defensive data, add an empty series to maintain chart structure
+    if (chartData.length === 0) {
+        chartData.push({
+            marker: { enabled: true },
+            name: "No Defensives Used",
+            id: "empty",
+            data: [], // Empty data array
+        });
+    }
+
+    // Convert absolute timestamps to relative timestamps (subtract fight start time)
+    const minTimestamp = Math.min(...data.map(fight => 
+        fight.firstEvent ? fight.firstEvent - fight.startTime : 0
+    ));
+    const maxTimestamp = Math.max(...data.map(fight => 
+        fight.lastEvent ? fight.lastEvent - fight.startTime : fight.endTime - fight.startTime
+    ));
+
+    const getDifficultyName = (difficulty: number):string  => {
+    switch (difficulty) {
+        case 1: return "LFR";
+        case 2: return "Normal";
+        case 3: return "Heroic";
+        case 4: return "Mythic";
+        case 5: return "Mythic"; // super mythic??
+        default: return `Unknown (${difficulty})`;
+    }
+}
+
     return {
         component: "Chart",
         props: {
@@ -303,10 +484,14 @@ getComponent = () => {
                 type: "xrange",
             },
             title: {
-                text: "Defensives Active",
+                text: `<span class="${selectedPlayer?.subType}">${selectedPlayer?.name}'s</span> Defensives Timeline - ${getDifficultyName(fightDifficulty)} ${fightName}`,
+                useHTML: true,
             },
             xAxis: {
-                min: 0,
+                min: minTimestamp,
+                max: maxTimestamp,
+                startOnTick: false,
+                endOnTick: false,
                 title: {
                     text: 'Time in Fight'
                 },

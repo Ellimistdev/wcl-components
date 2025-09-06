@@ -1,214 +1,209 @@
-# WCL TS Components Template
-This is a template project that allows you to write Warcraft Logs Report Components
-in Typescript and transpile it directly to JavaScript that can be copied and pasted directly into Warcraft Logs.
-Having all of your components at one place enables easy sharing and reusing code between your different components.
+# Elli's WCL Components
 
+## Available Components
 
-### Features
-- Full typescript support
-- Easily share code between different components
-- Include your typescript source directly as comments
-- Creates export strings for you to quickly share components with others
-- File watcher for a faster write - test cycle
-- Automatically tests your component in WCL using Puppeteer
-- Import Markdown files directly into your component
-- [Github Action Example](#github-actions-example-not-included-in-template) to run a webpack build directly in your repo
+### Defensives Timeline
+**File:** `components/common/DefensivesTimeline.ts`
 
+A comprehensive timeline visualization showing defensive ability usage and encounter mechanics for individual players.
 
-## How to use
-Clone this repository or create your own repository directly from the [template](https://github.com/JoschiGrey/WCL-TS-Components/generate).
->git clone https://github.com/JoschiGrey/WCL-TS-Components
+**Features:**
+- Shows defensive ability duration bars (buffs/cooldowns)
+- Displays encounter-specific reference casts as vertical lines
+- Includes death markers with player names
+- Automatically detects encounter and shows relevant boss abilities
+- Supports time window filtering
+- Player-specific damage event filtering
 
-Then run npm install to fetch all the dependencies.
->npm install
+**Usage:**
+- Best used when viewing a single player
+- Automatically adapts to the selected encounter (Loomithar, etc.)
 
-Each `.ts` file in the [components' folder](components) will be transpiled into its own standalone component.
-This allows you to share code between your different projects.
+![Defensives Timeline Example](images/defensives-timeline.png)
 
-To transpile your code run
->npx webpack
+**Key Information Displayed:**
+- Horizontal bars: Active defensive abilities (Stone Bulwark Totem, Astral Shift, etc.)
+- Vertical colored lines: Boss abilities and mechanics
+- Red dashed lines: Player deaths
+- Timeline respects current fight time window
 
-The resulting components can be found in the [dist folder](dist), which will be generated after running webpack.
-By default, the [file watcher](#watcher) ist activated, that will automatically re-transpile your components on changes.
+---
 
-Beside the transpiled code a second `*.lzstring.txt` file is generated for each component. 
-Which contains a Warcraft Logs [import](#import-string) string to directly share your work. 
+### Defensives Used
+**File:** `components/common/DefensivesUsed.ts`
 
-___
-### Template Config
-You can configure the included plugins directly in the [template config](template.config.js). 
-Omitting a property of `TemplateConfig.plugins` or assigning a falsy value will deactivate the plugin all together.
+A detailed breakdown of defensive ability usage with player and ability counts.
 
-___
-### Banner
-This template includes an implementation for the webpack Banner Plugin.
-It can be configured directly in the [template config](template.config.js)
+**Features:**
+- Lists all players and their defensive ability usage
+- Groups by class with color-coded player names
+- Shows total cast counts per player
+- Sortable by total defensive usage
 
-```ts
-module.exports = {
-    plugins: {
-        banner: {
-            active: true,
-            banner: "Created using the WCL-TS-Components Template https://github.com/JoschiGrey/WCL-TS-Components",
-            include: /-*\.js/
-        }
-    }
-}
+<!-- ![Defensives Used Example](images/defensives-used.png) -->
+
+**Key Information Displayed:**
+- Player names with class coloring
+- Individual ability usage counts
+- Total defensive casts per player
+- Organized by class groups
+
+---
+
+### Defensives Used Table (WIP)
+**File:** `components/common/DefensivesUsedTable.ts`
+
+A tabular view of defensive ability usage across all players.
+
+**Features:**
+- Table format showing players vs abilities
+- Easy comparison of defensive usage patterns
+- Class-based organization
+- Ability-specific columns
+
+<!-- ![Defensives Used Table Example](images/defensives-used-table.png) -->
+
+**Key Information Displayed:**
+- Rows: Players (grouped by class)
+- Columns: Defensive abilities used
+- Cells: Number of times each ability was used
+- Total column showing overall defensive activity
+
+---
+
+## Setup and Development
+
+### Prerequisites
+- Node.js (v16 or higher)
+- NPM or Yarn package manager
+
+### Installation
+```bash
+npm install
 ```
-___
-### Watcher
-Webpacks file watcher will react to all your changes and retranspile your code into components on the fly.
-This will also update the `.lzstring` files and trigger the [AutoTest](#testing-experimental) for all affected components.
 
-Currently, the watcher cannot react to new files being created in [/component](components) and you will have to rerun
-webpack, whenever you want to create a new component.
-
-The file watcher can be turned off by setting `watch` to `false` in the [template config](template.config.js).
-
-___
-### Import String
-Warcraft Logs uses base64 encoded LZString of an object that represents the component as a whole as exports / imports.
-This is directly generated for each of you components using the [CreateExportStringPlugin](plugins/CreateExportStringPlugin.js).
-
-The format of your components can be defined on a individual basis by setting the width (`componentName.w`) and height (`componentName.h`) in the [template config](template.config.js).
+### Configuration
+Component settings can be customized in `template.config.js`:
 
 ```js
 module.exports = {
     components: {
-        exampleComponent: {
-            w: 2,
-            h: 2
+        defensivesTimeline: {
+            w: 4,  // Width in grid units
+            h: 2   // Height in grid units
         }
     }
 }
 ```
 
-If you don't define a format the height `h` and width `w` components are set to 1 and 2 respectively, which results in a quadratic component.
-This is the same size as a newly created component on WCL.
+### Encounters Module
+New encounters can be added in the `encounters/` directory:
 
-Setting `componentName.i` will assign this as a static id instead of creating a new random one each time the export string is generated.
+1. Create encounter data file (e.g., `encounters/raid/newBoss.ts`)
+2. Define mechanics with spell IDs and display properties
+3. Add encounter mapping in `encounters/index.ts`
 
-___
-### Source Code
-By default, your full LZString compressed, Base64 encoded typescript source code is appended as comments to your export.
-This is done by the [ClearSourcePlugin](plugins/ClearSourcePlugin.js) and can be controlled like all plugins in the [template config](template.config.js)
-
-Because of issues with correctly escaping comments, currently only the compressed variant is supported.
-
-___
-### Types
-Typings for the `RpgLogs` API are provided in [RpgLogs.d.ts](definitions/RpgLogs.d.ts).
-This file is a concatenation of the original definition files `chart.d.ts`, `warcraft.d.ts` and `index.d.ts`, provided by the WCL team on [Discord](https://cdn.discordapp.com/attachments/1042093628778090527/1100066150299226132/reportComponents.zip).
-Minor typing and syntax errors that are present in the original files are corrected.
-
-You can import them directly in your TS code 
-```ts
-import type {RpgLogs} from "../definitions/RpgLogs";
-```
-
-___
-### Markdown
-Markdown from external `.md` files can be directly imported into your components.
-The content of those files will be included in the transpiled `.component.js` as a raw string
-
-```ts
-import markdown from "path/to/your/markdown.md"
-import {RpgLogs} from "./RpgLogs";
-
-export default getComponent => {
-    return markdown
-}
-```
-
-___
-### Testing (Experimental!)
-This template includes a AutoTestPlugin, which will use [puppeteer](https://pptr.dev/) to open a Log create a new empty component and paste your code in there.
-It then runs the component and prints the response to your console.
-This is fully compatible with the file Watcher.
-
-Because components are currently in closed preview you will have to log in to WCL.
-To streamline this you can set up your credentials in a .env file ([see](.env.example)) to mostly automate that process.
-
-You need to set up your login method in the [template config](template.config.js) in any case.
-```js
-module.exports = {
-    plugins: {
-        autoTest: {
-            active: true // this can be used as a flag to quickly enable or disable testing whithout deleting the other 
-            //Login using Battlenet Europe
-            loginMethod: "EUROPE",
-            components: {
-                // Run exampleComponent in the following url
-                exampleComponent: "https://www.warcraftlogs.com/reports/mTpzVhP4RfvD2FM8#fight=1&view=components"
+Example encounter structure:
+```typescript
+export const NewBossEncounter: EnhancedEncounterData = {
+    name: "New Boss",
+    encounterId: 1234,
+    mechanics: {
+        majorAbility: {
+            name: "Major Ability",
+            events: {
+                cast: {
+                    spellId: 56789,
+                    eventType: 'cast',
+                    usageHints: {
+                        plotImportance: 'primary',
+                        defensiveTiming: 'proactive'
+                    },
+                    display: {
+                        color: '#FF0000',
+                        text: 'Major Hit'
+                    }
+                }
             }
         }
     }
+};
+```
+
+### Defensive Abilities
+Defensive abilities are configured in `definitions/defensives.ts` by class:
+
+```typescript
+"Shaman": {
+    "108270": {
+        "name": "Stone Bulwark Totem",
+        "duration": 30000,
+        "cooldown": 120000
+    }
 }
 ```
 
-Note that currently working with multiple components at the same time only partially works, since webpack currently emits all ressources instead of only ones that changed.
+### Development
+Automated testing uses Puppeteer to validate components:
 
-Passing `--env=noTest` as a cli parameter will superseed the webpack config and not start the test plugin even if enabled.
-
-___
-### Github Actions Example (Not included in template!)
-You can automate a webpack build on your github repo to ensure that `dist` is always up-to-date.
-
-The following action will run webpack and rebuild your components after each push and directly commit the result to your repo.
-```yaml
-# /.github/workflows/webpack.yml
-name: NodeJS with Webpack
-
-on:
-  push:
-    branches: [ "main" ]
-    # Run on pushed to main, if a .ts or .js file was changed, but not in the dist folder!
-    paths:
-      - "**.ts"
-      - "**.js"
-      - "!dist/**/*"
-
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16
-
-    - name: Build
-      run: |
-        npm install
-        npx webpack --no-watch --env=noTest
-
-    - name: Commit to repo
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: Automated Webpack Build
+```bash
+npm run dev
 ```
 
-___
+### Development
+To enable hot reload for rapid development, you can leverage the autotest plugin which uses Puppeteer.
+
+First, add your WCL login credentials to `.env` 
+```js
+WCL_LOGIN_EMAIL=yourSecretsHere
+WCL_PASSWORD=yourSecretsHere
+// or
+BNET_LOGIN_EMAIL=yourSecretsHere
+BNET_PASSWORD=yourSecretsHere
+```
+Configure login method settings in `template.config.js`:
+```js
+plugins: {
+    autoTest: {
+        active: true,
+        loginMethod: "WCL",
+        // components...
+    }
+}
+```
+
+## File Structure
+
+```
+├── components/
+│   ├── common/           # Universally relevant components
+│   └── encounterSpecific/# Encounter-specific components
+├── encounters/           # Encounter data and mechanics
+├── definitions/         # Type definitions and configurations
+├── dist/               # Compiled components (auto-generated)
+└── template.config.js  # Build and test configuration
+```
+
+## Import Strings
+
+Each component generates an import string for use in Warcraft Logs:
+- `.component.js` - Compiled JavaScript
+- `.import.txt` - Base64 import string for WCL
+- `.lzstring.txt` - Compressed source code
+
+Copy the content from `.import.txt` to import components into WCL.
+
 ## Additional Resources
-- More help regarding components can be found in the [help articles](https://articles.warcraftlogs.com/help/what-are-report-components).
-- Report components are currently in their closed alpha you can sign up here https://forms.gle/oFcWCMbgqDK2j2e69.
-- You can get more help regarding components on the [Warcraft Logs Discord](https://discord.gg/5ebPJSsy5y).
-- The scripting logs API documentation is found [here](https://www.warcraftlogs.com/scripting-api-docs/warcraft/modules/RpgLogs.html).
 
+- [WCL Scripting API Documentation](https://www.warcraftlogs.com/scripting-api-docs/warcraft/modules/RpgLogs.html)
+- [Report Components Help Articles](https://articles.warcraftlogs.com/help/what-are-report-components)
+- [WCL Discord](https://discord.gg/5ebPJSsy5y) for component development support
+- [Component Alpha Signup](https://forms.gle/oFcWCMbgqDK2j2e69)
 
-## Gulp Template
-The first version of this template was moved to a [protected branch](https://github.com/JoschiGrey/WCL-TS-Components/tree/v1-gulp-based).
-Gulp has the distinct advantage of generating human-readable code, because it just concatenated the needed files into one.
-This had the big disadvantage of not allowing symbols with the same name being imported from different files.
-It also necessitated the user to add triple slash references to each file they wanted to use.
+## Contributing
 
-To clone it directly you can use this command.
->git clone --single-branch --branch v1-gulp-based https://github.com/JoschiGrey/WCL-TS-Components
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature/new-component`
+3. Commit changes: `git commit -am 'Add new component'`
+4. Push to branch: `git push origin feature/new-component`
+5. Submit pull request

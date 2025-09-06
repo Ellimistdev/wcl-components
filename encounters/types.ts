@@ -3,7 +3,9 @@ import type { SpellEvent, Mechanic, EncounterData, SpellEventType } from '../def
 export interface DisplayInfo {
     color: string;
     text: string;
+    textAlign?: 'left' | 'center' | 'right';
     verticalAlign?: 'top' | 'middle' | 'bottom';
+    x?: number;
     y?: number;
     priority?: number; // For chart layering
 }

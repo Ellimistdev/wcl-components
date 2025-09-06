@@ -4,7 +4,7 @@
   "description": "This is a template project, that allows you to write Warcraft Logs Report Components using TypeScript. ",
   "main": "index.js",
   "scripts": {
-    "run": "npx webpack",
+    "dev": "npx webpack",
     "no-watch": "npx webpack --no-watch"
   },
   "type": "commonjs",

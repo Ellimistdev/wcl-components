@@ -363,10 +363,20 @@ export const defensives: Defensives =
         //     "cooldown": 0
         // },
         "108270": {
-            "name": "Stone Bulwark Totem",
+            "name": "Stone Bulwark Totem - Cast",
             "duration": 12000,
             "cooldown": 120000
         },
+        // "462844": {
+        //     "name": "Stone Bulwark Totem - Buff",
+        //     "duration": 30000,  // 30 seconds for the ongoing effect
+        //     "cooldown": 120000
+        // },
+        // "114893": {
+        //     "name": "Stone Bulwark Totem - Initial Shield",
+        //     "duration": 15000,  // 15 seconds for initial shield
+        //     "cooldown": 120000
+        // },
         "108271": {
             "name": "Astral Shift",
             "duration": 12000,
