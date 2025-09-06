@@ -367,6 +367,7 @@ interface PhaseData {
     mechanics: string[]; // References to mechanic keys
     triggers?: {
         healthPercent?: number;
+        energyPercent?: number;
         timeElapsed?: number;
         spellId?: number;
     };

@@ -20,7 +20,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     },
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'reactive'
                     }
                 }
@@ -42,7 +41,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     description: "5 sec cast - The Plexus Sentinel targets a player to be purged, firing two missiles in quick succession",
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'proactive'
                     }
                 },
@@ -58,7 +56,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     triggeredBy: 1219531,
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'reactive'
                     }
                 },
@@ -73,7 +70,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     triggeredBy: 1219531,
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'reactive'
                     }
                 }
@@ -102,7 +98,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     notes: "Targeted on 4 players, area denial drop outside of raid",
                     usageHints: {
                         plotImportance: 'secondary',
-                        timelineRelevant: true,
                         defensiveTiming: 'proactive'
                     }
                 },
@@ -119,7 +114,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     triggeredBy: 1219450,
                     usageHints: {
                         plotImportance: 'detail',
-                        timelineRelevant: false,
                         defensiveTiming: 'during'
                     }
                 }
@@ -145,7 +139,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     description: "The Plexus Sentinel marks its current target, then fires an arcane charge",
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'proactive'
                     }
                 },
@@ -160,7 +153,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     triggeredBy: 1219263,
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'reactive'
                     }
                 },
@@ -175,7 +167,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     },
                     usageHints: {
                         plotImportance: 'secondary',
-                        timelineRelevant: true,
                         defensiveTiming: 'reactive'
                     }
                 }
@@ -201,7 +192,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     description: "5 sec cast - The Plexus Sentinel relocates, pushing players away and activating the Arcanomatrix Atomizer",
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'proactive'
                     }
                 },
@@ -212,7 +202,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     description: "Alternative cast ID for Protocol: Purge",
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'proactive'
                     }
                 },
@@ -223,7 +212,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     description: "Alternative cast ID for Protocol: Purge",
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'proactive'
                     }
                 },
@@ -233,7 +221,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     description: "Damage from Protocol: Purge",
                     usageHints: {
                         plotImportance: 'secondary',
-                        timelineRelevant: true,
                         defensiveTiming: 'reactive'
                     }
                 }
@@ -265,7 +252,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     notes: "Damage from the wall, mitigated by using extra action button to phase through",
                     usageHints: {
                         plotImportance: 'detail',
-                        timelineRelevant: false
                     }
                 }
             },
@@ -290,7 +276,6 @@ const PlexusSentinelEncounter: EncounterData = {
                     tickInterval: 2000,
                     usageHints: {
                         plotImportance: 'detail',
-                        timelineRelevant: false
                     }
                 }
             },
@@ -321,7 +306,6 @@ const SoulbinderNaazindhriEncounter: EncounterData = {
                     description: "4 sec cast - The Soulbinder Naazindhri unleashes a devastating shockwave",
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'proactive'
                     }
                 },
@@ -336,7 +320,6 @@ const SoulbinderNaazindhriEncounter: EncounterData = {
                     triggeredBy: 1242088,
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'reactive'
                     }
                 },
@@ -353,7 +336,6 @@ const SoulbinderNaazindhriEncounter: EncounterData = {
                     triggeredBy: 1242088,
                     usageHints: {
                         plotImportance: 'secondary',
-                        timelineRelevant: false,
                         defensiveTiming: 'during'
                     }
                 }
@@ -379,7 +361,6 @@ const SoulbinderNaazindhriEncounter: EncounterData = {
                     description: "2 sec cast - The Soulbinder Naazindhri lashes out at her current target",
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'proactive'
                     }
                 },
@@ -396,7 +377,6 @@ const SoulbinderNaazindhriEncounter: EncounterData = {
                     triggeredBy: 1241100,
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'reactive'
                     }
                 },
@@ -411,7 +391,6 @@ const SoulbinderNaazindhriEncounter: EncounterData = {
                     },
                     usageHints: {
                         plotImportance: 'secondary',
-                        timelineRelevant: true,
                         defensiveTiming: 'reactive'
                     }
                 }
@@ -440,7 +419,6 @@ const SoulbinderNaazindhriEncounter: EncounterData = {
                     },
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'reactive'
                     }
                 },
@@ -455,7 +433,6 @@ const SoulbinderNaazindhriEncounter: EncounterData = {
                     },
                     usageHints: {
                         plotImportance: 'secondary',
-                        timelineRelevant: true,
                         defensiveTiming: 'reactive'
                     }
                 }
@@ -481,7 +458,6 @@ const SoulbinderNaazindhriEncounter: EncounterData = {
                     description: "2 sec cast - The Soulbinder Naazindhri courses arcane energy through the bodies of several players",
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'proactive'
                     }
                 },
@@ -498,7 +474,6 @@ const SoulbinderNaazindhriEncounter: EncounterData = {
                     triggeredBy: 1225616,
                     usageHints: {
                         plotImportance: 'primary',
-                        timelineRelevant: true,
                         defensiveTiming: 'during'
                     }
                 },
@@ -520,7 +495,6 @@ const SoulbinderNaazindhriEncounter: EncounterData = {
                     notes: "15s debuff from getting hit by the orbs from Soulfire Convergence",
                     usageHints: {
                         plotImportance: 'secondary',
-                        timelineRelevant: true,
                         defensiveTiming: 'reactive'
                     }
                 }
@@ -547,7 +521,6 @@ const SoulbinderNaazindhriEncounter: EncounterData = {
                     notes: "Cast by Shadowguard Assassin add, cast event for 1227051",
                     usageHints: {
                         plotImportance: 'secondary',
-                        timelineRelevant: true,
                         defensiveTiming: 'proactive'
                     }
                 },
@@ -565,7 +538,6 @@ const SoulbinderNaazindhriEncounter: EncounterData = {
                     notes: "Debuff of 1227048. 843k/s for 30s",
                     usageHints: {
                         plotImportance: 'secondary',
-                        timelineRelevant: true,
                         defensiveTiming: 'reactive'
                     }
                 }
@@ -603,7 +575,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'proactive',
                         plotImportance: 'primary',
-                        timelineRelevant: true
                     }
                 },
                 cast: {
@@ -615,7 +586,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'reactive',
                         plotImportance: 'secondary',
-                        timelineRelevant: true
                     }
                 },
                 tickingDamage: {
@@ -631,7 +601,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'during',
                         plotImportance: 'detail',
-                        timelineRelevant: false
                     }
                 },
                 finalExplosion: {
@@ -648,7 +617,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'reactive',
                         plotImportance: 'primary',
-                        timelineRelevant: true
                     }
                 }
             },
@@ -677,7 +645,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'proactive',
                         plotImportance: 'primary',
-                        timelineRelevant: true
                     }
                 },
                 castAlternate: {
@@ -687,7 +654,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'proactive',
                         plotImportance: 'primary',
-                        timelineRelevant: true
                     }
                 },
                 damage: {
@@ -702,7 +668,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'reactive',
                         plotImportance: 'primary',
-                        timelineRelevant: true
                     }
                 },
                 vulnerabilityDebuff: {
@@ -717,7 +682,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'reactive',
                         plotImportance: 'secondary',
-                        timelineRelevant: true
                     }
                 }
             },
@@ -745,7 +709,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'proactive',
                         plotImportance: 'primary',
-                        timelineRelevant: true
                     }
                 },
                 cast: {
@@ -757,7 +720,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'reactive',
                         plotImportance: 'secondary',
-                        timelineRelevant: true
                     }
                 },
                 initialDamage: {
@@ -774,7 +736,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'reactive',
                         plotImportance: 'primary',
-                        timelineRelevant: true
                     }
                 },
                 persistentDamage: {
@@ -791,7 +752,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'during',
                         plotImportance: 'secondary',
-                        timelineRelevant: false
                     }
                 }
             },
@@ -822,7 +782,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'during',
                         plotImportance: 'secondary',
-                        timelineRelevant: false
                     }
                 },
                 actualDamage: {
@@ -834,7 +793,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'during',
                         plotImportance: 'detail',
-                        timelineRelevant: false
                     }
                 }
             },
@@ -861,7 +819,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'during',
                         plotImportance: 'primary',
-                        timelineRelevant: true
                     }
                 },
                 hyperInfusionDebuff: {
@@ -877,7 +834,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'reactive',
                         plotImportance: 'secondary',
-                        timelineRelevant: true
                     }
                 },
                 excessNova: {
@@ -892,7 +848,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'reactive',
                         plotImportance: 'primary',
-                        timelineRelevant: true
                     }
                 }
             },
@@ -923,7 +878,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'during',
                         plotImportance: 'secondary',
-                        timelineRelevant: true
                     }
                 }
             },
@@ -945,7 +899,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'proactive',
                         plotImportance: 'primary',
-                        timelineRelevant: true
                     }
                 },
                 damage: {
@@ -961,7 +914,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'reactive',
                         plotImportance: 'primary',
-                        timelineRelevant: true
                     }
                 }
             },
@@ -987,7 +939,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'proactive',
                         plotImportance: 'primary',
-                        timelineRelevant: true
                     }
                 },
                 absorptionDamage: {
@@ -1005,7 +956,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'during',
                         plotImportance: 'secondary',
-                        timelineRelevant: false
                     }
                 },
                 explosion: {
@@ -1020,7 +970,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'reactive',
                         plotImportance: 'primary',
-                        timelineRelevant: true
                     }
                 },
                 groundEffect: {
@@ -1035,7 +984,6 @@ const LoomitharEncounter: EncounterData = {
                     usageHints: {
                         defensiveTiming: 'during',
                         plotImportance: 'detail',
-                        timelineRelevant: false
                     }
                 }
             },
@@ -1065,7 +1013,6 @@ const LoomitharEncounter: EncounterData = {
                     notes: "Swirlies present throughout the encounter (16M unmitigated)",
                     usageHints: {
                         plotImportance: 'detail',
-                        timelineRelevant: false
                     }
                 }
             },
@@ -1090,7 +1037,6 @@ const LoomitharEncounter: EncounterData = {
                     notes: "100% Avoidable",
                     usageHints: {
                         plotImportance: 'detail',
-                        timelineRelevant: false
                     }
                 }
             },

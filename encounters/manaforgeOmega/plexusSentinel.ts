@@ -148,7 +148,7 @@ export const PlexusSentinelEncounter: EnhancedEncounterData = {
                         plotImportance: 'detail',
                         defensiveTiming: 'during'
                     }
-                }
+                },
             },
             display: {
                 primaryColor: '#9B59B6',
@@ -505,6 +505,18 @@ export const PlexusSentinelEncounter: EnhancedEncounterData = {
             }
         }
     },
+    phases: [
+        {
+            name: "Phase 1: Purge the Intruders",
+            mechanics: ["eradicatingSalvo", "manifestMatrices", "obliterationArcanocannon"],
+            triggers: { healthPercent: 100 }
+        },
+        {
+            name: "Phase 2: The Sieve Awakens",
+            mechanics: ["protocolPurge"],
+            triggers: { energyPercent: 100 }
+        }
+    ],
     metadata: {
         raidTier: "Manaforge Omega"
     }
