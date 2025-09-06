@@ -365,6 +365,7 @@ interface EncounterData {
 interface PhaseData {
     name: string;
     mechanics: string[]; // References to mechanic keys
+    description?: string;
     triggers?: {
         healthPercent?: number;
         energyPercent?: number;

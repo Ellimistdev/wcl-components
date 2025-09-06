@@ -598,13 +598,13 @@ export const LoomitharEncounter: EnhancedEncounterData = {
     phases: [
         {
             name: "Phase 1",
-            mechanics: ["arcaneOutrage", "piercingStrand", "lairWeaving", "infusionTether", "primalSpellstorm", "arcaneIchor", "silkBlast"],
+            mechanics: ["piercingStrand", "lairWeaving", "infusionTether", "primalSpellstorm", "silkBlast"],
             triggers: { healthPercent: 100 }
         },
         {
             name: "Phase 2", 
-            mechanics: ["arcaneOverflow", "piercingStrand", "writhingWave", "infusionPylons", "livingSilk", "primalSpellstorm", "arcaneIchor", "silkBlast"],
-            triggers: { healthPercent: 70 }
+            mechanics: ["arcaneOutrage", "arcaneOverflow", "writhingWave", "infusionPylons", "primalSpellstorm", "arcaneIchor", "silkBlast"],
+            triggers: { healthPercent: 50 }
         }
     ],
 

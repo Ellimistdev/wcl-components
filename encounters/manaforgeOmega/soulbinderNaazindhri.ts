@@ -355,7 +355,7 @@ export const SoulbinderNaazindhriEncounter: EnhancedEncounterData = {
             }
         },
 
-        arcaneSignls: {
+        arcaneSigils: {
             name: "Arcane Sigils",
             description: "Protective sigils on binding chambers",
             events: {
@@ -386,6 +386,24 @@ export const SoulbinderNaazindhriEncounter: EnhancedEncounterData = {
             name: "Essence Implosion",
             description: "Binding chamber explosion",
             events: {
+                implosion: {
+                    spellId: 1227848,
+                    eventType: 'cast',
+                    description: "Big raid damage and ticking DoT based on how many machines exploded",
+                    damage: {
+                        school: 'Arcane'
+                    },
+                    notes: "Damage scales with number of remaining canisters",
+                    usageHints: {
+                        plotImportance: 'primary',
+                        defensiveTiming: 'proactive'
+                    },
+                    display: {
+                        color: '#8E44AD',
+                        text: 'Essence Implosion',
+                        priority: 1
+                    }
+                },
                 damage: {
                     spellId: 1227848,
                     eventType: 'damage',
@@ -668,6 +686,27 @@ export const SoulbinderNaazindhriEncounter: EnhancedEncounterData = {
             }
         }
     },
+    phases: [
+    {
+        name: "Phase 1: Canister Cleanup",
+        mechanics: [
+            "soulCalling",
+            "soulfrayAnnihilation", 
+            "mysticLash",
+            "soulfireConvergence",
+            "arcaneExpulsion"
+        ],
+        description: "Break 6 canisters with Soulfray Annihilation orbs"
+    },
+    {
+        name: "Intermission: Add Wave", 
+        mechanics: [
+            "essenceImplosion",
+            "shadowguardAdds"
+        ],
+        description: "Survive Essence Implosion and kill all spawned adds"
+    }
+],
     metadata: {
         raidTier: "Manaforge Omega"
     }
