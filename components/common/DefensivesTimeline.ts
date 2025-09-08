@@ -26,7 +26,7 @@ getComponent = () => {
             }
         });
     });
-    
+
     // Check defensive casts
     const defensiveCasts = reportGroup.fights.flatMap(fight => {
         return fight.eventsByCategoryAndDisposition("casts", "friendly")
@@ -104,13 +104,9 @@ getComponent = () => {
         };
     }
 
-    // Get the encounter ID from the fight
     const encounterId = reportGroup.fights[0]?.encounterId || 0;
-    
-    // Get reference casts for this specific encounter
     const encounterReferenceCasts = getEncounterReferenceCasts(encounterId);
-    // const encounterReferenceCasts: Record<number, DisplayInfo> = {};
-    
+
     // Merge with default reference casts (if any)
     const referenceCasts = {
         ...encounterReferenceCasts

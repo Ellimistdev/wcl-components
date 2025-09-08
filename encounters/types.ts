@@ -37,6 +37,12 @@ export interface AbilityData {
     castTime?: number; // in milliseconds, undefined for instant
     channeled?: boolean;
     duration?: number; // for buffs/debuffs
+    tickInterval?: number; // for periodic effects
+
+    damage?: DamageInfo;
+    aura?: AuraInfo;
+    relatedEvents?: RelatedEvent[];  // Related spell events
+    eventSequence?: EventSequence;  // Event patterns for complex mechanics
     
     usageHints?: {
         defensiveTiming?: 'proactive' | 'reactive' | 'during';
@@ -64,18 +70,9 @@ export interface SpellEvent {
     triggers?: number[];   // Spell IDs this triggers
 
     // Event-specific metadata
-    damage?: {
-        amount?: number;
-        school?: string;
-        canCrit?: boolean;
-        splitDamage?: boolean;
-    };
+    damage?: DamageInfo;
 
-    aura?: {
-        stackable?: boolean;
-        maxStacks?: number;
-        dispellable?: boolean;
-    };
+    aura?: AuraInfo;
 
     // Component usage hints
     usageHints?: {
@@ -87,19 +84,24 @@ export interface SpellEvent {
     display?: DisplayInfo;
 }
 
+export interface DamageInfo {
+    amount?: number;
+    school?: string;
+    canCrit?: boolean;
+    splitDamage?: boolean;
+};
+
+export interface AuraInfo {
+    stackable?: boolean;
+    maxStacks?: number;
+    dispellable?: boolean;
+};
+
 export interface Mechanic {
     name: string;
     description?: string;
     events: Record<string, SpellEvent>;
-
-    // Quick access arrays for common patterns
-    patterns?: {
-        fullSequence?: string[];      // Complete event order
-        damageEvents?: string[];      // All damage-related events
-        castEvents?: string[];        // All cast-related events
-        auraEvents?: string[];        // All aura-related events
-        defensiveTimings?: string[];  // Events relevant for defensive timing
-    };
+    patterns?: EventSequence;
 
     metadata?: {
         phase?: number;
@@ -114,6 +116,25 @@ export interface Mechanic {
         chartStyle?: 'line' | 'area' | 'marker' | 'background';
     };
 }
+
+export interface RelatedEvent {
+    spellId: number;
+    eventType: SpellEventType;
+    description?: string;
+    notes?: string;
+    castTime?: number;
+    duration?: number;
+    triggeredBy?: number;  // Spell ID that triggers this event
+    triggersMain?: boolean; // This event triggers the main ability
+}
+
+export interface EventSequence {
+    fullSequence?: string[];      // Complete event order
+    damageEvents?: string[];      // All damage-related events
+    castEvents?: string[];        // All cast-related events
+    auraEvents?: string[];        // All aura-related events
+    defensiveTimings?: string[];  // Events relevant for defensive timing
+};
 
 export interface EncounterData {
     name: string;
