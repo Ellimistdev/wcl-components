@@ -287,8 +287,6 @@ getComponent = () => {
     ]
     }));
 
-    // return data;
-
     const chartData: {
         marker: { enabled: boolean; };
         name: string;

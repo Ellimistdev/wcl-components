@@ -1,523 +1,450 @@
-import type { EnhancedEncounterData } from '../types';
+import type { EncounterData } from '../types';
 
-export const PlexusSentinelEncounter: EnhancedEncounterData = {
+export const PlexusSentinelEncounter: EncounterData = {
     name: "Plexus Sentinel",
     encounterId: 3129,
-    mechanics: {
-        cleanseTheChamber: {
-            name: "Cleanse the Chamber",
-            description: "Wall moving through the raid, one-shot mechanic",
-            events: {
-                cast: {
-                    spellId: 1234733,
-                    eventType: 'cast',
-                    description: "The Plexus Sentinel periodically emits arcing energy, inflicting 3653996 Arcane damage to the target and up to 5 players within 20 yards",
-                    notes: "Wall moving through the raid, one-shot mechanic",
-                    damage: {
-                        amount: 3653996,
-                        school: 'Arcane'
-                    },
-                    usageHints: {
-                        plotImportance: 'primary',
-                        defensiveTiming: 'reactive'
-                    },
-                    display: {
-                        color: '#FF6B6B',
-                        text: 'Cleanse Chamber',
-                        priority: 1
-                    }
-                }
-            },
-            display: {
-                primaryColor: '#FF6B6B',
-                chartStyle: 'line'
-            },
-            metadata: {
-                priority: 'high',
-                category: 'positioning'
-            }
-        },
-
-        eradicatingSalvo: {
-            name: "Eradicating Salvo",
-            description: "Soak mechanic - missiles that must hit 5+ players or raid takes damage",
-            events: {
-                cast: {
-                    spellId: 1219531,
-                    eventType: 'cast',
-                    castTime: 5000,
-                    description: "5 sec cast - The Plexus Sentinel targets a player to be purged, firing two missiles in quick succession",
-                    usageHints: {
-                        plotImportance: 'primary',
-                        defensiveTiming: 'proactive'
-                    },
-                    display: {
-                        color: '#4ECDC4',
-                        text: 'Eradicating Salvo',
-                        priority: 2
-                    }
-                },
-                soakDamage: {
-                    spellId: 1219611,
-                    eventType: 'damage',
-                    description: "Each missile inflicts 85728368 Arcane damage split evenly between players within 6 yards",
-                    damage: {
-                        amount: 85728368,
-                        school: 'Arcane',
-                        splitDamage: true
-                    },
-                    triggeredBy: 1219531,
-                    usageHints: {
-                        plotImportance: 'primary',
-                        defensiveTiming: 'reactive'
-                    },
-                    display: {
-                        color: '#4ECDC4',
-                        text: 'Salvo Hit',
-                        priority: 1
-                    }
-                },
-                failureDamage: {
-                    spellId: 1229387,
-                    eventType: 'damage',
-                    description: "If a missile fails to hit at least 5 players, it instead inflicts 16864597 Arcane damage to all players",
-                    damage: {
-                        amount: 16864597,
-                        school: 'Arcane'
-                    },
-                    triggeredBy: 1219531,
-                    usageHints: {
-                        plotImportance: 'primary',
-                        defensiveTiming: 'reactive'
-                    },
-                    display: {
-                        color: '#E74C3C',
-                        text: 'Salvo Fail',
-                        priority: 1
-                    }
-                }
-            },
-            display: {
-                primaryColor: '#4ECDC4',
-                chartStyle: 'area'
-            },
-            patterns: {
-                fullSequence: ['cast', 'soakDamage'],
-                castEvents: ['cast'],
-                damageEvents: ['soakDamage', 'failureDamage'],
-                defensiveTimings: ['cast', 'soakDamage', 'failureDamage']
-            },
-            metadata: {
-                priority: 'high',
-                category: 'raid'
-            }
-        },
-
-        manifestMatrices: {
-            name: "Manifest Matrices",
-            description: "Targeted debuff creating area denial",
-            events: {
-                cast: {
-                    spellId: 1219450,
-                    eventType: 'cast',
-                    castTime: 2000,
-                    description: "2 sec cast - The Plexus Sentinel fires Arcane energy into players",
-                    notes: "Targeted on 4 players, area denial drop outside of raid",
-                    usageHints: {
-                        plotImportance: 'secondary',
-                        defensiveTiming: 'proactive'
-                    },
-                    display: {
-                        color: '#9B59B6',
-                        text: 'Manifest Matrices',
-                        priority: 3
-                    }
-                },
-                debuffDamage: {
-                    spellId: 1226752,
-                    eventType: 'damageTick',
-                    description: "inflicting 1616191 Arcane damage every 1 sec for 6 sec. Upon expiration, a Displacement Matrix is created",
-                    damage: {
-                        amount: 1616191,
-                        school: 'Arcane'
-                    },
-                    duration: 6000,
-                    tickInterval: 1000,
-                    triggeredBy: 1219450,
-                    usageHints: {
-                        plotImportance: 'detail',
-                        defensiveTiming: 'during'
-                    }
-                },
-            },
-            display: {
-                primaryColor: '#9B59B6',
-                chartStyle: 'marker'
-            },
-            patterns: {
-                fullSequence: ['cast', 'debuffDamage'],
-                defensiveTimings: ['cast']
-            },
-            metadata: {
-                priority: 'medium',
-                category: 'positioning'
-            }
-        },
-
-        obliterationArcanocannon: {
-            name: "Obliteration Arcanocannon",
-            description: "Tank buster with vulnerability debuff",
-            events: {
-                cast: {
-                    spellId: 1219263,
-                    eventType: 'cast',
-                    castTime: 6000,
-                    description: "The Plexus Sentinel marks its current target, then fires an arcane charge",
-                    usageHints: {
-                        plotImportance: 'primary',
-                        defensiveTiming: 'proactive'
-                    },
-                    display: {
-                        color: '#F39C12',
-                        text: 'Obliteration Cast',
-                        priority: 2
-                    }
-                },
+    
+    entities: {
+        plexusSentinel: {
+            id: 3129,
+            name: "Plexus Sentinel",
+            type: 'main_boss',
+            phases: [1, 2],
+            abilities: {
                 damage: {
-                    spellId: 1219346,
-                    eventType: 'damage',
-                    description: "inflicts 26702279 Arcane damage to players within 10 yards, and 25296896 Arcane damage to all other players",
-                    damage: {
-                        amount: 26702279,
-                        school: 'Arcane'
+                    cleanseTheChamber: {
+                        id: 1234733,
+                        name: "Cleanse the Chamber",
+                        description: "Wall moving through the raid - 3653996 Arcane damage to target and up to 5 players within 20 yards.",
+                        damage: { amount: 3653996, school: 'Arcane' },
+                        usageHints: {
+                            plotImportance: 'primary',
+                            defensiveTiming: 'reactive',
+                            category: 'positioning'
+                        },
+                        display: {
+                            color: '#FF6B6B',
+                            text: 'Cleanse Chamber',
+                            priority: 1
+                        }
                     },
-                    triggeredBy: 1219263,
-                    usageHints: {
-                        plotImportance: 'primary',
-                        defensiveTiming: 'reactive'
+                    eradicatingSalvoSoak: {
+                        id: 1219611,
+                        name: "Eradicating Salvo",
+                        description: "Soak mechanic - 85728368 Arcane damage split between players within 6 yards.",
+                        damage: { amount: 85728368, school: 'Arcane', splitDamage: true },
+                        relatedEvents: [
+                            {
+                                spellId: 1219531,
+                                eventType: 'cast',
+                                description: "5 sec cast - The Plexus Sentinel targets a player to be purged",
+                                castTime: 5000,
+                                triggersMain: true
+                            }
+                        ],
+                        usageHints: {
+                            plotImportance: 'primary',
+                            defensiveTiming: 'reactive',
+                            category: 'raid'
+                        },
+                        display: {
+                            color: '#4ECDC4',
+                            text: 'Salvo Hit',
+                            priority: 1
+                        }
                     },
-                    display: {
-                        color: '#E67E22',
-                        text: 'Obliteration Hit',
-                        priority: 1
+                    eradicatingSalvoFail: {
+                        id: 1229387,
+                        name: "Eradicating Salvo Failure",
+                        description: "Raid damage when soak fails - 16864597 Arcane damage to all players.",
+                        damage: { amount: 16864597, school: 'Arcane' },
+                        relatedEvents: [
+                            {
+                                spellId: 1219531,
+                                eventType: 'cast',
+                                description: "Eradicating Salvo cast that can trigger failure damage",
+                                triggeredBy: 1219531
+                            }
+                        ],
+                        usageHints: {
+                            plotImportance: 'primary',
+                            defensiveTiming: 'reactive',
+                            category: 'raid'
+                        },
+                        display: {
+                            color: '#E74C3C',
+                            text: 'Salvo Fail',
+                            priority: 1
+                        }
+                    },
+                    obliterationArcanocannon: {
+                        id: 1219346,
+                        name: "Obliteration Arcanocannon",
+                        description: "Tank buster - 26702279 Arcane damage within 10 yards, 25296896 to others.",
+                        damage: { amount: 26702279, school: 'Arcane' },
+                        relatedEvents: [
+                            {
+                                spellId: 1219263,
+                                eventType: 'cast',
+                                description: "Tank buster cast that triggers this damage",
+                                castTime: 6000,
+                                triggersMain: true
+                            }
+                        ],
+                        usageHints: {
+                            plotImportance: 'primary',
+                            defensiveTiming: 'reactive',
+                            category: 'tank'
+                        },
+                        display: {
+                            color: '#E67E22',
+                            text: 'Obliteration Hit',
+                            priority: 1
+                        }
+                    },
+                    manifestMatricesDebuff: {
+                        id: 1226752,
+                        name: "Manifest Matrices",
+                        description: "Targeted debuff - 1616191 Arcane damage per second for 6 seconds.",
+                        damage: { amount: 1616191, school: 'Arcane' },
+                        duration: 6000,
+                        tickInterval: 1000,
+                        relatedEvents: [
+                            {
+                                spellId: 1219450,
+                                eventType: 'cast',
+                                description: "2 sec cast - Fires Arcane energy into players",
+                                castTime: 2000,
+                                triggersMain: true
+                            }
+                        ],
+                        usageHints: {
+                            plotImportance: 'detail',
+                            defensiveTiming: 'during',
+                            category: 'positioning'
+                        }
+                    },
+                    protocolPurgeDamage: {
+                        id: 1224305,
+                        name: "Protocol Purge",
+                        description: "Damage from boss relocation and atomizer activation.",
+                        relatedEvents: [
+                            {
+                                spellId: 1220489,
+                                eventType: 'cast',
+                                description: "Protocol Purge cast 1",
+                                castTime: 5000,
+                                triggersMain: true
+                            },
+                            {
+                                spellId: 1220555,
+                                eventType: 'cast',
+                                description: "Protocol Purge cast 2",
+                                castTime: 5000,
+                                triggersMain: true
+                            },
+                            {
+                                spellId: 1220553,
+                                eventType: 'cast',
+                                description: "Protocol Purge cast 3",
+                                castTime: 5000,
+                                triggersMain: true
+                            }
+                        ],
+                        usageHints: {
+                            plotImportance: 'secondary',
+                            defensiveTiming: 'reactive',
+                            category: 'positioning'
+                        }
+                    },
+                    atomize: {
+                        id: 1219223,
+                        name: "Atomize",
+                        description: "Wall damage - 49891099 Arcane damage when passing through the Sieve.",
+                        damage: { amount: 49891099, school: 'Arcane' },
+                        usageHints: {
+                            plotImportance: 'detail',
+                            category: 'positioning'
+                        },
+                        display: {
+                            color: '#95A5A6',
+                            text: 'Atomize',
+                            priority: 0
+                        }
+                    },
+                    purgingLightning: {
+                        id: 1233110,
+                        name: "Purging Lightning",
+                        description: "Stacking damage - 386480 Arcane damage, increasing by 25% per cast.",
+                        damage: { amount: 386480, school: 'Arcane' },
+                        usageHints: {
+                            plotImportance: 'secondary',
+                            defensiveTiming: 'during',
+                            category: 'raid'
+                        }
+                    },
+                    poweredAutomaton: {
+                        id: 1219687,
+                        name: "Powered Automaton",
+                        description: "Periodic energy emission - 3653996 Arcane damage to target and nearby players.",
+                        damage: { amount: 3653996, school: 'Arcane' },
+                        relatedEvents: [
+                            {
+                                spellId: 1223364,
+                                eventType: 'cast',
+                                description: "Powered Automaton cast event",
+                                triggersMain: true
+                            }
+                        ],
+                        usageHints: {
+                            plotImportance: 'detail',
+                            category: 'raid'
+                        }
+                    },
+                    energyCutter: {
+                        id: 1218668,
+                        name: "Energy Cutter",
+                        description: "Rotating beam - 7729607 Arcane damage to players in the area.",
+                        damage: { amount: 7729607, school: 'Arcane' },
+                        usageHints: {
+                            plotImportance: 'detail',
+                            category: 'positioning'
+                        }
+                    },
+                    potentManaResidue: {
+                        id: 1219354,
+                        name: "Potent Mana Residue",
+                        description: "Ground effect - 4924561 Arcane damage every 2 seconds and 50% slow.",
+                        damage: { amount: 4924561, school: 'Arcane' },
+                        tickInterval: 2000,
+                        usageHints: {
+                            plotImportance: 'detail',
+                            category: 'positioning'
+                        }
+                    },
+                    staticLightning: {
+                        id: 1242310,
+                        name: "Static Lightning",
+                        description: "Environmental lightning - 69 Nature damage.",
+                        damage: { amount: 69, school: 'Nature' },
+                        relatedEvents: [
+                            {
+                                spellId: 1234699,
+                                eventType: 'cast',
+                                description: "Static Lightning cast event",
+                                triggersMain: true
+                            }
+                        ],
+                        usageHints: {
+                            plotImportance: 'detail',
+                            category: 'positioning'
+                        }
+                    },
+                    displacementMatrixExplosion: {
+                        id: 1218626,
+                        name: "Displacement Matrix",
+                        description: "Area denial mine - 5762071 Arcane damage and stun within 8 yards when touched.",
+                        damage: { amount: 5762071, school: 'Arcane' },
+                        relatedEvents: [
+                            {
+                                spellId: 1218625,
+                                eventType: 'debuffApply',
+                                description: "Stun from displacement matrix explosion",
+                                triggeredBy: 1218626
+                            }
+                        ],
+                        usageHints: {
+                            plotImportance: 'detail',
+                            category: 'positioning'
+                        }
                     }
                 },
-                vulnerabilityDebuff: {
-                    spellId: 1219263,
-                    eventType: 'debuffApply',
-                    description: "The impact causes the primary target to take 1000% damage from Obliteration Arcanocannon for 45 sec",
-                    duration: 45000,
-                    aura: {
-                        stackable: false,
-                        dispellable: false
+                buffs: {
+                    obliterationVulnerability: {
+                        id: 1219263,
+                        name: "Obliteration Vulnerability",
+                        description: "Takes 1000% damage from Obliteration Arcanocannon for 45 seconds.",
+                        duration: 45000,
+                        aura: { stackable: false, dispellable: false },
+                        relatedEvents: [
+                            {
+                                spellId: 1219346,
+                                eventType: 'damage',
+                                description: "Obliteration damage that applies vulnerability",
+                                triggeredBy: 1219263
+                            }
+                        ],
+                        usageHints: {
+                            plotImportance: 'secondary',
+                            category: 'tank'
+                        }
                     },
-                    usageHints: {
-                        plotImportance: 'secondary',
-                        defensiveTiming: 'reactive'
-                    }
-                }
-            },
-            display: {
-                primaryColor: '#F39C12',
-                chartStyle: 'line'
-            },
-            patterns: {
-                fullSequence: ['cast', 'damage', 'vulnerabilityDebuff'],
-                defensiveTimings: ['cast', 'damage']
-            },
-            metadata: {
-                priority: 'high',
-                category: 'tank'
-            }
-        },
-
-        protocolPurge: {
-            name: "Protocol: Purge",
-            description: "Boss relocates and activates atomizer wall",
-            events: {
-                cast1: {
-                    spellId: 1220489,
-                    eventType: 'cast',
-                    castTime: 5000,
-                    description: "5 sec cast - The Plexus Sentinel relocates, pushing players away and activating the Arcanomatrix Atomizer",
-                    usageHints: {
-                        plotImportance: 'primary',
-                        defensiveTiming: 'proactive'
-                    },
-                    display: {
-                        color: '#2ECC71',
-                        text: 'Protocol: Purge',
-                        verticalAlign: 'bottom',
-                        y: 100,
-                        priority: 1
+                    displacementMatrixStun: {
+                        id: 1218625,
+                        name: "Matrix Stun",
+                        description: "Stun effect from displacement matrix explosion.",
+                        aura: { stackable: false, dispellable: true },
+                        relatedEvents: [
+                            {
+                                spellId: 1218626,
+                                eventType: 'damage',
+                                description: "Matrix explosion that triggers stun",
+                                triggersMain: true
+                            }
+                        ],
+                        usageHints: {
+                            plotImportance: 'detail',
+                            category: 'positioning'
+                        }
                     }
                 },
-                cast2: {
-                    spellId: 1220555,
-                    eventType: 'cast',
-                    castTime: 5000,
-                    description: "Alternative cast ID for Protocol: Purge",
-                    usageHints: {
-                        plotImportance: 'primary',
-                        defensiveTiming: 'proactive'
-                    }
-                },
-                cast3: {
-                    spellId: 1220553,
-                    eventType: 'cast',
-                    castTime: 5000,
-                    description: "Alternative cast ID for Protocol: Purge",
-                    usageHints: {
-                        plotImportance: 'primary',
-                        defensiveTiming: 'proactive'
-                    }
-                },
-                damage: {
-                    spellId: 1224305,
-                    eventType: 'damage',
-                    description: "Damage from Protocol: Purge",
-                    usageHints: {
-                        plotImportance: 'secondary',
-                        defensiveTiming: 'reactive'
+                casts: {
+                    eradicatingSalvoCast: {
+                        id: 1219531,
+                        name: "Eradicating Salvo Cast",
+                        description: "Targets player for purging with two missiles in quick succession.",
+                        castTime: 5000,
+                        usageHints: {
+                            plotImportance: 'primary',
+                            defensiveTiming: 'proactive',
+                            category: 'raid'
+                        },
+                        display: {
+                            color: '#4ECDC4',
+                            text: 'Eradicating Salvo',
+                            priority: 2
+                        }
+                    },
+                    manifestMatricesCast: {
+                        id: 1219450,
+                        name: "Manifest Matrices Cast",
+                        description: "Fires Arcane energy into 4 targeted players.",
+                        castTime: 2000,
+                        usageHints: {
+                            plotImportance: 'secondary',
+                            defensiveTiming: 'proactive',
+                            category: 'positioning'
+                        },
+                        display: {
+                            color: '#9B59B6',
+                            text: 'Manifest Matrices',
+                            priority: 3
+                        }
+                    },
+                    obliterationArcanocannon: {
+                        id: 1219263,
+                        name: "Obliteration Arcanocannon Cast",
+                        description: "Marks current target then fires arcane charge.",
+                        castTime: 6000,
+                        usageHints: {
+                            plotImportance: 'primary',
+                            defensiveTiming: 'proactive',
+                            category: 'tank'
+                        },
+                        display: {
+                            color: '#F39C12',
+                            text: 'Obliteration Cast',
+                            priority: 2
+                        }
+                    },
+                    protocolPurge1: {
+                        id: 1220489,
+                        name: "Protocol Purge Cast",
+                        description: "Relocates boss, pushes players, and activates Arcanomatrix Atomizer.",
+                        castTime: 5000,
+                        usageHints: {
+                            plotImportance: 'primary',
+                            defensiveTiming: 'proactive',
+                            category: 'positioning'
+                        },
+                        display: {
+                            color: '#2ECC71',
+                            text: 'Protocol: Purge',
+                            verticalAlign: 'bottom',
+                            y: 100,
+                            priority: 1
+                        }
+                    },
+                    protocolPurge2: {
+                        id: 1220555,
+                        name: "Protocol Purge Cast Alt 1",
+                        description: "Alternative cast ID for Protocol: Purge.",
+                        castTime: 5000,
+                        usageHints: {
+                            plotImportance: 'primary',
+                            defensiveTiming: 'proactive',
+                            category: 'positioning'
+                        }
+                    },
+                    protocolPurge3: {
+                        id: 1220553,
+                        name: "Protocol Purge Cast Alt 2",
+                        description: "Alternative cast ID for Protocol: Purge.",
+                        castTime: 5000,
+                        usageHints: {
+                            plotImportance: 'primary',
+                            defensiveTiming: 'proactive',
+                            category: 'positioning'
+                        }
+                    },
+                    poweredAutomatonCast: {
+                        id: 1223364,
+                        name: "Powered Automaton Cast",
+                        description: "Periodic arcane energy emission cast.",
+                        usageHints: {
+                            plotImportance: 'detail',
+                            category: 'raid'
+                        }
+                    },
+                    staticLightningCast: {
+                        id: 1234699,
+                        name: "Static Lightning Cast",
+                        description: "Activates environmental lightning damage.",
+                        usageHints: {
+                            plotImportance: 'detail',
+                            category: 'positioning'
+                        }
                     }
                 }
-            },
-            display: {
-                primaryColor: '#2ECC71',
-                chartStyle: 'background'
-            },
-            patterns: {
-                castEvents: ['cast1', 'cast2', 'cast3'],
-                damageEvents: ['damage'],
-                defensiveTimings: ['cast1', 'cast2', 'cast3']
-            },
-            metadata: {
-                priority: 'high',
-                category: 'positioning'
-            }
-        },
-
-        atomize: {
-            name: "Atomize",
-            description: "Damage from the atomizer wall",
-            events: {
-                damage: {
-                    spellId: 1219223,
-                    eventType: 'damage',
-                    description: "The Arcanomatrix Atomizer inflicts 49891099 Arcane Damage to players passing through the Sieve",
-                    damage: {
-                        amount: 49891099,
-                        school: 'Arcane'
-                    },
-                    notes: "Damage from the wall, mitigated by using extra action button to phase through",
-                    usageHints: {
-                        plotImportance: 'detail'
-                    },
-                    display: {
-                        color: '#95A5A6',
-                        text: 'Atomize',
-                        priority: 0
-                    }
-                }
-            },
-            display: {
-                primaryColor: '#95A5A6',
-                chartStyle: 'marker'
-            },
-            metadata: {
-                priority: 'medium',
-                category: 'positioning'
-            }
-        },
-
-        displacementMatrix: {
-            name: "Displacement Matrix",
-            description: "Area denial mines that teleport and stun",
-            events: {
-                explosion: {
-                    spellId: 1218626,
-                    eventType: 'damage',
-                    description: "The Displacement Matrix detonates when touched, inflicting 5762071 Arcane damage and stunning players within 8 yards",
-                    damage: {
-                        amount: 5762071,
-                        school: 'Arcane'
-                    },
-                    usageHints: {
-                        plotImportance: 'detail'
-                    }
-                },
-                stun: {
-                    spellId: 1218625,
-                    eventType: 'debuffApply',
-                    description: "Stun from displacement matrix explosion",
-                    notes: "Stun from 1218626",
-                    triggeredBy: 1218626,
-                    aura: {
-                        stackable: false,
-                        dispellable: true
-                    },
-                    usageHints: {
-                        plotImportance: 'detail'
-                    }
-                }
-            },
-            metadata: {
-                priority: 'low',
-                category: 'positioning'
-            }
-        },
-
-        energyCutter: {
-            name: "Energy Cutter",
-            description: "Rotating beam of arcane energy",
-            events: {
-                damage: {
-                    spellId: 1218668,
-                    eventType: 'damage',
-                    description: "A rotating beam of arcane energy that inflicts 7729607 Arcane damage to players in the area",
-                    damage: {
-                        amount: 7729607,
-                        school: 'Arcane'
-                    },
-                    usageHints: {
-                        plotImportance: 'detail'
-                    }
-                }
-            },
-            metadata: {
-                priority: 'low',
-                category: 'positioning'
-            }
-        },
-
-        potentManaResidue: {
-            name: "Potent Mana Residue",
-            description: "Ground effect slowing and damaging players",
-            events: {
-                damage: {
-                    spellId: 1219354,
-                    eventType: 'damageTick',
-                    description: "Residual energy slows players in the area by 50% and inflicts 4924561 Arcane damage every 2 sec",
-                    damage: {
-                        amount: 4924561,
-                        school: 'Arcane'
-                    },
-                    tickInterval: 2000,
-                    usageHints: {
-                        plotImportance: 'detail'
-                    }
-                }
-            },
-            metadata: {
-                priority: 'low',
-                category: 'positioning'
-            }
-        },
-
-        poweredAutomaton: {
-            name: "Powered Automaton",
-            description: "Periodic arcane energy emission",
-            events: {
-                cast: {
-                    spellId: 1223364,
-                    eventType: 'cast',
-                    description: "The Plexus Sentinel periodically emits arcing energy, inflicting 3653996 Arcane damage to the target and up to 5 players within 20 yards",
-                    damage: {
-                        amount: 3653996,
-                        school: 'Arcane'
-                    },
-                    usageHints: {
-                        plotImportance: 'detail'
-                    }
-                },
-                damage: {
-                    spellId: 1219687,
-                    eventType: 'damage',
-                    description: "The Plexus Sentinel periodically emits arcing energy, inflicting 3653996 Arcane damage to the target and up to 5 players within 20 yards",
-                    damage: {
-                        amount: 3653996,
-                        school: 'Arcane'
-                    },
-                    triggeredBy: 1223364,
-                    usageHints: {
-                        plotImportance: 'detail'
-                    }
-                }
-            },
-            metadata: {
-                priority: 'low',
-                category: 'raid'
-            }
-        },
-
-        purgingLightning: {
-            name: "Purging Lightning",
-            description: "Stacking damage during shield phase",
-            events: {
-                damage: {
-                    spellId: 1233110,
-                    eventType: 'damageTick',
-                    description: "The Plexus Sentinel continuously channels arcane lightning through its chassis, inflicting 386480 Arcane damage to all players with each cast. Each cast empowers the chassis, increasing damage of subsequent casts by 25%. This effect stacks.",
-                    damage: {
-                        amount: 386480,
-                        school: 'Arcane'
-                    },
-                    usageHints: {
-                        plotImportance: 'secondary',
-                        defensiveTiming: 'during'
-                    }
-                }
-            },
-            metadata: {
-                priority: 'medium',
-                category: 'raid'
-            }
-        },
-
-        staticLightning: {
-            name: "Static Lightning",
-            description: "Environmental lightning damage",
-            events: {
-                cast: {
-                    spellId: 1234699,
-                    eventType: 'cast',
-                    description: "Static Lightning cast event",
-                    usageHints: {
-                        plotImportance: 'detail'
-                    }
-                },
-                damage: {
-                    spellId: 1242310,
-                    eventType: 'damage',
-                    description: "The Great Exhaust rains lightning down when activated, inflicting 69 Nature damage to players in a 0 yard radius",
-                    damage: {
-                        amount: 69,
-                        school: 'Nature'
-                    },
-                    usageHints: {
-                        plotImportance: 'detail'
-                    }
-                }
-            },
-            metadata: {
-                priority: 'low',
-                category: 'positioning'
             }
         }
     },
+    
     phases: [
         {
-            name: "Phase 1: Purge the Intruders",
-            mechanics: ["eradicatingSalvo", "manifestMatrices", "obliterationArcanocannon"],
-            triggers: { healthPercent: 100 }
+            number: 1,
+            name: "Purge the Intruders",
+            description: "Standard encounter phase with positioning mechanics and tank swaps.",
+            type: 'normal',
+            mechanics: ["eradicatingSalvo", "manifestMatrices", "obliterationArcanocannon", "cleanseTheChamber"],
+            activeEntities: ["plexusSentinel"],
+            transition: {
+                to: 2,
+                triggerType: 'energy',
+                triggerValue: 100,
+                description: "Boss relocates and activates the Arcanomatrix Atomizer for phase 2."
+            },
+            triggers: {
+                healthPercent: 100
+            }
         },
         {
-            name: "Phase 2: The Sieve Awakens",
-            mechanics: ["protocolPurge"],
-            triggers: { energyPercent: 100 }
+            number: 2,
+            name: "The Sieve Awakens",
+            description: "Boss relocates and activates environmental hazards while channeling stacking damage.",
+            type: 'intermission',
+            mechanics: ["protocolPurge", "purgingLightning", "energyCutter", "potentManaResidue"],
+            activeEntities: ["plexusSentinel"],
+            triggers: {
+                energyPercent: 100
+            }
         }
     ],
+    
     metadata: {
-        raidTier: "Manaforge Omega"
+        raidTier: "Manaforge Omega",
+        bossNumber: 1,
+        description: "The Plexus Sentinel is a large arcane construct that serves as the first boss of Manaforge Omega. This encounter focuses on coordination mechanics, tank swaps, and positioning around environmental hazards.",
+        strategy: "Phase 1 requires coordinated soaking of Eradicating Salvo missiles, proper positioning for Manifest Matrices, and tank swaps for Obliteration Arcanocannon. Phase 2 involves navigating the activated Arcanomatrix Atomizer while dealing with increasing Purging Lightning damage."
     }
 };
