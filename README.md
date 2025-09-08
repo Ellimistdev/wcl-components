@@ -3,11 +3,13 @@
 ## Available Components
 
 ### Defensives Timeline
+
 **File:** `components/common/DefensivesTimeline.ts`
 
 A comprehensive timeline visualization showing defensive ability usage and encounter mechanics for individual players.
 
 **Features:**
+
 - Shows defensive ability duration bars (buffs/cooldowns)
 - Displays encounter-specific reference casts as vertical lines
 - Includes death markers with player names
@@ -16,12 +18,14 @@ A comprehensive timeline visualization showing defensive ability usage and encou
 - Player-specific damage event filtering
 
 **Usage:**
+
 - Best used when viewing a single player
 - Automatically adapts to the selected encounter (Loomithar, etc.)
 
 ![Defensives Timeline Example](images/defensives-timeline.png)
 
 **Key Information Displayed:**
+
 - Horizontal bars: Active defensive abilities (Stone Bulwark Totem, Astral Shift, etc.)
 - Vertical colored lines: Boss abilities and mechanics
 - Red dashed lines: Player deaths
@@ -30,11 +34,13 @@ A comprehensive timeline visualization showing defensive ability usage and encou
 ---
 
 ### Defensives Used
+
 **File:** `components/common/DefensivesUsed.ts`
 
 A detailed breakdown of defensive ability usage with player and ability counts.
 
 **Features:**
+
 - Lists all players and their defensive ability usage
 - Groups by class with color-coded player names
 - Shows total cast counts per player
@@ -43,6 +49,7 @@ A detailed breakdown of defensive ability usage with player and ability counts.
 <!-- ![Defensives Used Example](images/defensives-used.png) -->
 
 **Key Information Displayed:**
+
 - Player names with class coloring
 - Individual ability usage counts
 - Total defensive casts per player
@@ -51,11 +58,13 @@ A detailed breakdown of defensive ability usage with player and ability counts.
 ---
 
 ### Defensives Used Table (WIP)
+
 **File:** `components/common/DefensivesUsedTable.ts`
 
 A tabular view of defensive ability usage across all players.
 
 **Features:**
+
 - Table format showing players vs abilities
 - Easy comparison of defensive usage patterns
 - Class-based organization
@@ -64,6 +73,7 @@ A tabular view of defensive ability usage across all players.
 <!-- ![Defensives Used Table Example](images/defensives-used-table.png) -->
 
 **Key Information Displayed:**
+
 - Rows: Players (grouped by class)
 - Columns: Defensive abilities used
 - Cells: Number of times each ability was used
@@ -74,29 +84,33 @@ A tabular view of defensive ability usage across all players.
 ## Setup and Development
 
 ### Prerequisites
+
 - Node.js (v16 or higher)
 - NPM or Yarn package manager
 
 ### Installation
+
 ```bash
 npm install
 ```
 
 ### Configuration
+
 Component settings can be customized in `template.config.js`:
 
 ```js
 module.exports = {
-    components: {
-        defensivesTimeline: {
-            w: 4,  // Width in grid units
-            h: 2   // Height in grid units
-        }
-    }
-}
+  components: {
+    defensivesTimeline: {
+      w: 4, // Width in grid units
+      h: 2, // Height in grid units
+    },
+  },
+};
 ```
 
 ### Encounters Module
+
 New encounters can be added in the `encounters/` directory:
 
 1. Create encounter data file (e.g., `encounters/raid/newBoss.ts`)
@@ -104,33 +118,44 @@ New encounters can be added in the `encounters/` directory:
 3. Add encounter mapping in `encounters/index.ts`
 
 Example encounter structure:
+
 ```typescript
 export const NewBossEncounter: EncounterData = {
-    name: "New Boss",
-    encounterId: 1234,
-    mechanics: {
-        majorAbility: {
+  name: "New Boss",
+  encounterId: 1234,
+
+  entities: {
+    boss: {
+      id: 999999,
+      name: "Boss",
+      type: "main_boss",
+      abilities: {
+        damage: {
+          majorAbility: {
+            id: 56790,
             name: "Major Ability",
-            events: {
-                cast: {
-                    spellId: 56789,
-                    eventType: 'cast',
-                    usageHints: {
-                        plotImportance: 'primary',
-                        defensiveTiming: 'proactive'
-                    },
-                    display: {
-                        color: '#FF0000',
-                        text: 'Major Hit'
-                    }
-                }
-            }
-        }
-    }
+            relatedEvents: [
+              {
+                spellId: 56789,
+                eventType: "damageTick",
+              },
+            ],
+          },
+        },
+        casts: {
+          majorAbilityCast: {
+            id: 56789,
+            name: "Major Ability Cast",
+          },
+        },
+      },
+    },
+  },
 };
 ```
 
 ### Defensive Abilities
+
 Defensive abilities are configured in `definitions/defensives.ts` by class:
 
 ```typescript
@@ -144,24 +169,21 @@ Defensive abilities are configured in `definitions/defensives.ts` by class:
 ```
 
 ### Development
-Automated testing uses Puppeteer to validate components:
 
-```bash
-npm run dev
-```
-
-### Development
 To enable hot reload for rapid development, you can leverage the autotest plugin which uses Puppeteer.
 
-First, add your WCL login credentials to `.env` 
+First, add your WCL login credentials to `.env`
+
 ```js
-WCL_LOGIN_EMAIL=yourSecretsHere
-WCL_PASSWORD=yourSecretsHere
+WCL_LOGIN_EMAIL = yourSecretsHere;
+WCL_PASSWORD = yourSecretsHere;
 // or
-BNET_LOGIN_EMAIL=yourSecretsHere
-BNET_PASSWORD=yourSecretsHere
+BNET_LOGIN_EMAIL = yourSecretsHere;
+BNET_PASSWORD = yourSecretsHere;
 ```
+
 Configure login method settings in `template.config.js`:
+
 ```js
 plugins: {
     autoTest: {
@@ -171,6 +193,14 @@ plugins: {
     }
 }
 ```
+
+Then
+
+```bash
+npm run dev
+```
+
+The project will then launch your test browser, navigate to and login to WCL. When you make a change to a component and save, it will then open a new window addressed to the URL configured in `template.config.js` for that component, add a new component to the dashboard (make sure you have room for an additional component), edit the new component, paste in the serialized component string, run, and save that component so you can view it in the dashboard. Note that if you save your dashboard it will persist across multiple sessions, so you may want to avoid that.
 
 ## File Structure
 
@@ -187,6 +217,7 @@ plugins: {
 ## Import Strings
 
 Each component generates an import string for use in Warcraft Logs:
+
 - `.component.js` - Compiled JavaScript
 - `.import.txt` - Base64 import string for WCL
 - `.lzstring.txt` - Compressed source code
