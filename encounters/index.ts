@@ -1,8 +1,9 @@
 import { PlexusSentinelEncounter } from './manaforgeOmega/plexusSentinel';
-import { SoulbinderNaazindhriEncounter } from './manaforgeOmega/soulbinderNaazindhri';
 import { LoomitharEncounter } from './manaforgeOmega/loomithar';
+import { SoulbinderNaazindhriEncounter } from './manaforgeOmega/soulbinderNaazindhri';
+import { DimensiusEncounter } from './manaforgeOmega/dimensius';
 import { EncounterDisplayLookup } from './utils';
-import type { DisplayInfo, EnhancedEncounterData, EnhancedMechanic, EnhancedSpellEvent } from './types';
+import type { DisplayInfo, EncounterData, Mechanic, SpellEvent } from './types';
 
 
 export const ManaforgeOmegaEncounters = {
@@ -12,7 +13,7 @@ export const ManaforgeOmegaEncounters = {
 };
 
 export function getEncounterReferenceCasts(encounterId: number): Record<number, DisplayInfo> {
-    let encounter: EnhancedEncounterData | null = null;
+    let encounter: EncounterData | null = null;
     
     switch (encounterId) {
         case 3129:
@@ -23,6 +24,9 @@ export function getEncounterReferenceCasts(encounterId: number): Record<number, 
             break;
         case 3131:
             encounter = LoomitharEncounter;
+            break;
+        case 3135:
+            encounter = DimensiusEncounter;
             break;
         default:
             return {};
@@ -38,4 +42,4 @@ export {
     EncounterDisplayLookup 
 };
 
-export type { DisplayInfo, EnhancedEncounterData, EnhancedMechanic, EnhancedSpellEvent };
+export type { DisplayInfo, EncounterData, Mechanic, SpellEvent };

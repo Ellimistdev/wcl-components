@@ -105,7 +105,7 @@ New encounters can be added in the `encounters/` directory:
 
 Example encounter structure:
 ```typescript
-export const NewBossEncounter: EnhancedEncounterData = {
+export const NewBossEncounter: EncounterData = {
     name: "New Boss",
     encounterId: 1234,
     mechanics: {

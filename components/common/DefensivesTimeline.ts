@@ -56,7 +56,7 @@ getComponent = () => {
             uniqueActors.add(cast.source.name);
         }
     });
-    
+
     // Check auras gained
     const aurasGained = reportGroup.fights.flatMap(fight => {
         return fight.eventsByCategoryAndDisposition("aurasGained", "friendly")
@@ -109,6 +109,7 @@ getComponent = () => {
     
     // Get reference casts for this specific encounter
     const encounterReferenceCasts = getEncounterReferenceCasts(encounterId);
+    // const encounterReferenceCasts: Record<number, DisplayInfo> = {};
     
     // Merge with default reference casts (if any)
     const referenceCasts = {
