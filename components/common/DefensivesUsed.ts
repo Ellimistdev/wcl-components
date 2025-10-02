@@ -29,16 +29,25 @@ getComponent = () => {
             "friendly")
             .filter(cast => {
                 const actor = cast.source;
+                const target = cast.target;
                 const defensiveAbilities = {
                     ...(actor && defensives[actor.subType] || {}),
                     ...(defensives["Everyone"] || {})
                 };
 
-                return (
-                    defensiveAbilities &&
-                    cast.ability !== null &&
-                    Object.prototype.hasOwnProperty.call(defensiveAbilities, cast.ability.id)
-                );
+                // Check if this is a valid defensive ability
+                if (!defensiveAbilities || 
+                    cast.ability === null || 
+                    !Object.prototype.hasOwnProperty.call(defensiveAbilities, cast.ability.id)) {
+                    return false;
+                }
+
+                // For Lay on Hands (633), only count it if cast on self
+                if (cast.ability.id === 633) {
+                    return actor?.id === target?.id;
+                }
+
+                return true;
             })
             .map(cast => ({
                 ...cast,

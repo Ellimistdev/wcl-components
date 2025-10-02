@@ -33,16 +33,25 @@ getComponent = () => {
             .filter(cast => {
                 const actor = cast.source;
                 const ability = cast.ability;
+                const target = cast.target;
                 const defensiveAbilities = {
                     ...(defensives[actor?.subType ?? ""] || {}),
                     ...(defensives["Everyone"] || {})
                 };
 
-                return (
-                    defensiveAbilities &&
-                    ability !== null &&
-                    defensiveAbilities.hasOwnProperty(ability.id)
-                );
+                // Check if this is a valid defensive ability
+                if (!defensiveAbilities || 
+                    ability === null || 
+                    !Object.prototype.hasOwnProperty.call(defensiveAbilities, ability.id)) {
+                    return false;
+                }
+
+                // For Lay on Hands (633), only count it if cast on self
+                if (ability.id === 633) {
+                    return actor?.id === target?.id;
+                }
+
+                return true;
             })
             .map(cast => ({
                 ...cast,
@@ -50,6 +59,8 @@ getComponent = () => {
                 startTime: fight.startTime
             }));
     });
+
+    // return defensiveCasts;
     
     defensiveCasts.forEach(cast => {
         if (cast.source?.name) {

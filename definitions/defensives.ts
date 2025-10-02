@@ -237,7 +237,12 @@ export const defensives: Defensives =
     },
     "Monk": {
         "115203": {
-            "name": "Fortifying Brew",
+            "name": "Fortifying Brew - Cast",
+            "duration": 15000,
+            "cooldown": 360000
+        },
+        "120954": {
+            "name": "Fortifying Brew - Buff",
             "duration": 15000,
             "cooldown": 360000
         },
