@@ -29,6 +29,11 @@ export const defensives: Defensives =
         //     "duration": 0,
         //     "cooldown": 0
         // },
+        "219809": {
+            "name": "Tombstone",
+            "duration": 8000,
+            "cooldown": 60000
+        },
         "327574": {
             "name": "Sacrificial Pact",
             "duration": 0,
@@ -153,12 +158,17 @@ export const defensives: Defensives =
             "cooldown": 180000
         },
         "272679": {
-            "name": "Fortitude of the Bear",
+            "name": "Fortitude of the Bear - Cast",
+            "duration": 10000,
+            "cooldown": 120000
+        },
+        "388035": {
+            "name": "Fortitude of the Bear", // Buff
             "duration": 10000,
             "cooldown": 120000
         },
         "392956": {
-            "name": "Fortitude of the Bear", // cast
+            "name": "Fortitude of the Bear", // idk?
             "duration": 10000,
             "cooldown": 120000
         }
@@ -295,6 +305,11 @@ export const defensives: Defensives =
         //     "duration": 4500,
         //     "cooldown": 1000
         // },
+        "31850": {
+            "name": "Ardent Defender",
+            "duration": 8000,
+            "cooldown": 120000
+        },
         "184662": {
             "name": "Shield of Vengeance",
             "duration": 10000,
@@ -305,10 +320,20 @@ export const defensives: Defensives =
             "duration": 10000,
             "cooldown": 60000
         },
+        "212641": {
+            "name": "Guardian of Ancient Kings",
+            "duration": 8000,
+            "cooldown": 300000
+        },
         "215661": {
             "name": "Justicar's Vengeance",
             "duration": 0,
             "cooldown": 0
+        },
+        "387174": {
+            "name": "Eye of Tyr",
+            "duration": 6000,
+            "cooldown": 60000
         },
         "403876": {
             "name": "Divine Protection",

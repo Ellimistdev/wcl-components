@@ -89,6 +89,8 @@ getComponent = () => {
                 startTime: fight.startTime
             }));
     });
+
+    // return aurasGained;
     
     aurasGained.forEach(event => {
         if (event.target?.name) {
