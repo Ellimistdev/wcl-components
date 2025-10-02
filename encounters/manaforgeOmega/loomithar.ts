@@ -143,7 +143,7 @@ export const LoomitharEncounter: EncounterData = {
                         },
                         display: {
                             color: '#2ECC71',
-                            text: 'Writhing Wave',
+                            text: 'Writhing Wave Soak',
                             priority: 1
                         }
                     },
@@ -483,6 +483,8 @@ export const LoomitharEncounter: EncounterData = {
                         display: {
                             color: '#1e81bbff',
                             text: 'Arcane Outrage',
+                            verticalAlign: 'top',
+                            y: 85,
                             priority: 2
                         }
                     },
@@ -498,6 +500,8 @@ export const LoomitharEncounter: EncounterData = {
                         display: {
                             color: '#27AE60',
                             text: 'Writhing Wave',
+                            verticalAlign: 'top',
+                            y: 80,
                             priority: 2
                         }
                     },

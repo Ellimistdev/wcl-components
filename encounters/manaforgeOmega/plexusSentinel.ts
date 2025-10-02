@@ -305,13 +305,13 @@ export const PlexusSentinelEncounter: EncounterData = {
                         description: "Targets player for purging with two missiles in quick succession.",
                         castTime: 5000,
                         usageHints: {
-                            plotImportance: 'primary',
+                            plotImportance: 'detail',
                             defensiveTiming: 'proactive',
                             category: 'raid'
                         },
                         display: {
                             color: '#4ECDC4',
-                            text: 'Eradicating Salvo',
+                            text: 'Eradicating Salvo Cast',
                             priority: 2
                         }
                     },
@@ -337,7 +337,7 @@ export const PlexusSentinelEncounter: EncounterData = {
                         description: "Marks current target then fires arcane charge.",
                         castTime: 6000,
                         usageHints: {
-                            plotImportance: 'primary',
+                            plotImportance: 'detail',
                             defensiveTiming: 'proactive',
                             category: 'tank'
                         },
@@ -360,8 +360,8 @@ export const PlexusSentinelEncounter: EncounterData = {
                         display: {
                             color: '#2ECC71',
                             text: 'Protocol: Purge',
-                            verticalAlign: 'bottom',
-                            y: 100,
+                            verticalAlign: 'top',
+                            y: 85,
                             priority: 1
                         }
                     },

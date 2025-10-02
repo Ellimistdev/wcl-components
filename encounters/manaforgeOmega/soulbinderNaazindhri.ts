@@ -27,7 +27,7 @@ export const SoulbinderNaazindhriEncounter: EncounterData = {
                             }
                         ],
                         usageHints: {
-                            plotImportance: 'primary',
+                            plotImportance: 'secondary',
                             defensiveTiming: 'reactive',
                             category: 'raid'
                         },
@@ -110,13 +110,15 @@ export const SoulbinderNaazindhriEncounter: EncounterData = {
                         description: "Orb mechanic - 11250162 Arcane damage to hit players.",
                         damage: { amount: 11250162, school: 'Arcane' },
                         usageHints: {
-                            plotImportance: 'primary',
+                            plotImportance: 'secondary',
                             defensiveTiming: 'reactive',
                             category: 'raid'
                         },
                         display: {
                             color: '#F39C12',
-                            text: 'Soulfray Orb',
+                            text: 'Soulfray Annihilation',
+                            verticalAlign: 'top',
+                            y: 110,
                             priority: 1
                         }
                     },
@@ -178,9 +180,14 @@ export const SoulbinderNaazindhriEncounter: EncounterData = {
                             }
                         ],
                         usageHints: {
-                            plotImportance: 'secondary',
+                            plotImportance: 'primary',
                             defensiveTiming: 'reactive',
                             category: 'raid'
+                        },
+                        display: {
+                            color: '#F39C12',
+                            text: 'Soulrend Orb Tick',
+                            priority: 2
                         }
                     },
                     spellburn: {
@@ -281,7 +288,7 @@ export const SoulbinderNaazindhriEncounter: EncounterData = {
                         description: "Devastating shockwave that knocks back all players.",
                         castTime: 4000,
                         usageHints: {
-                            plotImportance: 'primary',
+                            plotImportance: 'detail',
                             defensiveTiming: 'proactive',
                             category: 'raid'
                         },
@@ -297,14 +304,16 @@ export const SoulbinderNaazindhriEncounter: EncounterData = {
                         description: "Lashes out at current target with vulnerability application.",
                         castTime: 2000,
                         usageHints: {
-                            plotImportance: 'primary',
+                            plotImportance: 'secondary',
                             defensiveTiming: 'proactive',
                             category: 'tank'
                         },
                         display: {
                             color: '#E74C3C',
                             text: 'Mystic Lash',
-                            priority: 2
+                            verticalAlign: 'top',
+                            y: 65,
+                            priority: 1
                         }
                     },
                     soulfireConvergenceCast: {
@@ -313,13 +322,15 @@ export const SoulbinderNaazindhriEncounter: EncounterData = {
                         description: "Courses arcane energy through several players.",
                         castTime: 2000,
                         usageHints: {
-                            plotImportance: 'primary',
+                            plotImportance: 'secondary',
                             defensiveTiming: 'proactive',
                             category: 'raid'
                         },
                         display: {
-                            color: '#3498DB',
+                            color: '#db34b7ff',
                             text: 'Soulfire Cast',
+                            verticalAlign: 'top',
+                            y: 70,
                             priority: 2
                         }
                     },
@@ -500,9 +511,11 @@ export const SoulbinderNaazindhriEncounter: EncounterData = {
                             category: 'positioning'
                         },
                         display: {
-                            color: '#8E44AD',
+                            color: '#4498adff',
                             text: 'Essence Implosion',
-                            priority: 1
+                            verticalAlign: 'top',
+                            y: 100,
+                            priority: 2
                         }
                     },
                     arcaneEnergy: {
