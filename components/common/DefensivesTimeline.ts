@@ -46,8 +46,12 @@ getComponent = () => {
                     return false;
                 }
 
-                // For Lay on Hands (633), only count it if cast on self
-                if (ability.id === 633) {
+                // For Lay on Hands (633), 
+                // and Emerald Blossom (355913)
+                // only count it if cast on self
+                if (ability.id === 633 ||
+                    ability.id === 355913
+                ) {
                     return actor?.id === target?.id;
                 }
 
