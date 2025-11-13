@@ -24,7 +24,7 @@ export const DimensiusEncounter: EncounterData = {
                         },
                         display: {
                             color: '#9d4edd',
-                            text: 'Antimatter'
+                            text: 'Soaking Antimatter'
                         }
                     },
                     cosmicRadiation: {
@@ -63,7 +63,7 @@ export const DimensiusEncounter: EncounterData = {
                             category: 'positioning'
                         },
                         display: {
-                            color: '#10002b',
+                            color: '#757abeff',
                             text: 'Dark Matter'
                         }
                     },
@@ -73,12 +73,12 @@ export const DimensiusEncounter: EncounterData = {
                         description: "Upon reaching 100 energy, Dimensius attempts to devour all players, inflicting 5621532 Shadow damage every 1 sec for 5 sec.",
                         usageHints: {
                             defensiveTiming: 'during',
-                            plotImportance: 'primary',
+                            plotImportance: 'secondary',
                             category: 'raid'
                         },
                         display: {
-                            color: '#c77dff',
-                            text: 'DEVOUR'
+                            color: '#c77dfe',
+                            text: 'Devour'
                         }
                     },
                     fistsOfVoidlord: {
@@ -118,7 +118,7 @@ export const DimensiusEncounter: EncounterData = {
                             category: 'positioning'
                         },
                         display: {
-                            color: '#c77dff',
+                            color: '#f38559ff',
                             text: 'Reverse Gravity'
                         }
                     },
@@ -132,7 +132,7 @@ export const DimensiusEncounter: EncounterData = {
                             category: 'positioning'
                         },
                         display: {
-                            color: '#9d4edd',
+                            color: '#975a88ff',
                             text: 'Shattered Space'
                         }
                     }
@@ -171,11 +171,11 @@ export const DimensiusEncounter: EncounterData = {
                         castTime: 2000,
                         usageHints: {
                             defensiveTiming: 'proactive',
-                            plotImportance: 'primary',
+                            plotImportance: 'secondary',
                             category: 'positioning'
                         },
                         display: {
-                            color: '#10002b',
+                            color: '#8488beff',
                             text: 'Dark Matter Cast'
                         }
                     },
@@ -191,7 +191,7 @@ export const DimensiusEncounter: EncounterData = {
                         },
                         display: {
                             color: '#c77dff',
-                            text: 'DEVOUR CAST'
+                            text: 'Devour'
                         }
                     },
                     eventHorizon: {
@@ -220,7 +220,7 @@ export const DimensiusEncounter: EncounterData = {
                         },
                         display: {
                             color: '#e0aaff',
-                            text: 'Massive Smash Cast'
+                            text: 'Massive Smash'
                         }
                     }
                 }
